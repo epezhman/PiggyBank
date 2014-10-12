@@ -10,7 +10,7 @@
 
     <!-- To be Changed!! -->
     <title>
-        PB - Customer Home
+        PB - Employee
     </title>
 
     <!-- Bootstrap core CSS -->
@@ -44,9 +44,9 @@
                             </ul>
                         </li>
 
-                        <li class="visible-xs"><a href="CustomerNewTransfer.html">New Transfer</a></li>
-                        <li class="visible-xs"><a href="CustomerMyTokens.html">My Tokens</a></li>
-                        <li class="visible-xs active"><a href="CustomerMyTransfers.html">My Transfers</a></li>
+                        <li class="visible-xs"><a href="EmployeeCustomerMamangers.html">Manage Customers</a></li>
+                        <li class="visible-xs"><a href="EmployeePendingTransfers.html">Pending Transfers</a></li>
+                        <li class="visible-xs active"><a href="EmployeeTransfers.html">All Transfers</a></li>
 
                         <li><a href="#">Profile</a></li>
                         <li><a href="#">Help</a></li>
@@ -64,24 +64,24 @@
             <div class="row">
                 <div class="col-sm-3 col-md-2 sidebar">
                     <ul class="nav nav-sidebar">
-                        <li><a href="CustomerNewTransfer.html">New Transfer</a></li>
-                        <li><a href="CustomerMyTokens.html">My Tokens</a></li>
-                        <li class="active"><a href="CustomerMyTransfers.html">My Transfers</a></li>
+                        <li><a href="EmployeeCustomerMamangers.html">Manage Customers</a></li>
+                        <li><a href="EmployeePendingTransfers.html">Pending Transfers</a></li>
+                        <li class="active"><a href="EmployeeTransfers.html">All Transfers</a></li>
                     </ul>
                 </div>
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
                     <!-- Beggining of body, above is Layout -->
 
-                    <h1 class="page-header">My Transfers</h1>
+                    <h1 class="page-header">All Transfers</h1>
 
                     <fieldset>
                         <legend>Filter</legend>
                         <form class="form-horizontal" role="form">
                             <div class="form-group">
-                                <label class="control-label col-sm-2" for="">Receiver</label>
+                                <label class="control-label col-sm-2" for="">Sender</label>
                                 <div class="col-sm-10">
-                                    <input type="text" name="Receiver" />
+                                    <input type="text" name="Sender" />
                                 </div>
                             </div>
                             <div class="form-group">
@@ -97,93 +97,153 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>Sender</th>
                                     <th>Receiver</th>
                                     <th>Amount (€)</th>
                                     <th>Submit Date</th>
-                                    <th>Sent Date</th>
                                     <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>1</td>
+                                    <td>Adam</td>
                                     <td>Stefan</td>
                                     <td>100</td>
                                     <td><span class="badge">12.12.2014 13:30</span></td>
-                                    <td></td>
                                     <td><span class="label label-warning"><span class="glyphicon glyphicon-time"></span> Pending</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" title="View">
+                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve">
+                                            <span class="glyphicon glyphicon-ok"></span>
+                                        </button>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>2</td>
+                                    <td>Adam</td>
                                     <td>Stefan</td>
                                     <td>100</td>
                                     <td><span class="badge">12.12.2014 13:30</span></td>
-                                    <td></td>
                                     <td><span class="label label-warning"><span class="glyphicon glyphicon-time"></span> Pending</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" title="View">
+                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve">
+                                            <span class="glyphicon glyphicon-ok"></span>
+                                        </button>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>3</td>
+                                    <td>Adam</td>
                                     <td>Stefan</td>
                                     <td>100</td>
                                     <td><span class="badge">12.12.2014 13:30</span></td>
-                                    <td></td>
                                     <td><span class="label label-warning"><span class="glyphicon glyphicon-time"></span> Pending</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" title="View">
+                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve">
+                                            <span class="glyphicon glyphicon-ok"></span>
+                                        </button>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>4</td>
+                                    <td>Adam</td>
                                     <td>Stefan</td>
                                     <td>100</td>
                                     <td><span class="badge">12.12.2014 13:30</span></td>
-                                    <td><span class="badge">12.12.2014 13:30</span></td>
                                     <td><span class="label label-success"><span class="glyphicon glyphicon-ok"></span> Sent</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" title="View">
+                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                        </button>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>5</td>
+                                    <td>Adam</td>
                                     <td>Stefan</td>
                                     <td>100</td>
                                     <td><span class="badge">12.12.2014 13:30</span></td>
-                                    <td><span class="badge">12.12.2014 13:30</span></td>
                                     <td><span class="label label-success"><span class="glyphicon glyphicon-ok"></span> Sent</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" title="View">
+                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                        </button>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>6</td>
+                                    <td>Adam</td>
                                     <td>Stefan</td>
                                     <td>100</td>
                                     <td><span class="badge">12.12.2014 13:30</span></td>
-                                    <td><span class="badge">12.12.2014 13:30</span></td>
                                     <td><span class="label label-success"><span class="glyphicon glyphicon-ok"></span> Sent</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" title="View">
+                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                        </button>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>7</td>
+                                    <td>Adam</td>
                                     <td>Stefan</td>
                                     <td>100</td>
                                     <td><span class="badge">12.12.2014 13:30</span></td>
-                                    <td></td>
                                     <td><span class="label label-danger"><span class="glyphicon glyphicon-remove"></span> Rejected</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" title="View">
+                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                        </button>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>8</td>
+                                    <td>Adam</td>
                                     <td>Stefan</td>
                                     <td>100</td>
                                     <td><span class="badge">12.12.2014 13:30</span></td>
-                                    <td></td>
                                     <td><span class="label label-danger"><span class="glyphicon glyphicon-remove"></span> Rejected</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" title="View">
+                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                        </button>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>9</td>
+                                    <td>Adam</td>
                                     <td>Stefan</td>
                                     <td>100</td>
                                     <td><span class="badge">12.12.2014 13:30</span></td>
-                                    <td></td>
                                     <td><span class="label label-danger"><span class="glyphicon glyphicon-remove"></span> Rejected</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" title="View">
+                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                        </button>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>10</td>
+                                    <td>Adam</td>
                                     <td>Stefan</td>
                                     <td>100</td>
                                     <td><span class="badge">12.12.2014 13:30</span></td>
-                                    <td></td>
                                     <td><span class="label label-danger"><span class="glyphicon glyphicon-remove"></span> Rejected</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" title="View">
+                                            <span class="glyphicon glyphicon-eye-open"></span>
+                                        </button>
+                                    </td>
                                 </tr>
                             </tbody>
                             <tfoot>
@@ -191,7 +251,7 @@
                                     <td colspan="3">
                                         <span>Count : 20; Page 1 of 2</span>
                                     </td>
-                                    <td colspan="3">
+                                    <td colspan="4">
                                         <div class="marginPagingHeight30">
                                             <ul class="pagination pagination-sm marginPaging">
                                                 <li class="active">
