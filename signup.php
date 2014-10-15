@@ -6,18 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Piggy Bank GmbH">
     <meta name="author" content="Alei , Sara , ePezhman">
-    <link rel="icon" href="../images/piggyFav.ico">
+    <link rel="icon" href="./images/piggyFav.ico">
 
     <!-- To be Changed!! -->
     <title>
-        PB - Register
+        PiggyBank GmbH - Sign up for Online Banking
     </title>
 
     <!-- Bootstrap core CSS -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
 
     <!-- our CSS -->
-    <link href="../css/framework.css" rel="stylesheet">
+    <link href="./css/framework.css" rel="stylesheet">
 
 </head>
 
@@ -32,7 +32,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#"><img src="../images/logo.png" alt="" class="logoStyle" /> Piggy Bank GmbH</a>
+                    <a class="navbar-brand" href="signin.php"><img src="./images/logo.png" alt="" class="logoStyle" /> Piggy Bank GmbH</a>
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -44,8 +44,8 @@
                             </ul>
                         </li>
 
-                        <li><a href="Login.html">log in</a></li>
-                        <li><a href="Register.html">Register</a></li>
+                        <li><a href="signin.php">Sign in</a></li>
+                        <li><a href="signup.php">Sign up</a></li>
                     </ul>
 
                 </div>
@@ -55,7 +55,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-8 hidden-xs ">
-                    <img src="../images/piggy-banks.jpg" alt="" class="img-responsive" />
+                    <img src="./images/piggy-banks.jpg" alt="" class="img-responsive" />
                 </div>
                 <div class="col-sm-4">
                     <div style="padding-top:40px;">
@@ -140,8 +140,8 @@
             <p class="text-muted text-center">© 2014 Piggy Bank GmbH</p>
         </div>
     </div>
-    <script src="../js/jquery-1.11.1.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
+    <script src="./js/jquery-1.11.1.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
 
 </body>
 </html>
