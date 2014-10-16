@@ -54,25 +54,34 @@
 
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-8 hidden-xs">
+           <!--     <div class="col-sm-8 hidden-xs">
                     <img src="/PiggyBank/images/piggy-banks.jpg" alt="" class="img-responsive" />
-                </div>
-                <div class="col-sm-4">
+                </div> -->
+                <div class="col-sm-12">
                     <?php
                         echo "<br/><br/><br/>";
-                        echo "<div class=\"form-signin\">";
+                        echo "<div class=\"form-error\" >";
+                        echo "<table width=\"800\"><tr><td align=\"center\">";
+                        echo "<img src=\"/PiggyBank/images/pigerror.png\" alt=\"pigerror.png\" width=\"100\" height=\"100\"/>";
                         echo "<h2><b>Oink!! Something went wrong.</h2><br/><br/>";
+                        echo "</td></tr>";
                         $errorID = $_GET["id"];
-                        if($errorID == "404")
+                        if($errorID == "404"){
+                            echo "<tr><td align=\"center\">";   
                             echo "<h4><b>The page you are looking for does not exist.</b></h4>";
-                        else if($errorID == "403")
+                            echo "</td></tr>";
+                        }
+                        else if($errorID == "403"){
+                            echo "<tr><td align=\"center\">";
                             echo "<h4><b>You are not allowed here, yet. Please <a href=\"/PiggyBank/signin.php\">sign in</a> first.</b></h4>";
-
+                            echo "</td></tr>";
+                        }
+                        echo "</table>";
                         echo "<br/>";
                        ?>
                                 </div>
                             </div>
-                        </form>
+                        
                     </div>
 
                 </div>

@@ -54,18 +54,25 @@
 
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-8 hidden-xs">
+          <!--      <div class="col-sm-8 hidden-xs">
                     <img src="./images/piggy-banks.jpg" alt="" class="img-responsive" />
                 </div>
-                <div class="col-sm-4">
-                        <br/><br/><br/>
-                        <div class="form-signin">
-                        <h2><b>You have signed out successfully.</h2><br/><br/>
-                        <h4><b>Thank you for banking with us. You can <a href="signin.php">sign in</a> from here.</b></h4>
-                        <br/>
-                                </div>
+          -->
+                <br/><br/><br/>
+                <div class="col-sm-12">
+                        <div class="form-signout">
+                            <table><tr><td align="center">
+                                <h2><b>You have signed out successfully.</h2>
+                            </td></tr>
+                            <tr><td align="center">
+                                <h4><b>Thank you for banking with us.</b></h4>
+                            </td></tr>
+                            <tr><td align="center">
+                                <h4><b> You can <a href="signin.php">sign in</a> from here.</b></h4>
+                            <td/></tr>
+                            </table>
+                       </div>
                             </div>
-                        </form>
                     </div>
 
                 </div>

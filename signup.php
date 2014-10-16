@@ -53,18 +53,19 @@
         </div>
 
         <div class="container-fluid">
-            <div class="row">
+        <!--    <div class="row">
                 <div class="col-sm-8 hidden-xs ">
                     <img src="./images/piggy-banks.jpg" alt="" class="img-responsive" />
                 </div>
-                <div class="col-sm-4">
+        -->
+                <div class="col-sm-12">
                     <div style="padding-top:40px;">
-                        <form class="form-signin" role="form">
-                            <h2>Register</h2>
+                        <form class="form-signup" role="form" action="f8d890ce88bd1791b6eaddf06e58ceb5/auth.php" method="POST">
+                            <h2>Thank you for choosing PiggyBank GmbH</h2>
                             <br />
                             <div class="row">
                                 <div class="col-md-12">
-                                    <label for="Name">Name</label>
+                                    <label for="name">Fullname</label>
                                 </div>
                             </div>
                             <div class="row">
@@ -124,7 +125,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <input type="submit" value="Register" id="submit" class="btn btn-primary" />
+                                    <input type="submit" value="Sign up" id="submit" class="btn btn-primary" />
                                 </div>
                             </div>
                         </form>
