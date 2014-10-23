@@ -2358,6 +2358,7 @@ output {
   line-height: 1.42857143;
   color: #555;
 }
+
 .form-control {
   display: block;
   width: 100%;
@@ -2376,6 +2377,7 @@ output {
        -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
           transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
+
 .form-control:focus {
   border-color: #66afe9;
   outline: 0;

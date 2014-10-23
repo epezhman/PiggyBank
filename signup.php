@@ -18,10 +18,211 @@
 
     <!-- our CSS -->
     <link href="./css/framework.css" rel="stylesheet">
-
+    <script src="./js/jquery-1.11.1.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+    var validated = new Array();
+    var flag = true;
+    function prepareForm(){
+        // This function is meant to prepare the registration form
+        $("#fullnamespan").hide();
+        $("#addressspan").hide();
+        $("#dobspan").hide();
+        $("#usernamespan").hide();
+        $("#passwordspan").hide();
+        $("#confirmspan").hide();
+        $("#emailspan").hide();
+        validated["fullname"] = false;
+        validated["address"] = false;
+        validated["dob"] = false;
+        validated["email"] = false;
+        validated["username"] = false;
+        validated["confirm"] = false;
+        validated["password"] = false;
+        
+    }
+    function validateElement(e, type){
+        // This function is used to validate individual
+        if(type == "name"){
+            if(e.value == ""){
+                $('#'+e.id+'span').css("background","#CC0000");
+                $('#'+e.id+'span').html("Fullname is required");
+                validated["fullname"] = false;
+            }
+            else
+                if(!e.value.match("^[a-zA-Z ]+$")){
+                    $('#'+e.id+'span').css("background","#CC0000");
+                    $('#'+e.id+'span').html("Invalid fullname");
+                    validated["fullname"] = false;
+                }
+                else{
+                    $('#'+e.id+'span').css("background","#00CC00");
+                    $('#'+e.id+'span').html("Check");
+                    validated["fullname"] = true;
+                }
+            $('#'+e.id+'span').fadeIn('slow');
+        }
+        else if(type == "address"){
+            if(e.value == ""){
+                $('#'+e.id+'span').css("background","#CC0000");
+                $('#'+e.id+'span').html("Address is required");
+                validated["address"] = false;
+            }
+            else
+                if(!e.value.match("^[a-zA-Z0-9,'-. ]+$")){
+                    $('#'+e.id+'span').css("background","#CC0000");
+                    $('#'+e.id+'span').html("Invalid Address");
+                    validated["address"] = false;
+                }
+                else{
+                    $('#'+e.id+'span').css("background","#00CC00");
+                    $('#'+e.id+'span').html("Check");
+                    validated["address"] = true;
+                }
+            $('#'+e.id+'span').fadeIn('slow');
+        }
+        else if (type=="date"){
+            if(e.value == ""){
+                $('#'+e.id+'span').css("background","#CC0000");
+                $('#'+e.id+'span').html("Date of birth is required");
+                validated["dob"] = false;
+            }
+            else
+                if(!e.value.match("^0[0-9]|[1-2][0-9]|3[0-1]\/0[0-9]|1[0-2]\/19[0-9][0-9]|20[0-1][0-4]$")){
+                    $('#'+e.id+'span').css("background","#CC0000");
+                    $('#'+e.id+'span').html("Invalid date of birth");
+                    validated["dob"] = false;
+                }
+                else{
+                    $('#'+e.id+'span').css("background","#00CC00");
+                    $('#'+e.id+'span').html("Check");
+                    validated["dob"] = true;
+                }
+            $('#'+e.id+'span').fadeIn('slow');
+        }
+        else if (type=="email"){
+            if(e.value == ""){
+                $('#'+e.id+'span').css("background","#CC0000");
+                $('#'+e.id+'span').html("Email address is required");
+                validated["email"] = false;
+            }
+            else
+                if(!e.value.match("^[a-zA-Z0-9_.]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$")){
+                    $('#'+e.id+'span').css("background","#CC0000");
+                    $('#'+e.id+'span').html("Invalid email address");
+                    validated["email"] = false;
+                }
+                else{
+                    $('#'+e.id+'span').css("background","#00CC00");
+                    $('#'+e.id+'span').html("Check");
+                    validated["email"] = true;
+                }
+            $('#'+e.id+'span').fadeIn('slow');
+        }
+      else if(type=="username"){
+            if(e.value == ""){
+                $('#'+e.id+'span').css("background","#CC0000");
+                $('#'+e.id+'span').html("A username is required");
+                validated["username"] = false;
+            }
+            else
+                if(!e.value.match("^[a-zA-Z0-9_.]+$")){
+                    $('#'+e.id+'span').css("background","#CC0000");
+                    $('#'+e.id+'span').html("Invalid username");
+                    validated["username"] = false;
+                }
+                else{
+                    $('#'+e.id+'span').css("background","#00CC00");
+                    $('#'+e.id+'span').html("Check");
+                    validated["username"] = true;
+                }
+            $('#'+e.id+'span').fadeIn('slow');
+      }
+    else if(type=="password"){
+            if(e.value == ""){
+                $('#'+e.id+'span').css("background","#CC0000");
+                $('#'+e.id+'span').html("A password is required");
+                validated["password"] = false;
+            }
+            else{ // Non-empty password field
+                    if(e.value.length<8){
+                        $('#'+e.id+'span').css("background","#CC0000");
+                        $('#'+e.id+'span').html("Can't be less than 8 characters");
+                        validated["password"] = false;
+                    } 
+                    else if(e.value.length >= 8 && e.value.match("^[a-zA-Z0-9]+$")){
+                        $('#'+e.id+'span').css("background","#CC0000");
+                        $('#'+e.id+'span').html("Weak Password");
+                        validated["password"] = true;
+                    }
+                    else if(e.value.length >= 8 && e.value.length < 10 && e.value.match("^[a-zA-Z0-9_.@!?]+$")){
+                       $('#'+e.id+'span').css("background","#FE9A2E");
+                       $('#'+e.id+'span').html("Plausible Password");
+                       validated["password"] = true;
+                    }
+                    else if(e.value.length >= 10 && e.value.match("^[a-zA-Z0-9_.@!?]+$")){
+                        $('#'+e.id+'span').css("background","#00CC00");
+                        $('#'+e.id+'span').html("Strong Password");
+                        validated["password"] = true;
+                    }
+                    else{
+                       $('#'+e.id+'span').css("background","#CC0000");
+                       $('#'+e.id+'span').html("Invalid Password");
+                       validated["password"] = false;
+                   }
+            }
+            // Check if confirm password has already been set and update its status
+            if(document.getElementById("confirm").value != "" && document.getElementById("confirm").value != e.value && validated["password"]){
+                $('#confirmspan').css("background","#CC0000");
+                $('#confirmspan').html("Passwords do not match");
+                validated["confirm"] = false;
+            }     
+            $('#'+e.id+'span').fadeIn('slow');
+    }
+    else if(type=="confirm"){
+        if(e.value == ""){
+            $('#'+e.id+'span').css("background","#CC0000");
+            $('#'+e.id+'span').html("You need to confirm the password");
+            validated["confirm"] = false;
+        }
+        else{
+            if(e.value != document.getElementById("password").value){
+                $('#'+e.id+'span').css("background","#CC0000");
+                $('#'+e.id+'span').html("Passwords do not match");
+                validated["confirm"] = false;
+            }
+            else{
+                $('#'+e.id+'span').css("background","#00CC00");
+                $('#'+e.id+'span').html("Check");
+                validated["confirm"] = true;
+            }
+        }
+        $('#'+e.id+'span').fadeIn('slow');
+    }
+    validateForm();
+}
+    function validateForm(){
+        // As the name implies, this function is used to validate form
+        if (validated["fullname"] && validated["address"] && validated["dob"] &&  validated["email"] && validated["username"] && validated["password"] && validated["confirm"]){ 
+            $('#submit').prop("disabled", false);
+            if(flag){
+                $('#submit').animate({opacity: "0.5"}, 300);
+                $('#submit').animate({opacity: "1.0"}, 300);
+                $('#submit').animate({opacity: "0.5"}, 300);
+                $('#submit').animate({opacity: "1.0"}, 300);
+                flag = false;
+            }
+        }
+        else{
+            $('#submit').animate({opacity:"0.5"}, 300);
+            $('#submit').prop("disabled", true);
+            flag = true;
+        }
+    }
+   </script>
 </head>
 
-<body>
+<body onload="prepareForm()">
     <div id="wrap">
         <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="container-fluid">
@@ -60,74 +261,70 @@
         -->
                 <div class="col-sm-12">
                     <div style="padding-top:40px;">
-                        <form class="form-signup" role="form" action="f8d890ce88bd1791b6eaddf06e58ceb5/auth.php" method="POST">
+                        <form class="form-signup" role="form" action="f8d890ce88bd1791b6eaddf06e58ceb5/register.php" method="POST">
+                            <table width=700px>
+                            <tr><td>
                             <h2>Thank you for choosing PiggyBank GmbH</h2>
-                            <br />
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="name">Fullname</label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <input class="form-control" id="Name" name="Name" type="text">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="UserName">User Name</label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <input class="form-control" id="UserName" name="UserName" type="text">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="Password">Password</label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <input class="form-control" id="Password" name="Password" type="password">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="ConfirmPassword">Confirm Password</label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <input class="form-control" id="ConfirmPassword" name="ConfirmPassword" type="password">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="Email">Email</label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <input class="form-control" id="Email" name="Email" type="email">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <label for="ConfirmEmail">Confirm Email</label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <input class="form-control" id="ConfirmEmail" name="ConfirmEmail" type="email">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <input type="submit" value="Sign up" id="submit" class="btn btn-primary" />
-                                </div>
-                            </div>
+                            <noscript>Javascript is switched off. Some features will not work properly. Please enable Javascript.</noscript>
+                            </td>
+                            <td>
+                            <img src="./images/judgepig.png" alt="judgepig.png" style="width:120px; heigh:120px;"/>
+                            </td>
+                            </tr>
+                            </table>
+                            <table style="width:700px; table-layout:fixed;">
+                            <col width="150"><col width="350"><col width="200">
+                            <tr>
+                            <td style="padding: 10px 0px;"><label for="title">Title</label></td>
+                            <td><select id="title" name="title" class="form-control" style="width: 70px;">
+                                <option value="no" selected></option><option value="mr">Mr.</option>
+                                <option value="mrs">Mrs.</option><option value="dr">Dr.</value>
+                            </select></td>
+                            </tr>
+                            <tr>
+                                    <td style="padding: 10px 0px;"><label for="fullname">Fullname</label></td>
+                                    <td><input class="form-control" style="width: 300px" id="fullname" name="fullname" type="text" onblur="validateElement(this, 'name')" placeholder="John Doe"></td>
+                                   <td><span id="fullnamespan" class="btn btn-primary" style="background: #CC0000; border: #FFFFFF;">default</span></td>
+                            </tr>
+                            <tr>
+                                    <td style="padding: 10px 0px;"><label for="address">Address</label></td>
+                                    <td><input class="form-control" style="width:300px" id="address" name="address" type="text" onblur="validateElement(this, 'address')" placeholder="1 Main St."></td>
+                                    <td><span id="addressspan" class="btn btn-primary" style="background: #CC0000; border: #FFFFFF;">default</span></td>
+                            </tr>
+                            <tr>
+                                    <td style="padding: 10px 0px;"><label for="DateOfBirth">Date of birth</label></td>
+                                    <td><input class="form-control" style="width:110px" id="dob" name="dob" placeholder="dd/mm/yyyy" onblur="validateElement(this, 'date')">
+                                     </td>
+                                    <td><span id="dobspan" class="btn btn-primary" style="background: #CC0000; border: #FFFFFF;">default</span></td>
+                            </tr>
+                            <tr>
+                                    <td style="padding: 10px 0px;"><label for="email">Email</label></td>
+                                    <td><input class="form-control" style="width:250px" id="email" name="email" type="text" onblur="validateElement(this, 'email')" placeholder="john.doe@piggybank.de">
+                                    </td>
+                                    <td><span id="emailspan" class="btn btn-primary" style="background: #CC0000; border: #FFFFFF;">default</span></td>
+                            </tr>
+                            <tr>
+                                    <td style="padding: 10px 0px;"><label for="username">Username</label></td>
+                                    <td><input class="form-control" style="width:250px" id="username" name="username" type="text" onblur="validateElement(this, 'username')" placeholder="john.doe">
+                                    </td>
+                                    <td><span id="usernamespan" class="btn btn-primary" style="background: #CC0000; border: #FFFFFF;">default</span></td>
+                            </tr>
+                            <tr>
+                                    <td style="padding: 10px 0px;"><label for="password">Password</label></td>
+                                    <td><input class="form-control" style="width:250px;" id="password" name="password" type="password" onblur="validateElement(this, 'password')" placeholder="epiclysecret"></td>
+                                    <td><span id="passwordspan" class="btn btn-primary" style="background: #CC0000; border: #FFFFFF;">default</span></td>
+                            </tr>
+                            <tr>
+                                    <td style="padding: 10px 0px;"><label for="confirm">Confirm Password</label></td>
+                                    <td><input class="form-control" style="width:250px;" id="confirm" name="confirm" type="password" onblur="validateElement(this, 'confirm')" placeholder="epiclysecret"></td>
+                                    <td><span id="confirmspan" class="btn btn-primary" style="background: #CC0000; border: #FFFFFF;">default</span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" align="right" style="padding: 30px 0px;">
+                                    <input type="submit" value="Sign up" id="submit" style="width:80px; heigh:30px;" class="btn btn-primary" disabled/>
+                                </td>
+                        </tr>
+                        </table>
                         </form>
                     </div>
 
@@ -141,8 +338,5 @@
             <p class="text-muted text-center">© 2014 Piggy Bank GmbH</p>
         </div>
     </div>
-    <script src="./js/jquery-1.11.1.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
-
 </body>
 </html>
