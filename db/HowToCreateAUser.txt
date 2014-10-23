@@ -1,0 +1,26 @@
+This is a good tutorial about creating users:
+--------------------------------------------
+https://www.digitalocean.com/community/tutorials/how-to-create-a-new-user-and-grant-permissions-in-mysql
+
+Or you do it like that:
+----------------------
+1- Log on to MySQL by typing the following in a terminal:
+> mysql -u root -p
+
+2- Create a user:
+> CREATE USER 'piggy'@'localhost' IDENTIFIED BY '8aa259f4c7';
+
+3-Add privileges to the user:
+> GRANT ALL PRIVILEGES ON  piggybank.* TO 'piggy'@'localhost';
+
+4- Commit the changes:
+> FLUSH PRIVILEGES;
+
+5- Revoke the "DROP" privilege from the user:
+> REVOKE DROP ON piggybank.* FROM 'piggy'@'localhost';
+
+6- Commit the changes again.
+> FLUSH PRIVILEGES;
+
+7- Quit, if you want :)
+> quit

@@ -5,16 +5,17 @@ SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
+DROP DATABASE IF EXISTS `piggybank`;
 CREATE DATABASE `piggybank` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `piggybank`;
 
 DROP TABLE IF EXISTS `Account`;
 CREATE TABLE `Account` (
-  `accountID` int(11) NOT NULL AUTO_INCREMENT,
+  `accountNumber` varchar(10) COLLATE latin1_bin NOT NULL,
   `accountOwner` varchar(10) COLLATE latin1_bin NOT NULL,
   `accountType` int(11) NOT NULL,
   `accountBalance` double NOT NULL,
-  PRIMARY KEY (`accountID`),
+  PRIMARY KEY (`accountNumber`),
   KEY `accountOwner` (`accountOwner`),
   CONSTRAINT `Account_ibfk_1` FOREIGN KEY (`accountOwner`) REFERENCES `Customer` (`customerID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
@@ -27,7 +28,6 @@ CREATE TABLE `Customer` (
   `customerDOB` date NOT NULL,
   `customerEmail` varchar(256) COLLATE latin1_bin NOT NULL,
   `customerAddress` varchar(256) COLLATE latin1_bin DEFAULT NULL,
-  `customerEnabled` bit(1) NOT NULL DEFAULT b'0',
   `customerUsername` varchar(50) COLLATE latin1_bin NOT NULL,
   PRIMARY KEY (`customerID`),
   KEY `customerUsername` (`customerUsername`),
@@ -57,6 +57,9 @@ CREATE TABLE `Role` (
   PRIMARY KEY (`roleID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `Role` (`roleID`, `roleDesc`) VALUES
+(1,	'admin'),
+(2,	'customer');
 
 DROP TABLE IF EXISTS `Token`;
 CREATE TABLE `Token` (
@@ -82,9 +85,9 @@ CREATE TABLE `Transaction` (
   KEY `transactionSender` (`transactionSender`),
   KEY `transactionReceiver` (`transactionReceiver`),
   KEY `transactionToken` (`transactionToken`),
-  CONSTRAINT `Transaction_ibfk_3` FOREIGN KEY (`transactionToken`) REFERENCES `Token` (`tokenID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `Transaction_ibfk_1` FOREIGN KEY (`transactionSender`) REFERENCES `Customer` (`customerID`),
-  CONSTRAINT `Transaction_ibfk_2` FOREIGN KEY (`transactionReceiver`) REFERENCES `Customer` (`customerID`)
+  CONSTRAINT `Transaction_ibfk_2` FOREIGN KEY (`transactionReceiver`) REFERENCES `Customer` (`customerID`),
+  CONSTRAINT `Transaction_ibfk_3` FOREIGN KEY (`transactionToken`) REFERENCES `Token` (`tokenID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 
@@ -93,10 +96,11 @@ CREATE TABLE `User` (
   `userUsername` varchar(50) COLLATE latin1_bin NOT NULL,
   `userPassword` varchar(64) COLLATE latin1_bin NOT NULL,
   `userRole` int(11) NOT NULL,
+  `userApproved` bit(1) NOT NULL DEFAULT b'0',
   PRIMARY KEY (`userUsername`),
   KEY `userRole` (`userRole`),
   CONSTRAINT `User_ibfk_1` FOREIGN KEY (`userRole`) REFERENCES `Role` (`roleID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 
--- 2014-10-10 15:59:08
+-- 2014-10-23 21:05:48
