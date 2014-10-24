@@ -4,11 +4,6 @@
 </head>
 <body>
 <?php
-// Define some constant parameters for database connection
-//define($dbHost, "localhost");
-//define($dbUser, "piggy");
-//define($dbPassword, "8aa259f4c7");
-//define($dbName, "piggybank");
 
 function getRandomString($length = 8){
     $alphabet = "abcdefghijklmnopqrstuxyvwzABCDEFGHIJKLMNOPQRSTUXYVWZ._";
@@ -37,16 +32,8 @@ function validateInput($input, $type){
 function registerCustomer(){
 // Carries out the necessary SQL statements to provision new users
     try{
-        $dbHost= "localhost";
-        $dbUser= "piggy";
-        $dbPassword= "8aa259f4c7";
-        $dbName= "piggybank";
-      
-        $dbConnection = new mysqli($dbHost, $dbUser, $dbPassword, $dbName);
-        if(mysqli_connect_errno()){
-            header("Location: ../error.php");
-        } 
-        else{
+            // Connect to the database
+            require_once("dbconnect.php");
             // Prepare the parameters
             $userUsername = mysqli_real_escape_string($dbConnection, $_POST['username']);
             $userPassword = hash("sha256", mysqli_real_escape_string($dbConnection, $_POST['password']));
@@ -59,7 +46,7 @@ function registerCustomer(){
             // Prepare the SQL statements
             $availableStmt = $dbConnection->prepare("SELECT userUsername FROM User WHERE userUsername LIKE (?)");
             $userStmt = $dbConnection->prepare("INSERT INTO User VALUES (?,?,?,0)");
-            $customerStmt = $dbConnection->prepare("INSERT INTO Customer VALUES (?,?,?,?,?,?)");
+            $customerStmt = $dbConnection->prepare("INSERT INTO Customer VALUES (?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?)");
             // Bind parameters
             $availableStmt->bind_param("s", $userUsername);
             $userStmt->bind_param("sss", $userUsername, $userPassword, $userRole);
@@ -81,17 +68,16 @@ function registerCustomer(){
             }
             else{
                 // Report success to register.php
-                $dbConnection->close();
+                //$dbConnection->close();
                 return true;
             }
-        }
 
     }catch(Exception $e){
-        $dbConnection->close();
+ //       $dbConnection->close();
 //        echo $e;
         return false;
     }
-    $dbConnection->close();
+//    $dbConnection->close();
     return true;
 }
 

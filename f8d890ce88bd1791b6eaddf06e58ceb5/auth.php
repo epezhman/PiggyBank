@@ -4,11 +4,6 @@
 </head>
 <body>
 <?php
-// Define some constant parameters for database connection
-//define($dbHost, "localhost");
-//define($dbUser, "piggy");
-//define($dbPassword, "8aa259f4c7");
-//define($dbName, "piggybank");
 
 function getRandomString($length = 8){
     $alphabet = "abcdefghijklmnopqrstuxyvwzABCDEFGHIJKLMNOPQRSTUXYVWZ._";
@@ -37,16 +32,8 @@ function validateInput($input, $type){
 function authenticateUser($userUsername, $userPassword){
 // Carries out the necessary SQL statements to authenticate users
    try{
-        $dbHost= "localhost";
-        $dbUser= "piggy";
-        $dbPassword= "8aa259f4c7";
-        $dbName= "piggybank";
-      
-        $dbConnection = new mysqli($dbHost, $dbUser, $dbPassword, $dbName);
-        if(mysqli_connect_errno()){
-            header("Location: ../error.php");
-        } 
-        else{
+            // Connect to the database
+            require_once("dbconnect.php");
             // Prepare the parameters
             $userUsername = mysqli_real_escape_string($dbConnection, $_POST['username']);
             $userPassword = mysqli_real_escape_string($dbConnection, $_POST['hashedpassword']);
@@ -60,13 +47,11 @@ function authenticateUser($userUsername, $userPassword){
             $authStmt->execute();
             $result = $dbConnection->query("SELECT @role");
             $row =  mysqli_fetch_row($result);
-        }
+        
     }catch(Exception $e){
-        $dbConnection->close();
-    //    echo $e;
+        echo $e;
         return "";
     }
-    $dbConnection->close();
     return $row[0];
 }
 
