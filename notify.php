@@ -63,11 +63,10 @@
                         <div class="form-signout">
                             <table><tr><td align="center">
                                 <?php
-                                     echo $_SERVER["HTTP_REFERER"];
+                                     //echo $_SERVER["HTTP_REFERER"];
                                      // Check the referer first to deny nosey requests
-                                     if (strpos($_SERVER["HTTP_REFERER"], "/PiggyBank/f8d890ce88bd1791b6eaddf06e58ceb5/register.php") === false)
-//                                         header("Location: error.php?id=404");
-                                           $x = 5;
+                                     if (strpos($_SERVER["HTTP_REFERER"], "/PiggyBank/signup.php") === false)
+                                         header("Location: error.php?id=404");
                                      else{
                                          if($_GET["mode"] == "success"){
                                              echo "<h2><b>Sign up request sucessfully submitted.</h2>";

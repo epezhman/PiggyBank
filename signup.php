@@ -274,56 +274,95 @@
                             </table>
                             <table style="width:700px; table-layout:fixed;">
                             <col width="150"><col width="350"><col width="200">
-                            <tr>
-                            <td style="padding: 10px 0px;"><label for="title">Title</label></td>
-                            <td><select id="title" name="title" class="form-control" style="width: 70px;">
-                                <option value="no" selected></option><option value="mr">Mr.</option>
-                                <option value="mrs">Mrs.</option><option value="dr">Dr.</value>
+			<?php
+						try{
+                            echo "<tr>
+                            <td style=\"padding: 10px 0px;\"><label for=\"title\">Title</label></td>
+                            <td><select id=\"title\" name=\"title\" class=\"form-control\" style=\"width: 70px;\">
+                                <option value=\"no\" selected></option><option value=\"mr\">Mr.</option>
+                                <option value=\"mrs\">Mrs.</option><option value=\"dr\">Dr.</value>
                             </select></td>
                             </tr>
-                            <tr>
-                                    <td style="padding: 10px 0px;"><label for="fullname">Fullname</label></td>
-                                    <td><input class="form-control" style="width: 300px" id="fullname" name="fullname" type="text" onblur="validateElement(this, 'name')" placeholder="John Doe"></td>
-                                   <td><span id="fullnamespan" class="btn btn-primary" style="background: #CC0000; border: #FFFFFF;">default</span></td>
-                            </tr>
-                            <tr>
-                                    <td style="padding: 10px 0px;"><label for="address">Address</label></td>
-                                    <td><input class="form-control" style="width:300px" id="address" name="address" type="text" onblur="validateElement(this, 'address')" placeholder="1 Main St."></td>
-                                    <td><span id="addressspan" class="btn btn-primary" style="background: #CC0000; border: #FFFFFF;">default</span></td>
-                            </tr>
-                            <tr>
-                                    <td style="padding: 10px 0px;"><label for="DateOfBirth">Date of birth</label></td>
-                                    <td><input class="form-control" style="width:110px" id="dob" name="dob" placeholder="dd/mm/yyyy" onblur="validateElement(this, 'date')">
+                            <tr>";
+                            
+                            if(isset($_SESSION["invFullname"]))
+                                echo "<td style=\"padding: 10px 0px;\"><label for=\"fullname\">Fullname</label></td>
+                                    <td><input class=\"form-control\" style=\"width: 300px\" id=\"fullname\" name=\"fullname\" type=\"text\" onload=\"validateElement(this, 'name')\" onblur=\"validateElement(this, 'name')\" placeholder=\"John Doe\"></td>
+                                   <td><span id=\"fullnamespan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            else
+							   echo "<td style=\"padding: 10px 0px;\"><label for=\"fullname\">Fullname</label></td>
+                                    <td><input class=\"form-control\" style=\"width: 300px\" id=\"fullname\" name=\"fullname\" type=\"text\" onblur=\"validateElement(this, 'name')\" placeholder=\"John Doe\"></td>
+                                   <td><span id=\"fullnamespan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            echo "</tr><tr>";
+                            if(isset($_SESSION["invAddress"]))
+                                echo "<td style=\"padding: 10px 0px;\"><label for=\"address\">Address</label></td>
+                                    <td><input class=\"form-control\" style=\"width:300px\" id=\"address\" name=\"address\" type=\"text\" onload=\"validateElement(this, 'address')\" onblur=\"validateElement(this, 'address')\" placeholder=\"1 Main St.\"></td>
+                                    <td><span id=\"addressspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            else
+							    echo "<td style=\"padding: 10px 0px;\"><label for=\"address\">Address</label></td>
+                                    <td><input class=\"form-control\" style=\"width:300px\" id=\"address\" name=\"address\" type=\"text\" onblur=\"validateElement(this, 'address')\" placeholder=\"1 Main St.\"></td>
+                                    <td><span id=\"addressspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            echo "</tr><tr>";
+                            if(isset($_SESSION["invDOB"]))
+                                    echo "<td style=\"padding: 10px 0px;\"><label for=\"DateOfBirth\">Date of birth</label></td>
+                                    <td><input class=\"form-control\" style=\"width:110px\" id=\"dob\" name=\"dob\" placeholder=\"dd/mm/yyyy\" onload=\"validateElement(this, 'date')\" onblur=\"validateElement(this, 'date')\">
                                      </td>
-                                    <td><span id="dobspan" class="btn btn-primary" style="background: #CC0000; border: #FFFFFF;">default</span></td>
-                            </tr>
-                            <tr>
-                                    <td style="padding: 10px 0px;"><label for="email">Email</label></td>
-                                    <td><input class="form-control" style="width:250px" id="email" name="email" type="text" onblur="validateElement(this, 'email')" placeholder="john.doe@piggybank.de">
+                                    <td><span id=\"dobspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            else
+                                echo "<td style=\"padding: 10px 0px;\"><label for=\"DateOfBirth\">Date of birth</label></td>
+                                    <td><input class=\"form-control\" style=\"width:110px\" id=\"dob\" name=\"dob\" placeholder=\"dd/mm/yyyy\" onblur=\"validateElement(this, 'date')\">
+                                     </td>
+                                    <td><span id=\"dobspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            echo "</tr><tr>";
+                            if(isset($_SESSION["invEmail"]))
+                                    echo "<td style=\"padding: 10px 0px;\"><label for=\"email\">Email</label></td>
+                                    <td><input class=\"form-control\" style=\"width:250px\" id=\"email\" name=\"email\" type=\"text\" onload=\"validateElement(this, 'email')\" onblur=\"validateElement(this, 'email')\" placeholder=\"john.doe@piggybank.de\">
                                     </td>
-                                    <td><span id="emailspan" class="btn btn-primary" style="background: #CC0000; border: #FFFFFF;">default</span></td>
-                            </tr>
-                            <tr>
-                                    <td style="padding: 10px 0px;"><label for="username">Username</label></td>
-                                    <td><input class="form-control" style="width:250px" id="username" name="username" type="text" onblur="validateElement(this, 'username')" placeholder="john.doe">
+                                    <td><span id=\"emailspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            else
+								    echo "<td style=\"padding: 10px 0px;\"><label for=\"email\">Email</label></td>
+                                    <td><input class=\"form-control\" style=\"width:250px\" id=\"email\" name=\"email\" type=\"text\" onblur=\"validateElement(this, 'email')\" placeholder=\"john.doe@piggybank.de\">
                                     </td>
-                                    <td><span id="usernamespan" class="btn btn-primary" style="background: #CC0000; border: #FFFFFF;">default</span></td>
-                            </tr>
-                            <tr>
-                                    <td style="padding: 10px 0px;"><label for="password">Password</label></td>
-                                    <td><input class="form-control" style="width:250px;" id="password" name="password" type="password" onblur="validateElement(this, 'password')" placeholder="epiclysecret"></td>
-                                    <td><span id="passwordspan" class="btn btn-primary" style="background: #CC0000; border: #FFFFFF;">default</span></td>
-                            </tr>
-                            <tr>
-                                    <td style="padding: 10px 0px;"><label for="confirm">Confirm Password</label></td>
-                                    <td><input class="form-control" style="width:250px;" id="confirm" name="confirm" type="password" onblur="validateElement(this, 'confirm')" placeholder="epiclysecret"></td>
-                                    <td><span id="confirmspan" class="btn btn-primary" style="background: #CC0000; border: #FFFFFF;">default</span></td>
-                            </tr>
-                            <tr>
-                                <td colspan="3" align="right" style="padding: 30px 0px;">
-                                    <input type="submit" value="Sign up" id="submit" style="width:80px; heigh:30px;" class="btn btn-primary" disabled/>
+                                    <td><span id=\"emailspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            echo "</tr><tr>";
+                            if(isset($_SESSION["invUsername"]))
+                                    echo "<td style=\"padding: 10px 0px;\"><label for=\"username\">Username</label></td>
+                                    <td><input class=\"form-control\" style=\"width:250px\" id=\"username\" name=\"username\" type=\"text\" onload=\"validateElement(this, 'username')\" onblur=\"validateElement(this, 'username')\" placeholder=\"john.doe\">
+                                    </td>
+                                    <td><span id=\"usernamespan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+							else
+							    echo "<td style=\"padding: 10px 0px;\"><label for=\"username\">Username</label></td>
+                                    <td><input class=\"form-control\" style=\"width:250px\" id=\"username\" name=\"username\" type=\"text\" onblur=\"validateElement(this, 'username')\" placeholder=\"john.doe\">
+                                    </td>
+                                    <td><span id=\"usernamespan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            echo "</tr><tr>";
+                            if(isset($_SESSION["invPassword"]))
+                                    echo "<td style=\"padding: 10px 0px;\"><label for=\"password\">Password</label></td>
+                                    <td><input class=\"form-control\" style=\"width:250px;\" id=\"password\" name=\"password\" type=\"password\" onload=\"validateElement(this, 'password')\" onblur=\"validateElement(this, 'password')\" placeholder=\"epiclysecret\"></td>
+                                    <td><span id=\"passwordspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+							else
+							        echo "<td style=\"padding: 10px 0px;\"><label for=\"password\">Password</label></td>
+                                    <td><input class=\"form-control\" style=\"width:250px;\" id=\"password\" name=\"password\" type=\"password\" onload=\"validateElement(this, 'password')\" onblur=\"validateElement(this, 'password')\" placeholder=\"epiclysecret\"></td>
+                                    <td><span id=\"passwordspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            echo "</tr><tr>";
+                            if(isset($_SESSION["invConfirm"]))
+                                    echo "<td style=\"padding: 10px 0px;\"><label for=\"confirm\">Confirm Password</label></td>
+                                    <td><input class=\"form-control\" style=\"width:250px;\" id=\"confirm\" name=\"confirm\" type=\"password\" onload=\"validateElement(this, 'confirm')\" onblur=\"validateElement(this, 'confirm')\" placeholder=\"epiclysecret\"></td>
+                                    <td><span id=\"confirmspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+							else
+							    echo "<td style=\"padding: 10px 0px;\"><label for=\"confirm\">Confirm Password</label></td>
+                                    <td><input class=\"form-control\" style=\"width:250px;\" id=\"confirm\" name=\"confirm\" type=\"password\" onblur=\"validateElement(this, 'confirm')\" placeholder=\"epiclysecret\"></td>
+                                    <td><span id=\"confirmspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            echo "</tr><tr>";
+                            echo "<td colspan=\"3\" align=\"right\" style=\"padding: 30px 0px;\">
+                                    <input type=\"submit\" value=\"Sign up\" id=\"submit\" style=\"width:80px; heigh:30px;\" class=\"btn btn-primary\" disabled/>
                                 </td>
-                        </tr>
+                        </tr>";
+					}catch(Exception $e){
+					//	echo $e;
+						header("Location: error.php");
+					}
+                        ?>
                         </table>
                         </form>
                     </div>
