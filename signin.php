@@ -27,7 +27,10 @@
         // This function is meant to prepare the registration form
         $("#usernamespan").hide();
         $("#passwordspan").hide();
-        validated["username"] = false;
+        if(document.referrer != "")
+            validated["username"] = true;
+        else
+             validated["username"] = false;
         validated["password"] = false;
         
     }
