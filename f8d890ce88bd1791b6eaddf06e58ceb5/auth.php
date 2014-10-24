@@ -59,17 +59,15 @@ function authenticateUser($userUsername, $userPassword){
             // 1- Check if username is already taken
             $authStmt->execute();
             $result = $dbConnection->query("SELECT @role");
-            while ($row = mysqli_fetch_array($result)){   
-                echo $row[0]; 
-            }
+            $row =  mysqli_fetch_row($result);
         }
     }catch(Exception $e){
         $dbConnection->close();
-        echo $e;
+    //    echo $e;
         return "";
     }
     $dbConnection->close();
-    return $result;
+    return $row[0];
 }
 
 try{
@@ -83,7 +81,8 @@ try{
     if($usernameStatus and $passwordStatus){
         // Authenticate user
         $role = authenticateUser($_POST['username'], $_POST['hashedpassword']);
-        if(is_null($role)){
+        echo $role;
+        if(empty($role)){
             header("Location: ../signin.php?failure=".$_POST["username"]);
         }      
         else{
