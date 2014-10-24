@@ -113,14 +113,20 @@ try{
     // If validation succeeds, add user to database
     if($fullnameStatus and $addressStatus and $dobStatus and $emailStatus and $usernameStatus and $passwordStatus and $confirmStatus){
         // Register user
-        if (registerUser())
+        if (registerCustomer())
             header("Location: ../notify.php?mode=success");
         else
            header("Location: ../error.php");
     }
     else{
         // Otherwise, post back to signup.php to inform user of failure
-        $_SESSION["regStatus"] = $fullNameStatus.":".$addressStatus.":".$dobStatus.":".$emailStatus.":".$usernameStatus.":".$passwordStatus.":".$confirmStatus;
+        $_SESSION["invFullname"] = $fullnameStatus ? NULL : $_POST["fullname"];
+        $_SESSION["invAddress"] = $addressStatus ? NULL : $_POST["address"];
+        $_SESSION["invDOB"] = $dobStatus ? NULL : $_POST["dob"];
+        $_SESSION["invEmail"] = $emailStatus ? NULL : $_POST["email"];
+        $_SESSION["invUsername"] = $usernameStatus ? NULL : $_POST["username"];
+        $_SESSION["invPassword"] = $passwordStatus ? NULL : $_POST["password"];
+        $_SESSION["invConfirm"] = $confirmStatus ? NULL : $_POST["confirm"];
         header("Location: ../signup.php");
       
         

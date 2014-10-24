@@ -9,6 +9,20 @@ DROP DATABASE IF EXISTS `piggybank`;
 CREATE DATABASE `piggybank` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `piggybank`;
 
+DELIMITER ;;
+
+CREATE PROCEDURE `authUser`(IN `iUsername` varchar(50), IN `iPassword` varchar(64), OUT `oRole` varchar(50))
+BEGIN
+SELECT Role.roleDesc INTO oRole
+FROM User INNER JOIN Role
+WHERE User.userRole = Role.roleID
+AND User.userUsername = iUsername
+AND User.userPassword = iPassword
+AND User.userApproved = 1;
+END;;
+
+DELIMITER ;
+
 DROP TABLE IF EXISTS `Account`;
 CREATE TABLE `Account` (
   `accountNumber` varchar(10) COLLATE latin1_bin NOT NULL,
@@ -34,6 +48,10 @@ CREATE TABLE `Customer` (
   CONSTRAINT `Customer_ibfk_1` FOREIGN KEY (`customerUsername`) REFERENCES `User` (`userUsername`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
+INSERT INTO `Customer` (`customerID`, `customerName`, `customerDOB`, `customerEmail`, `customerAddress`, `customerUsername`) VALUES
+('WLMmsxCEWf',	'Alei',	'0000-00-00',	'aesalem@bla.com',	'1 elbosta st.',	'aesalem'),
+('eTEcvT_N_i',	'John Wayne',	'0000-00-00',	'wayne@www.com',	'1 Wild Wild West Ave',	'johnwayne'),
+('rEXEzhGiCe',	'a',	'0000-00-00',	'a@a.com',	'a',	'a.b');
 
 DROP TABLE IF EXISTS `Employee`;
 CREATE TABLE `Employee` (
@@ -102,5 +120,9 @@ CREATE TABLE `User` (
   CONSTRAINT `User_ibfk_1` FOREIGN KEY (`userRole`) REFERENCES `Role` (`roleID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
+INSERT INTO `User` (`userUsername`, `userPassword`, `userRole`, `userApproved`) VALUES
+('a.b',	'd8a928b2043db77e340b523547bf16cb4aa483f0645fe0a290ed1f20aab76257',	2,	CONV('0', 2, 10) + 0),
+('aesalem',	'743edcf941b967222a1b21a084ced8f7493e0a2701d3bef99eb1d5f5a0455f14',	2,	CONV('1', 2, 10) + 0),
+('johnwayne',	'd8a928b2043db77e340b523547bf16cb4aa483f0645fe0a290ed1f20aab76257',	2,	CONV('0', 2, 10) + 0);
 
--- 2014-10-23 21:05:48
+-- 2014-10-24 17:01:09
