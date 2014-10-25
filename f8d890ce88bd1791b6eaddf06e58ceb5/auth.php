@@ -79,7 +79,7 @@ try{
             if($role == "customer")
                 header("Location: ../customerdir");    
             else if($role == "admin")
-                header("Location: ../admindir");
+                header("Location: ../16fa71ac26d19ce19ed9e28b39009f50/EmployeePendingRegistrations.html");
         }
     }
     else{

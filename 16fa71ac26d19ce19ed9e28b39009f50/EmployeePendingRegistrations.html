@@ -1,4 +1,14 @@
-﻿<!DOCTYPE html>
+﻿
+<?php
+	try{
+		echo("HEllo");
+		require_once("dbconnect.php");
+	}catch(Exception $e){
+       		echo $e ;
+    	}
+
+	
+?>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -7,9 +17,7 @@
     <meta name="description" content="Piggy Bank GmbH">
     <meta name="author" content="Alei , Sara , ePezhman">
     <link rel="icon" href="../images/piggyFav.ico">
-    <?php
-	require_once('dbconnect.php');
-    ?>			
+   			
     <!-- To be Changed!! -->
     <title>
         PB - Employee
@@ -24,6 +32,12 @@
 </head>
 
 <body>
+<?php
+
+echo(ZEFTTTT);
+
+?>
+
     <div id="wrap">
         <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="container-fluid">
@@ -85,34 +99,33 @@
                     </fieldset>
 		    <br></br>	
 
-
-
+		<div class="table-responsive">
+		<table class="table table-striped table-hover ">
+		<tbody>	
+		<tr><th>#</th><th>Costumer ID</th><th>Name</th><th>Email</th><th>Status</th><th>Action</th></tr>
 		 <?php
-			$sql = "SELECT * FROM User where UserApproved=0;"
+			$sql = "select Customer.customerID,Customer.customerName,Customer.customerEmail from User,Customer where User.userUsername=Customer.userUsername and User.UserApproved=0;"
 			$result = mysql_query($sql) or die (mysql_error());
-			echo "<div class="table-responsive">"
-			echo "<table class="table table-striped table-hover ">";
-			echo "<tbody>";			
-			echo "<tr><th>#</th><th>Costumer ID</th><th>Name</th><th>Email</th><th>Status</th><th>Action</th></tr>"
+		
+
 		 	while($row = mysql_fetch_array($result)){
 				
-				$CostID = $row[''];
-				$Name = $row[''];
-				$Email = $row[''];
-				$Status = $row[''];
+				$CostID = $row['Customer.customerID'];
+				$Name = $row['Customer.customerName'];
+				$Email = $row['Customer.customerEmail'];
 				
-				echo "<tr><td>#</td><td>$CostID</td><td>$Name</td><td>$Email</td><td>$Status</td></tr>";
-				echo"<td>
+				echo "<tr><td style='width:5%'>#</td><td style='width:20%'>$CostID</td><td style='width:20%'>$Name</td><td style='width:20%'>$Email</td><td style='width:20%'>Pending</td><td>
 					<button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" title="View">
                                             <span class="glyphicon glyphicon-eye-open"></span>
                                         </button>
                                         <button type="button" class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve">
                                             <span class="glyphicon glyphicon-ok"></span>
                                         </button>
-                                    </td>";
-			}
-			echo "</tbody>";
-   			echo"<tfoot>
+                                    </td></tr>";
+
+			} ?>
+			</tbody>
+   			<tfoot>
                                 <tr>
                                     <td colspan="3">
                                         <span>Count : 3; Page 1 of 1</span>
@@ -128,10 +141,10 @@
                                         </div>
                                     </td>
                                 </tr>
-                            </tfoot>";
-			echo"</table>";
-			echo"</div>";
-		>	
+                            </tfoot>
+			</table>
+			</div>
+			
 
                     <!-- End of body, bottom is Layout -->
 
