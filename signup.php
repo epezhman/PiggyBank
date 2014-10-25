@@ -88,7 +88,7 @@
                 validated["dob"] = false;
             }
             else
-                if(!e.value.match("^0[0-9]|[1-2][0-9]|3[0-1]\/0[0-9]|1[0-2]\/19[0-9][0-9]|20[0-1][0-4]$")){
+                if(!e.value.match("^(0[0-9]|[1-2][0-9]|3[0-1])\/(0[0-9]|1[0-2])\/(19[0-9][0-9]|20[0-1][0-4])$")){
                     $('#'+e.id+'span').css("background","#CC0000");
                     $('#'+e.id+'span').html("Invalid date of birth");
                     validated["dob"] = false;
