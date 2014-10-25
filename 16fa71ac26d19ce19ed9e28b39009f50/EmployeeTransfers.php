@@ -1,4 +1,5 @@
-<html>
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -6,7 +7,7 @@
     <meta name="description" content="Piggy Bank GmbH">
     <meta name="author" content="Alei , Sara , ePezhman">
     <link rel="icon" href="../images/piggyFav.ico">
-   			
+
     <!-- To be Changed!! -->
     <title>
         PB - Employee
@@ -17,9 +18,11 @@
 
     <!-- our CSS -->
     <link href="../css/framework.css" rel="stylesheet">
+
 </head>
+
 <body>
- <div id="wrap">
+    <div id="wrap">
         <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -33,43 +36,43 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
-              
+                       
 			<li class="visible-xs"><a href="EmployeePendingRegistrations.php">Pending Registrations</a></li>
                         <li class="visible-xs"><a href="EmployeeCustomerMamangers.php">Registered Customers</a></li>
-                        <li class="visible-xs active"><a href="EmployeePendingTransfers.php">Pending Transfers</a></li>
-                        <li class="visible-xs"><a href="EmployeeTransfers.php">All Transfers</a></li>
+                        <li class="visible-xs"><a href="EmployeePendingTransfers.php">Pending Transfers</a></li>
+                        <li class="visible-xs active"><a href="EmployeeTransfers.php">All Transfers</a></li>
 
                         <li><a href="#">Profile</a></li>
                         <li><a href="#">Help</a></li>
                         <li><a href="#">Log Out</a></li>
 
                     </ul>
-                    
+                   
                 </div>
             </div>
         </div>
 
-	<div class="container-fluid">
+        <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-3 col-md-2 sidebar">
-                    <ul class="nav nav-sidebar">                      
-                        <li class="active"><a href="EmployeePendingRegistrations.php">Pending Registrations</a></li>
-			<li><a href="EmployeeCustomerMamangers.php">Registered Customers</a></li>
-			<li><a href="EmployeePendingTransfers.php">Pending Transfers</a></li>                       
-			<li><a href="EmployeeTransfers.php">All Transfers</a></li>
+                    <ul class="nav nav-sidebar">
+			<li><a href="EmployeePendingRegistrations.php">Pending Registrations</a></li>
+                        <li><a href="EmployeeCustomerMamangers.php">Registered Customers</a></li>
+                        <li><a href="EmployeePendingTransfers.php">Pending Transfers</a></li>
+                        <li class="active"><a href="EmployeeTransfers.php">All Transfers</a></li>
                     </ul>
                 </div>
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
                     <!-- Beggining of body, above is Layout -->
 
-                    <h1 class="page-header">Pending Registrations</h1>
+                    <h1 class="page-header">All Transfers</h1>
 
-                    <fieldset>
+              <fieldset>
 			<br></br>	
                         <form class="form-horizontal" role="form">
                             <div class="form-group">
-                                <label class="control-label col-sm-1" for="">Customer</label>
+                                <label class="control-label col-sm-1" for="">Transfer</label>
                                 <div class="col-sm-10">
                                     <input type="text" name="Sender" />
 				    <input type="submit" value="Filter" id="submit" class="btn btn-default" style="margin-left:5%;" />
@@ -79,6 +82,7 @@
                         </form>
                     </fieldset>
 		    <br></br>	
+
 <?php
     // Check the referer first to deny nosey requests
     if (strpos(getenv("HTTP_REFERER"), "/PiggyBank/") === false)
@@ -89,23 +93,26 @@
         }
 ?>
 
-		<div class="table-responsive">
-		<table class="table table-striped table-hover ">
-		<thead>
-			<tr><th>Name</th><th>Date of Birth</th><th>Address</th><th>Account Type</th><th>Account Balance</th><th>Action</th></tr>
-		</thead>
+                  <div class="table-responsive">
+                        <table class="table table-striped table-hover ">
+                            <thead>
+                                <tr>
+                                    <th>Sender</th>
+                                    <th>Receiver</th>
+                                    <th>Amount (€)</th>
+                                    <th>Submit Date</th>
+                                </tr>
+                            </thead>
+
+                           		<?php
 		
-		<tbody>	
-		<?php
-		
-		$result = $dbConnection->query("select User.userUsername,Customer.customerDOB,Customer.customerAddress,Account.accountType,Account.accountBalance from User,Customer,Account where User.userUsername=Customer.customerUsername and User.userApproved=0 and Account.accountOwner= Customer.customerID") or die(mysql_error());
+		$result = $dbConnection->query("select C1.customerName,C2.customerName,transactionAmont,transactionTime from Transaction,Customer C1,Customer C2 where transactionSender=C1.customerID and transactionReceiver=C2.customerID and transactionApproved=1") or die(mysql_error());
 		while($row = mysqli_fetch_row($result)){
 		echo '<tr>';
-		echo '<td style="width:20%" >' . $row[0]. '</td>';
-		echo '<td style="width:12%" >' . $row[1]. '</td>';
+		echo '<td style="width:25%" >' . $row[0]. '</td>';
+		echo '<td style="width:25%" >' . $row[1]. '</td>';
 		echo '<td style="width:20%" >' . $row[2]. '</td>';
-		echo '<td style="width:18%" >' . $row[3]. '</td>';
-		echo '<td style="width:18%" >' . $row[4]. '</td>';
+		echo '<td style="width:20%" >' . $row[3]. '</td>';
 		echo '<td>';
 		echo '<button type="button"  align="center" class="btn btn-default btn-xs" data-toggle="tooltip" title="View">
                                             <span class="glyphicon glyphicon-remove"></span>
@@ -117,10 +124,10 @@
 		}
 		?>	
 		</tbody>
-		<tfoot>
+                            <tfoot>
                                 <tr>
                                     <td colspan="3">
-                                        <span>Count : 3; Page 1 of 1</span>
+                                        <span>Count : 20; Page 1 of 2</span>
                                     </td>
                                     <td colspan="4">
                                         <div class="marginPagingHeight30">
@@ -128,18 +135,20 @@
                                                 <li class="active">
                                                     <a href="javascript:void(0);">1</a>
                                                 </li>
-                                               
+                                                <li>
+                                                    <a href="#">2</a>
+                                                </li>
                                             </ul>
                                         </div>
                                     </td>
                                 </tr>
                             </tfoot>
-		<tbody></tbody>
+                        </table>
+                    </div>
 
-   			
-		</table>
-		</div>
- </div>
+                    <!-- End of body, bottom is Layout -->
+
+                </div>
             </div>
         </div>
         <div id="push"></div>
@@ -151,7 +160,6 @@
     </div>
     <script src="../js/jquery-1.11.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
-			
 
 </body>
 </html>
