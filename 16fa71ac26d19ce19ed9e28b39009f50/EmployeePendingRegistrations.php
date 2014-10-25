@@ -84,13 +84,13 @@
     if (strpos(getenv("HTTP_REFERER"), "/PiggyBank/") === false)
         header("Location: ../error.php?id=404");
 
-        $dbHost= "localhost";
-        $dbUser= "piggy";
-        $dbPassword= "8aa259f4c7";
-        $dbName= "piggybank";
-
-        global $dbConnection;
-        $dbConnection = new mysqli($dbHost, $dbUser, $dbPassword, $dbName);
+      //  $dbHost= "localhost";
+      //  $dbUser= "piggy";
+      //  $dbPassword= "8aa259f4c7";
+      //  $dbName= "piggybank";
+       require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/dbconnect.php");
+     // global $dbConnection;
+     //   $dbConnection = new mysqli($dbHost, $dbUser, $dbPassword, $dbName);
         if(mysqli_connect_errno()){
             header("Location: ../error.php");
         }
@@ -106,14 +106,14 @@
 		<tbody>	
 		<?php
 		
-		mysql_select_db("piggybank") or die(mysql_error());
-		$result = mysql_query("select Customer.customerID,Customer.customerName,Customer.Email from User,Customer where User.customerUsername=Customer.customerUsername and User.userApproved=0") or die(mysql_error());
-		while($row = mysql_fetch_array($result)){
+	//	mysql_select_db("piggybank") or die(mysql_error());
+		$result = $dbConnection->query("select * from User,Customer where User.userUsername=Customer.customerUsername and User.userApproved=0") or die(mysql_error());
+		while($row = mysqli_fetch_row($result)){
 		echo '<tr>';
 		echo '<td>' . '#' . '</td>';
-		echo '<td>' . $row['Customer.customerID']. '</td>';
-		echo '<td>' . $row['Customer.customerName']. '</td>';
-		echo '<td>' . $row['Customer.Email']. '</td>';
+		echo '<td>' . $row[0]. '</td>';
+		echo '<td>' . $row[1]. '</td>';
+		echo '<td>' . $row[2]. '</td>';
 		}
 		?>	
 		</tbody>

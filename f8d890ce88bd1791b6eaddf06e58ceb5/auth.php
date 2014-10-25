@@ -66,7 +66,6 @@ try{
     if($usernameStatus and $passwordStatus){
         // Authenticate user
         $role = authenticateUser($_POST['username'], $_POST['hashedpassword']);
-        echo $role;
         if(empty($role)){
             header("Location: ../signin.php?failure=".$_POST["username"]);
         }      
@@ -79,7 +78,7 @@ try{
             if($role == "customer")
                 header("Location: ../customerdir");    
             else if($role == "admin")
-                header("Location: ../admindir");
+                header("Location: ../16fa71ac26d19ce19ed9e28b39009f50/EmployeePendingRegistrations.php");
         }
     }
     else{
