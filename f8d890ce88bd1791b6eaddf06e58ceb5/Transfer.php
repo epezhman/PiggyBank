@@ -4,6 +4,9 @@
 </head>
 <body>
 	<?php
+	
+	session_start();
+	
 	require("accesscontrol.php");
 
 	require_once("dbconnect.php");
@@ -45,8 +48,6 @@
 		$transferToken = validateInput($_POST['TransferToken'], "TransferToken");
 		$amount = validateInput($_POST['Amount'], "Amount");
 
-
-
 		$userID = NULL;
 		$userUsername = mysqli_real_escape_string($dbConnection,$_SESSION['username']);
 		$customerID = $dbConnection->prepare("SELECT customerID FROM Customer WHERE customerUsername LIKE (?)");
@@ -63,49 +64,69 @@
 			$customerID->free_result();
 			$customerID->close();
 		}
-		if(!empty($userID))
+		if(!empty($userID) and $receiverId and $transferToken and $amount)
 		{
-			
-			$tokenT = NULL;
-			$userUsername = mysqli_real_escape_string($dbConnection,$_SESSION['username']);
-			$customerID = $dbConnection->prepare("SELECT customerID FROM Customer WHERE customerUsername LIKE (?)");
-			$customerID->bind_param("s", $userUsername);
-			$customerID->execute();
-			$customerID->bind_result($ID);
-			$customerID->store_result();
-			if($customerID->num_rows() == 1)
+
+			$tokensCountCount = 0;
+			$tokensUsedStatus = 0;
+			$tokensCount = $dbConnection->prepare("SELECT COUNT(*), tokenUsed FROM Token WHERE tokenCustomer LIKE (?) AND tokenID LIKE(?) ");
+			$tokensCount->bind_param("ss", mysqli_real_escape_string($dbConnection,$userID), mysqli_real_escape_string($dbConnection,trim($_POST['TransferToken'])));
+			$tokensCount->execute();
+			$tokensCount->bind_result($tokenCount, $usedStatus);
+			$tokensCount->store_result();
+
+			while($tokensCount->fetch())
 			{
-				while($customerID->fetch())
-				{
-					$userID = $ID;
-				}
-				$customerID->free_result();
-				$customerID->close();
+				$tokensCountCount = $tokenCount;
+				$tokensUsedStatus = $usedStatus;
 			}
-			
-		}
+			if($tokensCountCount == 0)
+			{
+				$_SESSION["invNotFoundToken"] = true;
+				header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php");
+			}
+			if($tokensUsedStatus == 1)
+			{
+				$_SESSION["invUsedToken"] = true;
+				header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php");
+			}
 
+			$tokensCount->free_result();
+			$tokensCount->close();
 
-		// If validation succeeds, add user to database
-		if($receiverId and $transferToken and $amount ){
-			// Register user
-			if (registerCustomer())
-				header("Location: ../notify.php?mode=success");
-			else
-				header("Location: ../error.php");
+			$receiverExist = 0;
+			$receiverExistQuery = $dbConnection->prepare("SELECT COUNT(*) FROM Customer WHERE customerID LIKE (?) ");
+			$receiverExistQuery->bind_param("s", mysqli_real_escape_string($dbConnection,trim($_POST['ReceiverId'])));
+			$receiverExistQuery->execute();
+			$receiverExistQuery->bind_result($receiverExistCount);
+			$receiverExistQuery->store_result();
+
+			while($receiverExistQuery->fetch())
+			{
+				$receiverExist = $receiverExistCount;
+			}
+			if($receiverExist != 1)
+			{
+				$_SESSION["invNotFoundReceiver"] = true;
+				header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php");
+			}
+				
+			$receiverExistQuery->free_result();
+			$receiverExistQuery->close();
+
+			// 			if (registerCustomer())
+				// 				header("Location: ../notify.php?mode=success");
+				// 			else
+					// 				header("Location: ../error.php");
+
 		}
 		else{
 			// Otherwise, post back to signup.php to inform user of failure
-			$_SESSION["invReceiverId"] = $fullnameStatus ? NULL : $_POST["ReceiverId"];
-			$_SESSION["invTransferToken"] = $addressStatus ? NULL : $_POST["TransferToken"];
-			$_SESSION["invAmount"] = $dobStatus ? NULL : $_POST["Amount"];
-
+			$_SESSION["invReceiverId"] = $receiverId ? NULL : $_POST["ReceiverId"];
+			$_SESSION["invTransferToken"] = $transferToken ? NULL : $_POST["TransferToken"];
+			$_SESSION["invAmount"] = $amount ? NULL : $_POST["Amount"];
 			header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php");
-
-
 		}
-
-
 
 	}catch(Exception $e){
 		header("Location ../error.php");
@@ -115,9 +136,7 @@
 		<tr>
 			<td align="center">
 				<h1>Your request is being processed. Please wait.</h1>
-			
-			<td>
-		
+			<td>	
 		</tr>
 		<tr>
 			<td align="center"><img src="../images/loading.gif" alt="loading.gif" />

@@ -247,67 +247,108 @@ try{
 					<!-- Tab panes -->
 					<div class="tab-content">
 						<div class="tab-pane active" id="TransferByForm">
-							<form class="form-horizontal" role="form"
-								action="f8d890ce88bd1791b6eaddf06e58ceb5/transfer.php"
-								method="POST">
-								<div class="form-group">
-									<label for="ReceiverId" class="col-sm-2 control-label">Receiver</label>
-									<div class="col-sm-6">
-										<input type="text" class="form-control" id="ReceiverId"
-											placeholder="Receiver" name="ReceiverId"
-											onload="validateElement(this, 'ReceiverId')"
-											onblur="validateElement(this, 'ReceiverId')"
-											onkeyup="validateElement(this, 'ReceiverId')">
-									</div>
-									<div class="col-sm-4">
-										<span class="alert" id="ReceiverIdSpan"
-											style="border: #FFFFFF"> </span>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="TransferToken" class="col-sm-2 control-label">Transfer
-										Token</label>
-									<div class="col-sm-6">
-										<?php
-										if (isset($_GET['token'])) {
-											$token = trim($_GET['token']);
-											echo "<input type='text' class='form-control' id='TransferToken' placeholder='Transfer Token' name='TransferToken' value='$token' onload='validateElement(this, \"TransferToken\")' onblur='validateElement(this, \"TransferToken\")'  onkeyup='validateElement(this, \"TransferToken\")' >";
-										}
-										else
-										{
-											echo "<input type='text' class='form-control' id='TransferToken' placeholder='Transfer Token' name='TransferToken' onload='validateElement(this, \"TransferToken\")' onblur='validateElement(this, \"TransferToken\")' onkeyup='validateElement(this, \"TransferToken\")'>";
-										}
-										?>
-									</div>
-									<div class="col-sm-4">
-										<span class="alert" id="TransferTokenSpan"> </span>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="Amount" class="col-sm-2 control-label">Amount</label>
-									<div class="col-sm-6">
-										<div class="input-group">
-											<input type="number" class="form-control" id="Amount"
-												placeholder="Amount in Euro" name="Amount"
-												onload="validateElement(this, 'Amount')"
-												onblur="validateElement(this, 'Amount')"
-												onkeyup="validateElement(this, 'Amount')"> <span
-												class="input-group-addon">€</span>
-										</div>
-									</div>
-									<div class="col-sm-4">
-										<span class="alert" id="AmountSpan"> </span>
-									</div>
-								</div>
 
-								<div class="form-group">
-									<div class="col-sm-offset-2 col-sm-10">
-										<input type="submit" value="Submit" id="submit"
-											style="width: 80px; heigh: 30px;" class="btn btn-primary"
-											disabled />
-									</div>
+							<div class="row">
+								<div class="col-md-12">
+									<?php
+									if(isset($_GET["invReceiverId"]) or isset($_GET["invTransferToken"]) or isset($_GET["invAmount"])
+											or isset($_GET["invNotFoundToken"]) or isset($_GET["invUsedToken"]) or isset($_GET["invNotFoundReceiver"]))
+									{
+										echo "<span class='alert alert-danger' >";
+										if(isset($_GET["invReceiverId"]))
+										{
+											echo "Invalid Receiver Id <br />";
+										}
+										if(isset($_GET["invTransferToken"]))
+										{
+											echo "Invalid Transfer Token <br />";
+										}
+										if(isset($_GET["invAmount"]))
+										{
+											echo "Invalid Amount <br />";
+										}
+										if(isset($_GET["invNotFoundToken"]))
+										{
+											echo "Token could not be found <br />";
+										}
+										if(isset($_GET["invUsedToken"]))
+										{
+											echo "You already used this token <br />";
+										}
+										if(isset($_GET["invNotFoundReceiver"]))
+										{
+											echo "This Reciver does not exist <br />";
+										}
+										echo "</span>";
+									}
+
+									?>
 								</div>
-							</form>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<form class="form-horizontal" role="form"
+										action="../f8d890ce88bd1791b6eaddf06e58ceb5/Transfer.php"
+										method="POST">
+										<div class="form-group">
+											<label for="ReceiverId" class="col-sm-2 control-label">Receiver</label>
+											<div class="col-sm-6">
+												<input type="text" class="form-control" id="ReceiverId"
+													placeholder="Receiver" name="ReceiverId"
+													onload="validateElement(this, 'ReceiverId')"
+													onblur="validateElement(this, 'ReceiverId')"
+													onkeyup="validateElement(this, 'ReceiverId')">
+											</div>
+											<div class="col-sm-4">
+												<span class="alert" id="ReceiverIdSpan"> </span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="TransferToken" class="col-sm-2 control-label">Transfer
+												Token</label>
+											<div class="col-sm-6">
+												<?php
+												if (isset($_GET['token'])) {
+													$token = trim($_GET['token']);
+													echo "<input type='text' class='form-control' id='TransferToken' placeholder='Transfer Token' name='TransferToken' value='$token' onload='validateElement(this, \"TransferToken\")' onblur='validateElement(this, \"TransferToken\")'  onkeyup='validateElement(this, \"TransferToken\")' >";
+												}
+												else
+												{
+													echo "<input type='text' class='form-control' id='TransferToken' placeholder='Transfer Token' name='TransferToken' onload='validateElement(this, \"TransferToken\")' onblur='validateElement(this, \"TransferToken\")' onkeyup='validateElement(this, \"TransferToken\")'>";
+												}
+												?>
+											</div>
+											<div class="col-sm-4">
+												<span class="alert" id="TransferTokenSpan"> </span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label for="Amount" class="col-sm-2 control-label">Amount</label>
+											<div class="col-sm-6">
+												<div class="input-group">
+													<input type="number" class="form-control" id="Amount"
+														placeholder="Amount in Euro" name="Amount"
+														onload="validateElement(this, 'Amount')"
+														onblur="validateElement(this, 'Amount')"
+														onkeyup="validateElement(this, 'Amount')"> <span
+														class="input-group-addon">€</span>
+												</div>
+											</div>
+											<div class="col-sm-4">
+												<span class="alert" id="AmountSpan"> </span>
+											</div>
+										</div>
+
+										<div class="form-group">
+											<div class="col-sm-offset-2 col-sm-10">
+												<input type="submit" value="Submit" id="submit"
+													style="width: 80px; heigh: 30px;" class="btn btn-primary"
+													disabled />
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
 						</div>
 						<div class="tab-pane" id="TransferByFile">
 							<form class="form-horizontal" role="form">
