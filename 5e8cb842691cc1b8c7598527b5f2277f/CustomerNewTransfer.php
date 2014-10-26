@@ -238,53 +238,26 @@ try{
 						properly. Please enable Javascript.</noscript>
 
 					<ul class="nav nav-tabs" role="tablist">
-						<li class="active"><a href="#TransferByForm" role="tab"
-							data-toggle="tab">Transfer by Form</a></li>
-						<li><a href="#TransferByFile" role="tab" data-toggle="tab">Transfer
-								by File</a></li>
+						<?php 
+						if(isset($_SESSION["invUploadingFile"]))
+						{
+							echo "<li ><a href=\"#TransferByForm\" role=\"tab\" data-toggle=\"tab\">Transfer by Form</a></li>".
+									"<li class=\"active\"><a href=\"#TransferByFile\" role=\"tab\" data-toggle=\"tab\">Transfer by File</a></li>";
+						}
+						else
+						{
+							echo "<li class=\"active\"><a href=\"#TransferByForm\" role=\"tab\"data-toggle=\"tab\">Transfer by Form</a></li>".
+									"<li><a href=\"#TransferByFile\" role=\"tab\" data-toggle=\"tab\">Transfer by File</a></li>";
+						}
+						?>
+
 					</ul>
 
 					<!-- Tab panes -->
 					<div class="tab-content">
-						<div class="tab-pane active" id="TransferByForm">
+						<div class="tab-pane <?php  if(!isset($_SESSION["invUploadingFile"])) echo "active"; ?>" id="TransferByForm">
 
-							<div class="row">
-								<div class="col-md-12">
-									<?php
-									if(isset($_GET["invReceiverId"]) or isset($_GET["invTransferToken"]) or isset($_GET["invAmount"])
-											or isset($_GET["invNotFoundToken"]) or isset($_GET["invUsedToken"]) or isset($_GET["invNotFoundReceiver"]))
-									{
-										echo "<span class='alert alert-danger' >";
-										if(isset($_GET["invReceiverId"]))
-										{
-											echo "Invalid Receiver Id <br />";
-										}
-										if(isset($_GET["invTransferToken"]))
-										{
-											echo "Invalid Transfer Token <br />";
-										}
-										if(isset($_GET["invAmount"]))
-										{
-											echo "Invalid Amount <br />";
-										}
-										if(isset($_GET["invNotFoundToken"]))
-										{
-											echo "Token could not be found <br />";
-										}
-										if(isset($_GET["invUsedToken"]))
-										{
-											echo "You already used this token <br />";
-										}
-										if(isset($_GET["invNotFoundReceiver"]))
-										{
-											echo "This Reciver does not exist <br />";
-										}
-										echo "</span>";
-									}
 
-									?>
-								</div>
-							</div>
 							<div class="row">
 								<div class="col-md-12">
 									<form class="form-horizontal" role="form"
@@ -349,25 +322,123 @@ try{
 									</form>
 								</div>
 							</div>
+							<div class="row">
+								<div class="col-md-12">
+									<div style="text-align: center;">
+										<?php
+										if(isset($_SESSION["invReceiverId"]) or isset($_SESSION["invTransferToken"]) or isset($_SESSION["invAmount"])
+												or isset($_SESSION["invNotFoundToken"]) or isset($_SESSION["invUsedToken"]) or isset($_SESSION["invNotFoundReceiver"]))
+										{
+											echo "<span class='alert alert-danger' >";
+											if(isset($_SESSION["invReceiverId"]))
+											{
+												echo "Invalid Receiver Id <br />";
+											}
+											if(isset($_SESSION["invTransferToken"]))
+											{
+												echo "Invalid Transfer Token <br />";
+											}
+											if(isset($_SESSION["invAmount"]))
+											{
+												echo "Invalid Amount <br />";
+											}
+											if(isset($_SESSION["invNotFoundToken"]))
+											{
+												echo "Token could not be found <br />";
+											}
+											if(isset($_SESSION["invUsedToken"]))
+											{
+												echo "You already used this token <br />";
+											}
+											if(isset($_SESSION["invNotFoundReceiver"]))
+											{
+												echo "This Reciver does not exist <br />";
+											}
+											echo "</span>";
+
+											$_SESSION["invReceiverId"] = null;
+											$_SESSION["invTransferToken"] = null;
+											$_SESSION["invAmount"] = null;
+											$_SESSION["invNotFoundToken"] = null;
+											$_SESSION["invUsedToken"] = null;
+											$_SESSION["invNotFoundReceiver"] = null;
+
+										}
+										?>
+									</div>
+
+								</div>
+
+							</div>
 						</div>
-						<div class="tab-pane" id="TransferByFile">
-							<form class="form-horizontal" role="form">
-								<div class="form-group">
-									<label for="InputFile" class="col-sm-2 control-label">File
-										input</label>
-									<div class="col-sm-8">
-										<input type="file" id="InputFile" onchange="uploadFile()">
-										<p class="help-block">Upload the file containing ReceiverId,
-											Transfer Token and Amount of Euros you wish to trasnfer.</p>
+						<div class="tab-pane <?php  if(isset($_SESSION["invUploadingFile"])){ echo "active"; $_SESSION["invUploadingFile"] = null;}?>" id="TransferByFile">
+							<div class="row">
+								<div class="col-md-12">
+									<form class="form-horizontal" role="form"
+										action="../f8d890ce88bd1791b6eaddf06e58ceb5/Upload.php"
+										" method="post" enctype="multipart/form-data">
+										<div class="form-group">
+											<label for="InputFile" class="col-sm-2 control-label">File
+												input</label>
+											<div class="col-sm-8">
+												<input type="file" id="InputFile" onchange="uploadFile()" name="uploadFile">
+												<p class="help-block">Upload the file containing ReceiverId,
+													Transfer Token and Amount of Euros you wish to trasnfer.</p>
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-sm-offset-2 col-sm-10">
+												<button type="submit" id="submitFile"
+													class="btn btn-primary" disabled="disabled">Submit</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-12">
+
+									<div style="text-align: center;">
+										<?php
+										if(isset($_SESSION["invFileBig"]) or isset($_SESSION["invMimeError"]) or isset($_SESSION["invUnknownError"])
+												or isset($_SESSION["invDupFile"]) or isset($_SESSION["InvFormatError"]))
+										{
+											echo "<span class='alert alert-danger' >";
+											if(isset($_SESSION["invFileBig"]))
+											{
+												echo "File Too Big <br />";
+											}
+											if(isset($_SESSION["invMimeError"]))
+											{
+												echo "Only Plain text is expected <br />";
+												
+											}
+											if(isset($_SESSION["invUnknownError"]))
+											{
+												echo "Sorry, Your File was not Uploaded <br />";
+											}
+											if(isset($_SESSION["invDupFile"]))
+											{
+												echo "Duplicate File <br />";
+											}
+											if(isset($_SESSION["InvFormatError"]))
+											{
+												echo "File was wrong <br />";
+											}
+
+											echo "</span>";
+
+											$_SESSION["invFileBig"] = null;
+											$_SESSION["invMimeError"] = null;
+											$_SESSION["invUnknownError"] = null;
+											$_SESSION["invDupFile"] = null;
+											$_SESSION["InvFormatError"] = null;
+
+										}
+										?>
 									</div>
 								</div>
-								<div class="form-group">
-									<div class="col-sm-offset-2 col-sm-10">
-										<button type="submit" id="submitFile" class="btn btn-primary"
-											disabled="disabled">Submit</button>
-									</div>
-								</div>
-							</form>
+							</div>
 						</div>
 					</div>
 
