@@ -1,7 +1,7 @@
 <?php
     // Check the referer first to deny nosey requests
-    if (strpos(getenv("HTTP_REFERER"), "/PiggyBank/") === false)
-        header("Location: ../error.php?id=404");
+//     if (strpos(getenv("HTTP_REFERER"), "/PiggyBank/") === false)
+//         header("Location: ../error.php?id=404");
 
         $dbHost= "localhost";
         $dbUser= "piggy";
