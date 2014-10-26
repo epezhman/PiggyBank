@@ -118,36 +118,10 @@
 		echo '<td style="width:25%" >' . $row[1]. '</td>';
 		echo '<td style="width:20%" >' . $row[2]. '</td>';
 		echo '<td style="width:20%" >' . $row[3]. '</td>';
-		echo '<td>';
-		echo '<button type="button"  align="center" class="btn btn-default btn-xs" data-toggle="tooltip" title="View">
-                                            <span class="glyphicon glyphicon-remove"></span>
-                                        </button>
-                                        <button type="button" align="center" class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve">
-                                            <span class="glyphicon glyphicon-ok"></span>
-                                        </button>';
-		echo '</td>';
 		}
 		?>	
 		</tbody>
-                            <tfoot>
-                                <tr>
-                                    <td colspan="3">
-                                        <span>Count : 20; Page 1 of 2</span>
-                                    </td>
-                                    <td colspan="4">
-                                        <div class="marginPagingHeight30">
-                                            <ul class="pagination pagination-sm marginPaging">
-                                                <li class="active">
-                                                    <a href="javascript:void(0);">1</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">2</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tfoot>
+
                         </table>
                     </div>
 
