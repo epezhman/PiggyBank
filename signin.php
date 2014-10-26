@@ -136,7 +136,21 @@
                             <br />
 							<table style="width:500px; table-layout:fixed;">
                             <col width="100"><col width="250"><col width="150" align="center">
-						    <?php
+		            <?php
+                                ob_start();
+                                require "./f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php";
+                                if(ob_get_clean() == 1){
+                                    session_start();
+                                    // User is authenticated, redirect them to their "role" homepage
+                                    if($_SESSION["userrole"] == "admin"){
+                                        header("Location: ./16fa71ac26d19ce19ed9e28b39009f50/eCustomerManagers.php");
+                                        exit();
+                                    }
+                                    else if($_SESSION["userrole"] == "customer"){
+                                        header("Location: ./5e8cb842691cc1b8c7598527b5f2277f/CustomerMyTransfers.php");
+                                        exit();
+                                     }
+                                }
                                 echo "<tr><td style=\"padding: 10px 0px;\"><label for=\"username\">Username</label></td>";
                                 if(isset($_GET["failure"]))
 								    echo "<td><input class=\"form-control\" id=\"username\" name=\"username\" type=\"text\" style=\"width: 200px\"  onblur=\"validateElement(this, 'username')\" value=".$_GET["failure"]."></td>";
