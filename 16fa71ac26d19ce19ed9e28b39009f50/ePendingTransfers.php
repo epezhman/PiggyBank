@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -10,7 +10,7 @@
 
     <!-- To be Changed!! -->
     <title>
-        PB - Employee
+        PiggyBank GmbH - Pending Transfers
     </title>
 
     <!-- Bootstrap core CSS -->
@@ -20,7 +20,12 @@
     <link href="../css/framework.css" rel="stylesheet">
 
 </head>
-
+<?php
+    session_start();
+    require("../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php");
+    if($_SESSION["userrole"] != "admin")
+        header("Location: ../error.php?id=404");
+?>
 <body>
     <div id="wrap">
         <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -32,22 +37,22 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#"><img src="../images/logo.png" alt="" class="logoStyle" /> Piggy Bank GmbH</a>
+                    <a class="navbar-brand" href="eCustomerManagers.php"><img src="../images/logo.png" alt="" class="logoStyle" /> Piggy Bank GmbH</a>
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                        
-			<li class="visible-xs"><a href="EmployeePendingRegistrations.php">Pending Registrations</a></li>
-                        <li class="visible-xs"><a href="EmployeeCustomerMamangers.php">Registered Customers</a></li>
-                        <li class="visible-xs"><a href="EmployeePendingTransfers.php">Pending Transfers</a></li>
-                        <li class="visible-xs active"><a href="EmployeeTransfers.php">All Transfers</a></li>
+			<li class="visible-xs"><a href="ePendingRegistrations.php">Pending Registrations</a></li>
+                        <li class="visible-xs"><a href="eCustomerManagers.php">Registered Customers</a></li>
+                        <li class="visible-xs active"><a href="ePendingTransfers.php">Pending Transfers</a></li>
+                        <li class="visible-xs"><a href="eTransfers.php">All Transfers</a></li>
 
                         <li><a href="#">Profile</a></li>
                         <li><a href="#">Help</a></li>
-                        <li><a href="#">Log Out</a></li>
+                        <li><a href="../f8d890ce88bd1791b6eaddf06e58ceb5/logout.php">Log Out</a></li>
 
                     </ul>
-                   
+                    
                 </div>
             </div>
         </div>
@@ -56,19 +61,19 @@
             <div class="row">
                 <div class="col-sm-3 col-md-2 sidebar">
                     <ul class="nav nav-sidebar">
-			<li><a href="EmployeePendingRegistrations.php">Pending Registrations</a></li>
-                        <li><a href="EmployeeCustomerMamangers.php">Registered Customers</a></li>
-                        <li><a href="EmployeePendingTransfers.php">Pending Transfers</a></li>
-                        <li class="active"><a href="EmployeeTransfers.php">All Transfers</a></li>
+			<li><a href="ePendingRegistrations.php">Pending Registrations</a></li>
+                        <li><a href="eCustomerManagers.php">Registered Customers</a></li>
+                        <li class="active"><a href="ePendingTransfers.php">Pending Transfers</a></li>
+                        <li><a href="eTransfers.php">All Transfers</a></li>
                     </ul>
                 </div>
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
                     <!-- Beggining of body, above is Layout -->
 
-                    <h1 class="page-header">All Transfers</h1>
+                    <h1 class="page-header">Pending Transfers</h1>
 
-              <fieldset>
+                     <fieldset>
 			<br></br>	
                         <form class="form-horizontal" role="form">
                             <div class="form-group">
@@ -83,6 +88,7 @@
                     </fieldset>
 		    <br></br>	
 
+
 <?php
     // Check the referer first to deny nosey requests
     if (strpos(getenv("HTTP_REFERER"), "/PiggyBank/") === false)
@@ -93,7 +99,7 @@
         }
 ?>
 
-                  <div class="table-responsive">
+                    <div class="table-responsive">
                         <table class="table table-striped table-hover ">
                             <thead>
                                 <tr>
@@ -101,12 +107,13 @@
                                     <th>Receiver</th>
                                     <th>Amount (€)</th>
                                     <th>Submit Date</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
-
-                           		<?php
+                           
+		<?php
 		
-		$result = $dbConnection->query("select C1.customerName,C2.customerName,transactionAmont,transactionTime from Transaction,Customer C1,Customer C2 where transactionSender=C1.customerID and transactionReceiver=C2.customerID and transactionApproved=1") or die(mysql_error());
+		$result = $dbConnection->query("select C1.customerName,C2.customerName,transactionAmont,transactionTime from Transaction,Customer C1,Customer C2 where transactionSender=C1.customerID and transactionReceiver=C2.customerID and transactionApproved=0 and transactionAmont>10000") or die(mysql_error());
 		while($row = mysqli_fetch_row($result)){
 		echo '<tr>';
 		echo '<td style="width:25%" >' . $row[0]. '</td>';
@@ -124,10 +131,10 @@
 		}
 		?>	
 		</tbody>
-                            <tfoot>
+		<tfoot>
                                 <tr>
                                     <td colspan="3">
-                                        <span>Count : 20; Page 1 of 2</span>
+                                        <span>Count : 3; Page 1 of 1</span>
                                     </td>
                                     <td colspan="4">
                                         <div class="marginPagingHeight30">
@@ -135,16 +142,17 @@
                                                 <li class="active">
                                                     <a href="javascript:void(0);">1</a>
                                                 </li>
-                                                <li>
-                                                    <a href="#">2</a>
-                                                </li>
+                                               
                                             </ul>
                                         </div>
                                     </td>
                                 </tr>
                             </tfoot>
-                        </table>
-                    </div>
+		<tbody></tbody>
+
+   			
+		</table>
+		</div>
 
                     <!-- End of body, bottom is Layout -->
 

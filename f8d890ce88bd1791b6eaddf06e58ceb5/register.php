@@ -4,6 +4,7 @@
 </head>
 <body>
 <?php
+require("accesscontrol.php");
 
 function getRandomString($length = 8){
     $alphabet = "abcdefghijklmnopqrstuxyvwzABCDEFGHIJKLMNOPQRSTUXYVWZ._";

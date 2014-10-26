@@ -108,14 +108,14 @@
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
-                        <li class="dropdown">
+<!--                        <li class="dropdown">
                             <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">Language/Sprache <b class="caret"></b></a>
                             <ul class="dropdown-menu" id="langs">
                                 <li id="enLang" class="active"><a href="javascript:void(0);" class="EN">English</a></li>
                                 <li id="deLang"><a href="javascript:void(0);" class="DE">Deutsch</a></li>
                             </ul>
                         </li>
-
+-->
                         <li><a href="signin.php">Sign in</a></li>
                         <li><a href="signup.php">Sign up</a></li>
                     </ul>
