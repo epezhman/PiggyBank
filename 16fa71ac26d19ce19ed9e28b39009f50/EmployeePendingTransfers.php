@@ -107,43 +107,53 @@
                             </thead>
                            
 		<?php
+
+		if(isset($_POST['remove'])){
+		$var = $_POST['remove'];
+		$dbConnection->query("delete from Transaction where transactionID=" .$var)or die(mysql_error());
+		}
+
+		if(isset($_POST['approve'])){
+		$var = $_POST['approve'];
+		$dbConnection->query("update Transaction set transactionApproved=1 where transactionID=" .$var)or die(mysql_error());
+
+		$result1 = $dbConnection->query("select transactionSender,transactionReceiver,transactionAmont from Transaction where transactionID=" .$var)or die(mysql_error());
+		$row1 = mysqli_fetch_row($result1);
 		
-		$result = $dbConnection->query("select C1.customerName,C2.customerName,transactionAmont,transactionTime from Transaction,Customer C1,Customer C2 where transactionSender=C1.customerID and transactionReceiver=C2.customerID and transactionApproved=0 and transactionAmont>10000") or die(mysql_error());
+		$dbConnection->query("update Account set accountBalance=accountBalance+" .$row1[2]. " where accountOwner='" .$row1[1] ."'")or die(mysql_error());
+
+		$dbConnection->query("update Account set accountBalance=accountBalance-" .$row1[2]. " where accountOwner='". $row1[0] ."'")or die(mysql_error());
+
+		}
+		
+		$result = $dbConnection->query("select C1.customerName,C2.customerName,transactionAmont,transactionTime,C1.customerID,C2.customerID,Transaction.transactionID from Transaction,Customer C1,Customer C2 where transactionSender=C1.customerID and transactionReceiver=C2.customerID and transactionApproved=0 and transactionAmont>10000") or die(mysql_error());
 		while($row = mysqli_fetch_row($result)){
+		$index= 0;
+		
 		echo '<tr>';
 		echo '<td style="width:25%" >' . $row[0]. '</td>';
 		echo '<td style="width:25%" >' . $row[1]. '</td>';
 		echo '<td style="width:20%" >' . $row[2]. '</td>';
 		echo '<td style="width:20%" >' . $row[3]. '</td>';
 		echo '<td>';
-		echo '<button type="button"  align="center" class="btn btn-default btn-xs" data-toggle="tooltip" title="View">
-                                            <span class="glyphicon glyphicon-remove"></span>
-                                        </button>
-                                        <button type="button" align="center" class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve">
-                                            <span class="glyphicon glyphicon-ok"></span>
-                                        </button>';
+		echo '<form method="post">';
+		echo '<button  type="submit" name="remove"  class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' . $row[6]. '>
+                      <span class="glyphicon glyphicon-remove"></span>
+                      </button>
+
+                      <button type="submit" name="approve"  class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve" value=' . $row[6]. '>
+                      <span class="glyphicon glyphicon-ok"></span>
+                       </button>';
+		$index++;
+		echo '</form>';
 		echo '</td>';
 		}
+
+		
+
 		?>	
 		</tbody>
-		<tfoot>
-                                <tr>
-                                    <td colspan="3">
-                                        <span>Count : 3; Page 1 of 1</span>
-                                    </td>
-                                    <td colspan="4">
-                                        <div class="marginPagingHeight30">
-                                            <ul class="pagination pagination-sm marginPaging">
-                                                <li class="active">
-                                                    <a href="javascript:void(0);">1</a>
-                                                </li>
-                                               
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tfoot>
-		<tbody></tbody>
+		
 
    			
 		</table>

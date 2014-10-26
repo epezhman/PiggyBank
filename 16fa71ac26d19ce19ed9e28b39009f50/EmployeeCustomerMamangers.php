@@ -94,7 +94,7 @@
 		<div class="table-responsive">
 		<table class="table table-striped table-hover ">
 		<thead>
-			<tr><th>Name</th><th>Date of Birth</th><th>Address</th><th>Email</th><th>Account Type</th><th>Account Balance</th><th>Account Number</th></tr>
+			<tr><th>Name</th><th>Date of Birth</th><th>Address</th><th>Email</th><th>Account Balance</th><th>Account Number</th></tr>
 		</thead>
 	<tbody>	
 		<?php
@@ -103,35 +103,17 @@
 		while($row = mysqli_fetch_row($result)){
 		echo '<tr>';
 		echo '<td style="width:15%" >' . $row[0]. '</td>';
-		echo '<td style="width:15%" >' . $row[1]. '</td>';
+		echo '<td style="width:12%" >' . $row[1]. '</td>';
 		echo '<td style="width:15%" >' . $row[2]. '</td>';
 		echo '<td style="width:15%" >' . $row[3]. '</td>';
-		echo '<td style="width:15%" >' . $row[4]. '</td>';
+		//echo '<td style="width:15%" >' . $row[4]. '</td>';
 		echo '<td style="width:15%" >' . $row[5]. '</td>';
+		echo '<td style="width:15%" >' . $row[6]. '</td>';
 		}
 		?>
 	
 	</tbody>	
 
-                            <tfoot>
-                                <tr>
-                                    <td colspan="3">
-                                        <span>Count : 20; Page 1 of 2</span>
-                                    </td>
-                                    <td colspan="4">
-                                        <div class="marginPagingHeight30">
-                                            <ul class="pagination pagination-sm marginPaging">
-                                                <li class="active">
-                                                    <a href="javascript:void(0);">1</a>
-                                                </li>
-                                                <li>
-                                                    <a href="#">2</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
 

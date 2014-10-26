@@ -92,49 +92,61 @@
 		<div class="table-responsive">
 		<table class="table table-striped table-hover ">
 		<thead>
-			<tr><th>Name</th><th>Date of Birth</th><th>Address</th><th>Account Type</th><th>Account Balance</th><th>Action</th></tr>
+			<tr><th>Name</th><th>Date of Birth</th><th>Address</th><th>Account Balance</th><th>Action</th></tr>
 		</thead>
 		
 		<tbody>	
 		<?php
 		
-		$result = $dbConnection->query("select User.userUsername,Customer.customerDOB,Customer.customerAddress,Account.accountType,Account.accountBalance from User,Customer,Account where User.userUsername=Customer.customerUsername and User.userApproved=0 and Account.accountOwner= Customer.customerID") or die(mysql_error());
+
+		if(isset($_POST['remove'])){
+		   //mail should be sent
+		$var = $_POST['remove'];
+		$dbConnection->query("delete from User where User.userUsername='$var'")or die(mysql_error());
+		
+		}
+
+		if(isset($_POST['approve'])){
+		$var = $_POST['approve'];
+         $dbConnection->query("update User set userApproved=1 where User.userUsername='$var'")or die(mysql_error());
+		//mail should be sent 	
+	}
+
+
+
+
+		$result = $dbConnection->query("select User.userUsername,Customer.customerDOB,Customer.customerAddress,Account.accountType,Account.accountBalance,Customer.customerEmail,Customer.customerID  from User,Customer,Account where User.userUsername=Customer.customerUsername and User.userApproved=0 and Account.accountOwner= Customer.customerID") or die(mysql_error());
 		while($row = mysqli_fetch_row($result)){
 		echo '<tr>';
-		echo '<td style="width:20%" >' . $row[0]. '</td>';
-		echo '<td style="width:12%" >' . $row[1]. '</td>';
-		echo '<td style="width:20%" >' . $row[2]. '</td>';
-		echo '<td style="width:18%" >' . $row[3]. '</td>';
-		echo '<td style="width:18%" >' . $row[4]. '</td>';
+		echo '<td style="width:25%" >' . $row[0]. '</td>';
+		echo '<td style="width:20%" >' . $row[1]. '</td>';
+		echo '<td style="width:25%" >' . $row[2]. '</td>';
+		//echo '<td style="width:18%" >' . $row[3]. '</td>';
+		echo '<td style="width:20%" >' . $row[4]. '</td>';
+
 		echo '<td>';
-		echo '<button type="button"  align="center" class="btn btn-default btn-xs" data-toggle="tooltip" title="View">
-                                            <span class="glyphicon glyphicon-remove"></span>
-                                        </button>
-                                        <button type="button" align="center" class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve">
-                                            <span class="glyphicon glyphicon-ok"></span>
-                                        </button>';
+		
+		echo '<form method="post" action="EmployeePendingRegistrations.php?bla">';
+		echo '<button  type="submit" name="remove"  class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' .$row[0]. '>
+                      <span class="glyphicon glyphicon-remove"></span>
+                      </button>
+
+                      <button type="submit"  name="approve"  class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve" value=' .$row[0]. '>
+                      <span class="glyphicon glyphicon-ok"></span>
+                       </button>';
+		echo '</form>';
 		echo '</td>';
 		}
+
+
+		
+
+
+		
+
 		?>	
 		</tbody>
-		<tfoot>
-                                <tr>
-                                    <td colspan="3">
-                                        <span>Count : 3; Page 1 of 1</span>
-                                    </td>
-                                    <td colspan="4">
-                                        <div class="marginPagingHeight30">
-                                            <ul class="pagination pagination-sm marginPaging">
-                                                <li class="active">
-                                                    <a href="javascript:void(0);">1</a>
-                                                </li>
-                                               
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tfoot>
-		<tbody></tbody>
+
 
    			
 		</table>
@@ -151,7 +163,7 @@
     </div>
     <script src="../js/jquery-1.11.1.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
-			
+
 
 </body>
 </html>
