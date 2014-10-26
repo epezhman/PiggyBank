@@ -45,17 +45,17 @@ function registerCustomer(){
             $customerEmail = mysqli_real_escape_string($dbConnection, $_POST['email']);
             $customerAddress = mysqli_real_escape_string($dbConnection, $_POST['address']);
             $accountID = getRandomString(10);
-            $accountBalance = rand();
+            $accountBalance = rand(0,15000);
             // Prepare the SQL statements
             $availableStmt = $dbConnection->prepare("SELECT userUsername FROM User WHERE userUsername LIKE (?)");
             $userStmt = $dbConnection->prepare("INSERT INTO User VALUES (?,?,?,0)");
             $customerStmt = $dbConnection->prepare("INSERT INTO Customer VALUES (?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?)");
-       //     $accountStmt = $dbConnection->prepare("INSERT INTO Account VALUES (?,?,0,?)");
+            $accountStmt = $dbConnection->prepare("INSERT INTO Account VALUES (?,?,0,?)");
             // Bind parameters
             $availableStmt->bind_param("s", $userUsername);
             $userStmt->bind_param("sss", $userUsername, $userPassword, $userRole);
             $customerStmt->bind_param("ssssss",$customerID, $customerName, $customerDOB, $customerEmail, $customerAddress, $userUsername);
-       //     $accountStmt->bind_param("ssi", $accountID, $customerID, $accountBalance);
+            $accountStmt->bind_param("ssi", $accountID, $customerID, $accountBalance);
             // Execute the statements
             // 1- Check if username is already taken
             $userStmt->execute();
@@ -72,7 +72,7 @@ function registerCustomer(){
             }
             else{
                 // Add the account data
-         //       $accountStmt->execute();
+                $accountStmt->execute();
                 // Report success to register.php
                 return true;
             }
@@ -108,6 +108,7 @@ try{
     }
     else{
         // Otherwise, post back to signup.php to inform user of failure
+        session_start();
         $_SESSION["invFullname"] = $fullnameStatus ? NULL : $_POST["fullname"];
         $_SESSION["invAddress"] = $addressStatus ? NULL : $_POST["address"];
         $_SESSION["invDOB"] = $dobStatus ? NULL : $_POST["dob"];

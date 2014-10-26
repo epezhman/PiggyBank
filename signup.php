@@ -275,7 +275,8 @@
                             <table style="width:700px; table-layout:fixed;">
                             <col width="150"><col width="350"><col width="200">
 			<?php
-						try{
+                            session_start();
+			    try{
                             echo "<tr>
                             <td style=\"padding: 10px 0px;\"><label for=\"title\">Title</label></td>
                             <td><select id=\"title\" name=\"title\" class=\"form-control\" style=\"width: 70px;\">
@@ -358,8 +359,10 @@
                                     <input type=\"submit\" value=\"Sign up\" id=\"submit\" style=\"width:80px; heigh:30px;\" class=\"btn btn-primary\" disabled/>
                                 </td>
                         </tr>";
+                             session_destory();
 					}catch(Exception $e){
 					//	echo $e;
+                                                session_destroy();
 						header("Location: error.php");
 					}
                         ?>
