@@ -77,7 +77,7 @@ try{
                 $_SESSION['userloggedin'] = time();
             // Determine role and redirect accordingly
             if($role == "customer")
-                header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerMyTransfers.html");    
+                header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerMyTransfers.php");    
             else if($role == "admin")
                 header("Location: ../16fa71ac26d19ce19ed9e28b39009f50/eCustomerManagers.php");
 

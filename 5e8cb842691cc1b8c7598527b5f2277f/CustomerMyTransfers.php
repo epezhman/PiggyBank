@@ -1,13 +1,8 @@
-﻿<?php 
-try{
-	session_start();
-	if(!isset($_SESSION["username"]) or  !isset($_SESSION["loginstatus"]))
-		header("Location: ../signin.php");
-	if($_SESSION["loginstatus"] != "authenticated" )
-		header("Location: ../signin.php");
-}catch(Exception $e){
-	header("Location ../error.php");
-}
+﻿<?php
+    session_start();
+    require("../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php");
+    if($_SESSION["userrole"] != "customer")
+        header("Location: ../error.php?id=404");
 ?>
 <?php 
 try{

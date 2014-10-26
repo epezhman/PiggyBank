@@ -28,7 +28,7 @@
 
 			if(isset($_SESSION["username"]) and isset($_SESSION["loginstatus"]) and isset($_SESSION["userrole"]))
 			{
-				if($_SESSION["loginstatus"] == "authenticated" and $_SESSION["userrole"] == "customer")
+				if($_SESSION["loginstatus"] == "authenticated" )
 				{
 					$userID = NULL;
 					$userName = NULL;
