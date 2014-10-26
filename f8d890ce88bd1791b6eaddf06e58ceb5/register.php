@@ -50,12 +50,12 @@ function registerCustomer(){
             $availableStmt = $dbConnection->prepare("SELECT userUsername FROM User WHERE userUsername LIKE (?)");
             $userStmt = $dbConnection->prepare("INSERT INTO User VALUES (?,?,?,0)");
             $customerStmt = $dbConnection->prepare("INSERT INTO Customer VALUES (?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?)");
-            $accountStmt = $dbConnection->prepare("INSERT INTO Account VALUES (?,?,0,?)");
+       //     $accountStmt = $dbConnection->prepare("INSERT INTO Account VALUES (?,?,0,?)");
             // Bind parameters
             $availableStmt->bind_param("s", $userUsername);
             $userStmt->bind_param("sss", $userUsername, $userPassword, $userRole);
             $customerStmt->bind_param("ssssss",$customerID, $customerName, $customerDOB, $customerEmail, $customerAddress, $userUsername);
-            $accountStmt->bind_param("ssi", $accountID, $customerID, $accountBalance);
+       //     $accountStmt->bind_param("ssi", $accountID, $customerID, $accountBalance);
             // Execute the statements
             // 1- Check if username is already taken
             $userStmt->execute();
@@ -72,7 +72,7 @@ function registerCustomer(){
             }
             else{
                 // Add the account data
-                $accountStmt->execute();
+         //       $accountStmt->execute();
                 // Report success to register.php
                 return true;
             }
