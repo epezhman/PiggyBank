@@ -9,7 +9,7 @@
    			
     <!-- To be Changed!! -->
     <title>
-        PB - Employee
+        PiggyBank - Pending Customer Requests 
     </title>
 
     <!-- Bootstrap core CSS -->
@@ -29,34 +29,40 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#"><img src="../images/logo.png" alt="" class="logoStyle" /> Piggy Bank GmbH</a>
+                    <a class="navbar-brand" href="eCustomerManagers.php"><img src="../images/logo.png" alt="" class="logoStyle" /> Piggy Bank GmbH</a>
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
               
-			<li class="visible-xs"><a href="EmployeePendingRegistrations.php">Pending Registrations</a></li>
-                        <li class="visible-xs"><a href="EmployeeCustomerMamangers.php">Registered Customers</a></li>
-                        <li class="visible-xs active"><a href="EmployeePendingTransfers.php">Pending Transfers</a></li>
-                        <li class="visible-xs"><a href="EmployeeTransfers.php">All Transfers</a></li>
+			<li class="visible-xs"><a href="ePendingRegistrations.php">Pending Registrations</a></li>
+                        <li class="visible-xs"><a href="eCustomerManagers.php">Registered Customers</a></li>
+                        <li class="visible-xs active"><a href="ePendingTransfers.php">Pending Transfers</a></li>
+                        <li class="visible-xs"><a href="eTransfers.php">All Transfers</a></li>
 
                         <li><a href="#">Profile</a></li>
                         <li><a href="#">Help</a></li>
-                        <li><a href="#">Log Out</a></li>
+                        <li><a href="../f8d890ce88bd1791b6eaddf06e58ceb5/logout.php">Log Out</a></li>
 
                     </ul>
                     
                 </div>
             </div>
         </div>
+        <?php
+            session_start();
+            require("../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php");
+            if($_SESSION["userrole"] != "admin")
+                header("Location: ../error.php?id=404");
 
+        ?>
 	<div class="container-fluid">
             <div class="row">
                 <div class="col-sm-3 col-md-2 sidebar">
                     <ul class="nav nav-sidebar">                      
-                        <li class="active"><a href="EmployeePendingRegistrations.php">Pending Registrations</a></li>
-			<li><a href="EmployeeCustomerMamangers.php">Registered Customers</a></li>
-			<li><a href="EmployeePendingTransfers.php">Pending Transfers</a></li>                       
-			<li><a href="EmployeeTransfers.php">All Transfers</a></li>
+                        <li class="active"><a href="ePendingRegistrations.php">Pending Registrations</a></li>
+			<li><a href="eCustomerManagers.php">Registered Customers</a></li>
+			<li><a href="ePendingTransfers.php">Pending Transfers</a></li>                       
+			<li><a href="eTransfers.php">All Transfers</a></li>
                     </ul>
                 </div>
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">

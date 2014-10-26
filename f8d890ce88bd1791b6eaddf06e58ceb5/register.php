@@ -4,6 +4,7 @@
 </head>
 <body>
 <?php
+require("accesscontrol.php");
 
 function getRandomString($length = 8){
     $alphabet = "abcdefghijklmnopqrstuxyvwzABCDEFGHIJKLMNOPQRSTUXYVWZ._";
@@ -43,14 +44,18 @@ function registerCustomer(){
             $customerDOB = mysqli_real_escape_string($dbConnection, $_POST['dob']);
             $customerEmail = mysqli_real_escape_string($dbConnection, $_POST['email']);
             $customerAddress = mysqli_real_escape_string($dbConnection, $_POST['address']);
+            $accountID = getRandomString(10);
+            $accountBalance = rand();
             // Prepare the SQL statements
             $availableStmt = $dbConnection->prepare("SELECT userUsername FROM User WHERE userUsername LIKE (?)");
             $userStmt = $dbConnection->prepare("INSERT INTO User VALUES (?,?,?,0)");
             $customerStmt = $dbConnection->prepare("INSERT INTO Customer VALUES (?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?)");
+       //     $accountStmt = $dbConnection->prepare("INSERT INTO Account VALUES (?,?,0,?)");
             // Bind parameters
             $availableStmt->bind_param("s", $userUsername);
             $userStmt->bind_param("sss", $userUsername, $userPassword, $userRole);
             $customerStmt->bind_param("ssssss",$customerID, $customerName, $customerDOB, $customerEmail, $customerAddress, $userUsername);
+       //     $accountStmt->bind_param("ssi", $accountID, $customerID, $accountBalance);
             // Execute the statements
             // 1- Check if username is already taken
             $userStmt->execute();
@@ -60,24 +65,21 @@ function registerCustomer(){
             $customerStmt->execute();
             if($customerStmt->affected_rows < 1){
                 // Delete the inserted user  
-                
                 $deleteStmt = $dbConnection->prepare("DELETE FROM User WHERE userUsername=?");
                 $deleteStmt->bind_param("s", $userUsername);
                 $deleteStmt->execute();
                 return false;
             }
             else{
+                // Add the account data
+         //       $accountStmt->execute();
                 // Report success to register.php
-                //$dbConnection->close();
                 return true;
             }
 
     }catch(Exception $e){
- //       $dbConnection->close();
-//        echo $e;
         return false;
     }
-//    $dbConnection->close();
     return true;
 }
 

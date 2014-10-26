@@ -70,16 +70,16 @@ try{
             header("Location: ../signin.php?failure=".$_POST["username"]);
         }      
         else{
-                $_SESSION["loginstatus"] = "authenticated";
-                $_SESSION["username"] = $_POST["username"];
-                $_SESSION["userrole"] = $role;
-                $_SESSION["userloggedin"] = time();
+                session_start();
+                $_SESSION['loginstatus'] = 'authenticated';
+                $_SESSION['username'] = $_POST['username'];
+                $_SESSION['userrole'] = $role;
+                $_SESSION['userloggedin'] = time();
             // Determine role and redirect accordingly
             if($role == "customer")
-                header("Location: ../customerdir");    
+                header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerMyTransfers.php");    
             else if($role == "admin")
-
-                header("Location: ../16fa71ac26d19ce19ed9e28b39009f50/EmployeePendingRegistrations.php");
+                header("Location: ../16fa71ac26d19ce19ed9e28b39009f50/eCustomerManagers.php");
 
         }
     }
