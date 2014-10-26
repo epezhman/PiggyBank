@@ -168,13 +168,10 @@ try{
         else{
             $('#submit').prop("disabled", true);
             flag = true;
-            
-                }
+         }
     }
 
-    function uploadFile(){
-        $('#submitFile').removeAttr('disabled');
-    }
+    
 	</script>
 </head>
 
@@ -201,7 +198,6 @@ try{
 						</li>
 						<li class="visible-xs"><a href="CustomerMyTransfers.php">My
 								Transfers</a></li>
-
 						<li><a href="../Help.php">Help</a></li>
 						<?php 
 						try{
@@ -255,7 +251,9 @@ try{
 
 					<!-- Tab panes -->
 					<div class="tab-content">
-						<div class="tab-pane <?php  if(!isset($_SESSION["invUploadingFile"])) echo "active"; ?>" id="TransferByForm">
+						<div
+							class="tab-pane <?php  if(!isset($_SESSION["invUploadingFile"])) echo "active"; ?>"
+							id="TransferByForm">
 
 
 							<div class="row">
@@ -371,17 +369,20 @@ try{
 
 							</div>
 						</div>
-						<div class="tab-pane <?php  if(isset($_SESSION["invUploadingFile"])){ echo "active"; $_SESSION["invUploadingFile"] = null;}?>" id="TransferByFile">
+						<div
+							class="tab-pane <?php  if(isset($_SESSION["invUploadingFile"])){ echo "active"; $_SESSION["invUploadingFile"] = null;}?>"
+							id="TransferByFile">
 							<div class="row">
 								<div class="col-md-12">
 									<form class="form-horizontal" role="form"
 										action="../f8d890ce88bd1791b6eaddf06e58ceb5/Upload.php"
-										" method="post" enctype="multipart/form-data">
+										 method="post" enctype="multipart/form-data">
 										<div class="form-group">
 											<label for="InputFile" class="col-sm-2 control-label">File
 												input</label>
 											<div class="col-sm-8">
-												<input type="file" id="InputFile" onchange="uploadFile()" name="uploadFile">
+												<input type="file" id="InputFile" onchange="$('#submitFile').removeAttr('disabled');"
+													name="uploadFile">
 												<p class="help-block">Upload the file containing ReceiverId,
 													Transfer Token and Amount of Euros you wish to trasnfer.</p>
 											</div>
@@ -411,7 +412,7 @@ try{
 											if(isset($_SESSION["invMimeError"]))
 											{
 												echo "Only Plain text is expected <br />";
-												
+
 											}
 											if(isset($_SESSION["invUnknownError"]))
 											{
