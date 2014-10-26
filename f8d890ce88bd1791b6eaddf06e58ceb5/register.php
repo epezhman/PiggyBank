@@ -4,7 +4,14 @@
 </head>
 <body>
 <?php
-require("accesscontrol.php");
+//if(strpos(getenv("HTTP_REFERER", "/PiggyBank") === false)){
+    // Some basic access control code
+//    ob_start();
+//    require("accesscontrol.php");
+//    if(!ob_get_clean()){
+//        header("Location: ../error.php?id=404");
+//        exit();
+//    }
 
 function getRandomString($length = 8){
     $alphabet = "abcdefghijklmnopqrstuxyvwzABCDEFGHIJKLMNOPQRSTUXYVWZ._";
@@ -84,10 +91,6 @@ function registerCustomer(){
 }
 
 try{
-    // Check the referer first to deny nosey requests
-    if (strpos(getenv("HTTP_REFERER"), "/PiggyBank/signup.php") === false)
-        header("Location: ../error.php?id=404");
-
     $_SERVER["HTTP_REFERER"] = "PiggyBank/f8d890ce88bd1791b6eaddf06e58ceb5/register.php";
     // Retrieve and validate posted parameters
     $fullnameStatus = validateInput($_POST['fullname'], "name");

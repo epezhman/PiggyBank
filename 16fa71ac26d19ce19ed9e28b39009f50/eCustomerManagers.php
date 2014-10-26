@@ -32,17 +32,26 @@
                         <span class="icon-bar"></span>
                     </button>
                     <?php
+                        ob_start();
                         require "../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php";
-                        session_start();
-                        if($_SESSION['userrole'] != 'admin')
+                        $authenticated =  ob_get_clean();
+                        if($authenticated == -1){
                             header("Location: ../error.php?id=404");
+                            exit();
+                        }
+
+                        session_start();
+                        if($_SESSION['userrole'] != 'admin'){
+                            header("Location: ../error.php?id=404");
+                            exit();
+                            }
                     ?>
                     <a class="navbar-brand" href=".."><img src="../images/logo.png" alt="" class="logoStyle" /> Piggy Bank GmbH</a>
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
 			<li class="visible-xs"><a href="ePendingRegistrations.php">Pending Registrations</a></li>
-                        <li class="visible-xs active"><a href="eCustomerManangers.php">Registered Customers</a></li>
+                        <li class="visible-xs active"><a href="eCustomerManagers.php">Registered Customers</a></li>
                         <li class="visible-xs"><a href="ePendingTransfers.php">Pending Transfers</a></li>
                         <li class="visible-xs"><a href="eTransfers.php">All Transfers</a></li>
 
@@ -60,7 +69,7 @@
                 <div class="col-sm-3 col-md-2 sidebar">
                     <ul class="nav nav-sidebar">
 			<li><a href="ePendingRegistrations.php">Pending Registrations</a></li>
-                        <li class="active"><a href="eCustomerManangers.php">Registered Customers</a></li>
+                        <li class="active"><a href="eCustomerManagers.php">Registered Customers</a></li>
                         <li><a href="ePendingTransfers.php">Pending Transfers</a></li>
                         <li><a href="eTransfers.php">All Transfers</a></li>
                     </ul>

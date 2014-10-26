@@ -145,7 +145,7 @@
 								echo "<td><span id=\"usernamespan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>
 									</tr><tr>
 										<td style=\"padding: 10px 0px;\"><label for=\"password\">Password</label></td>
-										<td><input class=\"form-control\" id=\"password\" name=\"password\" type=\"password\" style=\"width: 200px\" onblur=\"validateElement(this, 'password')\"></td>
+										<td><input class=\"form-control\" id=\"password\" name=\"password\" type=\"password\" style=\"width: 200px\" onblur=\"validateElement(this, 'password')\" onkeyup=\"validateElement(this, 'password')\"></td>
 										<td><span id=\"passwordspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>
 									</tr><tr>
 										<td style=\"padding: 10px 0px;\"></td>

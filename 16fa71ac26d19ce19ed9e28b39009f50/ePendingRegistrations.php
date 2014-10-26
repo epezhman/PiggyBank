@@ -49,10 +49,17 @@
             </div>
         </div>
         <?php
-            session_start();
-            require("../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php");
-            if($_SESSION["userrole"] != "admin")
+            ob_start();
+            require "../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php";
+            if(ob_get_clean() == -1){
                 header("Location: ../error.php?id=404");
+                exit();
+            }
+            session_start();
+            if($_SESSION["userrole"] != "admin"){
+                header("Location: ../error.php?id=404");
+                exit();
+            }
 
         ?>
 	<div class="container-fluid">
@@ -86,13 +93,30 @@
                     </fieldset>
 		    <br></br>	
 <?php
-    // Check the referer first to deny nosey requests
-    if (strpos(getenv("HTTP_REFERER"), "/PiggyBank/") === false)
-        header("Location: ../error.php?id=404");
-       require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/dbconnect.php");
+
         if(mysqli_connect_errno()){
             header("Location: ../error.php");
+            exit();
         }
+function sendEmail($eAddress, $eSubject, $eBody){
+
+
+
+
+}
+function generateTokens($custID){
+    // Generates 100 unique tokens and returns them to the caller
+    $customerTokens = array();
+    $counter = 0;
+    while($counter < 100){
+        $tempToken =  substr(sha1($custID.$counter++ .microtime(true).getRandomString()), 0, 15);
+        // Now check whether token is already in the Token's table
+        $tokenAvailableStmt = $dbConnection->prepare("SELECT * FROM Token WHERE tokenID =? AND tokenUsed=0");
+        $tokenAvailableStmt->bind_param("s", $tempToken);
+        $tokenAvailableStmt->execute();
+    }
+
+}
 ?>
 
 		<div class="table-responsive">
@@ -113,10 +137,24 @@
 		}
 
 		if(isset($_POST['approve'])){
-		$var = $_POST['approve'];
-         $dbConnection->query("update User set userApproved=1 where User.userUsername='$var'")or die(mysql_error());
-		//mail should be sent 	
-	}
+		    $var = $_POST['approve'];
+                    $dbConnection->query("update User set userApproved=1 where User.userUsername='$var'")or die(mysql_error());
+		    // Generate tokens and email customer
+                    // 1- Retrieve customer details based on username
+                    $customerStmt = $dbConnection->prepare("SELECT customerID, customerName, customerEmail FROM Customer WHERE customerUsername LIKE (?)");
+                    $customerStmt->bind_param("s", $var);
+                    $customerStmt->execute();
+                    $customerStmt->bind_result($ID, $Name, $Email);
+                    $customerStmt->store_result();
+                    if($customerStmt->num_rows() == 1){
+                        while($customerStmt->fetch()){
+                            $customerID = $ID;
+                            $customerName = $Name;
+                            $customerEmail = $Email;
+	                }
+                    }
+                    $customerTokens = generateTokens($customerID);
+                }           
 
 
 
@@ -132,7 +170,7 @@
 
 		echo '<td>';
 		
-		echo '<form method="post" action="EmployeePendingRegistrations.php?bla">';
+		echo '<form method="post" action="ePendingRegistrations.php">';
 		echo '<button  type="submit" name="remove"  class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' .$row[0]. '>
                       <span class="glyphicon glyphicon-remove"></span>
                       </button>
