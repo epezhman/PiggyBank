@@ -4,6 +4,14 @@
 </head>
 <body>
 <?php
+//if(strpos(getenv("HTTP_REFERER"), "/PiggyBank/") === false){
+//    ob_start();
+//    require("accesscontrol.php");
+//    if(!ob_get_clean()){
+//        header("Location: ../error.php?id=404");
+//        exit();
+//    }
+
 
 function getRandomString($length = 8){
     $alphabet = "abcdefghijklmnopqrstuxyvwzABCDEFGHIJKLMNOPQRSTUXYVWZ._";
@@ -56,10 +64,6 @@ function authenticateUser($userUsername, $userPassword){
 }
 
 try{
-    // Check the referer first to deny nosey requests
-    if (strpos(getenv("HTTP_REFERER"), "/PiggyBank/") === false)
-        header("Location: ../error.php?id=404");
-
     $usernameStatus = validateInput($_POST['username'], "username");
     $passwordStatus = (strlen($_POST["hashedpassword"]) < 8) ? false : validateInput($_POST['hashedpassword'], "password");
     // If validation succeeds, add user to database
@@ -68,6 +72,7 @@ try{
         $role = authenticateUser($_POST['username'], $_POST['hashedpassword']);
         if(empty($role)){
             header("Location: ../signin.php?failure=".$_POST["username"]);
+            exit();
         }      
         else{
                 session_start();
@@ -76,18 +81,23 @@ try{
                 $_SESSION['userrole'] = $role;
                 $_SESSION['userloggedin'] = time();
             // Determine role and redirect accordingly
-            if($role == "customer")
-                header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerMyTransfers.php");    
-            else if($role == "admin")
+            if($role == "customer"){
+                header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerMyTransfers.php");
+                exit();
+            }
+            else if($role == "admin"){
                 header("Location: ../16fa71ac26d19ce19ed9e28b39009f50/eCustomerManagers.php");
-
+                exit();
+            }
         }
     }
     else{
         header("Location: ../signin.php?failure=".$_POST["username"]);
+        exit();
     }
 }catch(Exception $e){
   header("Location ../error.php");
+  exit();
 }
 ?>
 <table width="100%">
