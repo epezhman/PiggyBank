@@ -65,6 +65,13 @@ function registerCustomer(){
             $accountStmt->bind_param("ssi", $accountID, $customerID, $accountBalance);
             // Execute the statements
             // 1- Check if username is already taken
+            $availableStmt->execute();
+            $availableUser = $availableStmt->fetch();
+            if(count($availableUser) > 0){
+                header("Location: ../error.php?id=available");
+                exit();
+            }
+            return false;
             $userStmt->execute();
             if($userStmt->affected_rows < 1){
                 return false;

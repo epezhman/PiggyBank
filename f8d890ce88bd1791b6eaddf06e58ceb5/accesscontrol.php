@@ -12,5 +12,5 @@ session_start();
        session_destroy();
        return -1;
    }
-   return 1;
+   return 0;
 ?>

@@ -96,6 +96,10 @@
                             echo "<h4><b>Your session has already expired. Please <a href=\"/PiggyBank/signin.php\">sign in</a> again.</b></h4>";
                             echo "</td></tr>";
                         }
+                        else if($errorID == "available"){
+                            echo "<tr><td align=\"center\">";
+                            echo "<h4><b>The chosen username is already taken. <a href=\"/PiggyBank/signup.php\">Try</a> again?</b><h4>";
+                        }
                         echo "</table>";
                         echo "<br/>";
                        ?>

@@ -107,7 +107,7 @@
                 validated["email"] = false;
             }
             else
-                if(!e.value.match("^[a-zA-Z0-9_.]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$")){
+                if(!e.value.match("^[a-zA-Z0-9_.]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,3}?(\.[a-zA-Z]{2})$")){
                     $('#'+e.id+'span').css("background","#CC0000");
                     $('#'+e.id+'span').html("Invalid email address");
                     validated["email"] = false;
