@@ -376,12 +376,13 @@ try{
 								<div class="col-md-12">
 									<form class="form-horizontal" role="form"
 										action="../f8d890ce88bd1791b6eaddf06e58ceb5/Upload.php"
-										 method="post" enctype="multipart/form-data">
+										method="post" enctype="multipart/form-data">
 										<div class="form-group">
 											<label for="InputFile" class="col-sm-2 control-label">File
 												input</label>
 											<div class="col-sm-8">
-												<input type="file" id="InputFile" onchange="$('#submitFile').removeAttr('disabled');"
+												<input type="file" id="InputFile"
+													onchange="$('#submitFile').removeAttr('disabled');"
 													name="uploadFile">
 												<p class="help-block">Upload the file containing ReceiverId,
 													Transfer Token and Amount of Euros you wish to trasnfer.</p>
@@ -402,7 +403,7 @@ try{
 									<div style="text-align: center;">
 										<?php
 										if(isset($_SESSION["invFileBig"]) or isset($_SESSION["invMimeError"]) or isset($_SESSION["invUnknownError"])
-												or isset($_SESSION["invDupFile"]) or isset($_SESSION["InvFormatError"]))
+												or isset($_SESSION["invDupFile"]) or isset($_SESSION["InvFormatError"]) or isset($_SESSION["InvFormatError2"]))
 										{
 											echo "<span class='alert alert-danger' >";
 											if(isset($_SESSION["invFileBig"]))
@@ -426,15 +427,20 @@ try{
 											{
 												echo "File was wrong <br />";
 											}
-
+										
 											echo "</span>";
-
 											$_SESSION["invFileBig"] = null;
 											$_SESSION["invMimeError"] = null;
 											$_SESSION["invUnknownError"] = null;
 											$_SESSION["invDupFile"] = null;
 											$_SESSION["InvFormatError"] = null;
-
+										}
+										if(isset($_SESSION["invSuccessUpload"]))
+										{
+											echo "<span class='alert alert-success' >";
+											echo "Transfer was added successfully <br />";
+											echo "</span>";
+											$_SESSION["invSuccessUpload"] = null;
 										}
 										?>
 									</div>
