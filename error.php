@@ -44,8 +44,8 @@
                                 <li id="deLang"><a href="javascript:void(0);" class="DE">Deutsch</a></li>
                             </ul>
                         </li> -->
-<<<<<<< HEAD
                         <?php
+                        session_start();
                             if($_SESSION["loginstatus"] == "authenticated"){
                                 echo "<li><a href=\"f8d890ce88bd1791b6eaddf06e58ceb5/logout.php\">Log out</a></li>";
                             }
@@ -54,18 +54,6 @@
                         <li><a href=\"/PiggyBank/signup.php\">Sign up</a></li><li><a href=\"joinus.php\">Join us</a></li>";
                         ?>
                     </ul>
-=======
-						<?php
-						session_start();
-						if($_SESSION["loginstatus"] == "authenticated"){
-							echo "<li><a href=\"f8d890ce88bd1791b6eaddf06e58ceb5/logout.php\">Log out</a></li>";
-						}
-						else
-							echo "<li><a href=\"signin.php\">Sign in</a></li>
-							<li><a href=\"signup.php\">Sign up</a></li>";
-						?>
-					</ul>
->>>>>>> 60757789470332d09cf8a311f0b84b1b5c63fd1a
 
 				</div>
 			</div>
