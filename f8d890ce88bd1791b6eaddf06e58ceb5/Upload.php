@@ -12,9 +12,9 @@
 	require_once("dbconnect.php");
 
 	$_SESSION["invUploadingFile"] = true;
-	
+
 	define("UPLOAD_DIR", "/home/samurai/Desktop/dew/");
-	
+
 
 	try{
 
@@ -70,7 +70,7 @@
 						$i++;
 						$name = $parts["filename"] . "-" . $i . "." . $parts["extension"];
 					}
-					
+						
 					if($upFlag)
 					{
 						if (move_uploaded_file($_FILES['uploadFile']['tmp_name'], UPLOAD_DIR . $name)) {
@@ -91,8 +91,7 @@
 		header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php");
 
 	}catch(Exception $e){
-		$_SESSION["invUnknownError"] = true;
-		header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php");
+		header("Location: ../error.php");
 	}
 	?>
 	<table style="width: 100%">

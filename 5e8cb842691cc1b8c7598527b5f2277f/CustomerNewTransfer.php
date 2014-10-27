@@ -1,15 +1,12 @@
 ﻿<?php
 session_start();
-require("../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php");
+require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php");
 if($_SESSION["userrole"] != "customer")
 	header("Location: ../error.php?id=404");
-?>
-<?php 
+
 try{
 	// Connect to the database
 	require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/dbconnect.php");
-
-	//require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/UserInfo.php");
 
 	$fullName = NULL;
 
@@ -83,12 +80,18 @@ try{
                 validated["ReceiverId"] = false;
             }
             else
-                if(!e.value.match("^[a-zA-Z_]+$")){
+                /*if(!e.value.match("^[a-zA-Z_]+$")){
                 	$('#'+e.id+'Span').addClass("alert-danger");
                     $('#'+e.id+'Span').removeClass("alert-success");
                     $('#'+e.id+'Span').text("Invalid fullname");
                     validated["ReceiverId"] = false;
-                }
+                }*/
+            if(!e.value.match("^[a-zA-Z0-9_]+$")){
+            	$('#'+e.id+'Span').addClass("alert-danger");
+                $('#'+e.id+'Span').removeClass("alert-success");
+                $('#'+e.id+'Span').text("Invalid fullname");
+                validated["ReceiverId"] = false;
+            }
                 else if(e.value.length != 10){
             		$('#'+e.id+'Span').addClass("alert-danger");
                 	$('#'+e.id+'Span').removeClass("alert-success");
@@ -325,7 +328,8 @@ try{
 									<div style="text-align: center;">
 										<?php
 										if(isset($_SESSION["invReceiverId"]) or isset($_SESSION["invTransferToken"]) or isset($_SESSION["invAmount"])
-												or isset($_SESSION["invNotFoundToken"]) or isset($_SESSION["invUsedToken"]) or isset($_SESSION["invNotFoundReceiver"]))
+												or isset($_SESSION["invNotFoundToken"]) or isset($_SESSION["invUsedToken"]) or isset($_SESSION["invNotFoundReceiver"])
+												or isset($_SESSION["invNotYourself"]) or isset($_SESSION["invNotEnoughMoney"]) or isset($_SESSION["invNotFoundAccount"]))
 										{
 											echo "<span class='alert alert-danger' >";
 											if(isset($_SESSION["invReceiverId"]))
@@ -342,15 +346,27 @@ try{
 											}
 											if(isset($_SESSION["invNotFoundToken"]))
 											{
-												echo "Token could not be found <br />";
+												echo "Token could not be found ";
 											}
 											if(isset($_SESSION["invUsedToken"]))
 											{
-												echo "You already used this token <br />";
+												echo "You already used this token";
 											}
 											if(isset($_SESSION["invNotFoundReceiver"]))
 											{
-												echo "This Reciver does not exist <br />";
+												echo "This Reciver does not exist ";
+											}
+											if(isset($_SESSION["invNotYourself"]))
+											{
+												echo "You can't transfer money to yourself ";
+											}
+											if(isset($_SESSION["invNotEnoughMoney"]))
+											{
+												echo "Can't do the transfer while your balance is not enough";
+											}
+											if(isset($_SESSION["invNotFoundAccount"]))
+											{
+												echo "Receiver account not found";
 											}
 											echo "</span>";
 
@@ -360,11 +376,20 @@ try{
 											$_SESSION["invNotFoundToken"] = null;
 											$_SESSION["invUsedToken"] = null;
 											$_SESSION["invNotFoundReceiver"] = null;
+											$_SESSION["invNotYourself"] = null;
+											$_SESSION["invNotEnoughMoney"] = null;
+											$_SESSION["invNotFoundAccount"] = null;
 
+										}
+										if(isset($_SESSION["invSuccessPaid"]))
+										{
+											echo "<span class='alert alert-success' >";
+											echo "Transfer was added successfully <br />";
+											echo "</span>";
+											$_SESSION["invSuccessPaid"] = null;
 										}
 										?>
 									</div>
-
 								</div>
 
 							</div>
@@ -427,7 +452,7 @@ try{
 											{
 												echo "File was wrong <br />";
 											}
-										
+
 											echo "</span>";
 											$_SESSION["invFileBig"] = null;
 											$_SESSION["invMimeError"] = null;

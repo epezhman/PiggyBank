@@ -4,16 +4,17 @@
 </head>
 <body>
 	<?php
-	
-	session_start();
-	
-	require("accesscontrol.php");
 
+	session_start();
+
+	require_once("accesscontrol.php");
+	require_once("utils.php");
 	require_once("dbconnect.php");
-	
+
 	function validateInput($input, $type){
-		// Peforms the same input validations carried out on the client-side to double check for errors/malice
-		$regExpressions =  array("ReceiverId"=>"/[a-zA-Z_]+$/", "TransferToken"=>"/[a-zA-Z0-9]+$+/", "Amount"=>"/[0-9.]+$/");
+		//$regExpressions =  array("ReceiverId"=>"/^[a-zA-Z_]+$/", "TransferToken"=>"/^[a-zA-Z0-9]+$/", "Amount"=>"/^[0-9.]+$/");
+		$regExpressions =  array("ReceiverId"=>"/^[a-zA-Z0-9_]+$/", "TransferToken"=>"/^[a-zA-Z0-9]+$/", "Amount"=>"/^[0-9.]+$/");
+
 		try{
 			if (preg_match($regExpressions[$type], $input) == 1)
 				return true;
@@ -24,11 +25,42 @@
 		}
 	}
 
-	function registerCustomer(){
-		// Carries out the necessary SQL statements to provision new users
+	function doTransfer($transactionSender, $transactionReceiver, $transactionAmont, $transactionToken){
 		try{
-			// Prepare the parameters
-			$userUsername = mysqli_real_escape_string($dbConnection, $_POST['username']);
+			$sender = mysqli_real_escape_string($dbConnection, $transactionSender);
+			$receiver = mysqli_real_escape_string($dbConnection, $transactionReceiver);
+			$amount = mysqli_real_escape_string($dbConnection, $transactionAmont);
+			$token = mysqli_real_escape_string($dbConnection, $transactionToken);
+			$approved = 0;
+			if($amount <= 10000 )
+				$approved = 1;
+			$transactionID = "";
+			$loop = true;
+			while($loop)
+			{
+				$transactionID = getRandomString(20);
+				$checkAny = $dbConnection->prepare("SELECT * FROM Transaction WHERE transactionID LIKE (?)");
+				$checkAny->bind_param("s", mysqli_real_escape_string($dbConnection,$transactionID));
+				$checkAny->execute();
+				$checkAny->store_result();
+				$checkAny->free_result();
+				$checkAny->close();
+				if($customerID->num_rows() == 0)
+				{
+					$loop = false;
+				}
+			}
+			
+			$transferDB = $dbConnection->prepare("INSERT INTO Token VALUES (?,?,?,?,?,?,?)");
+			$transferDB->bind_param("sssssss", mysqli_real_escape_string($dbConnection,$transactionID)
+					, $sender, $receiver, $amount, time, mysqli_real_escape_string($dbConnection,$approved), $token);
+			$transferDB->execute();
+			if($transferDB->affected_rows >= 1){
+				$updateToken = $dbConnection->prepare("INSERT INTO Token VALUES (?,?,0)");
+				$updateToken->bind_param("ss", mysqli_real_escape_string($dbConnection,$tempToken), mysqli_real_escape_string($dbConnection,$userID));
+				$updateToken->execute();
+			}
+			$transferDB->close();
 
 		}catch(Exception $e){
 			return false;
@@ -37,15 +69,16 @@
 	}
 
 	try{
-		// Check the referer first to deny nosey requests
-// 		if (strpos(getenv("HTTP_REFERER"), "/PiggyBank/5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php") === false)
-// 			header("Location: ../error.php?id=404");
+		//Check the referer first to deny nosey requests
+		if (strpos(getenv("HTTP_REFERER"), "/PiggyBank/5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php") === false)
+			header("Location: ../error.php?id=404");
 
-// 		$_SERVER["HTTP_REFERER"] = "/PiggyBank/5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php";
-// 		// Retrieve and validate posted parameters
-		$receiverId = validateInput($_POST['ReceiverId'], "ReceiverId");
-		$transferToken = validateInput($_POST['TransferToken'], "TransferToken");
-		$amount = validateInput($_POST['Amount'], "Amount");
+		$_SERVER["HTTP_REFERER"] = "/PiggyBank/5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php";
+
+		// Retrieve and validate posted parameters
+		$receiverId = validateInput(trim($_POST['ReceiverId']), "ReceiverId");
+		$transferToken = validateInput(trim($_POST['TransferToken']), "TransferToken");
+		$amount = validateInput(trim($_POST['Amount']), "Amount");
 
 		$userID = NULL;
 		$userUsername = mysqli_real_escape_string($dbConnection,$_SESSION['username']);
@@ -66,6 +99,7 @@
 		if(!empty($userID) and $receiverId and $transferToken and $amount)
 		{
 
+			$trasnferFlag = true;
 			$tokensCountCount = 0;
 			$tokensUsedStatus = 0;
 			$tokensCount = $dbConnection->prepare("SELECT COUNT(*), tokenUsed FROM Token WHERE tokenCustomer LIKE (?) AND tokenID LIKE(?) ");
@@ -82,60 +116,119 @@
 			if($tokensCountCount == 0)
 			{
 				$_SESSION["invNotFoundToken"] = true;
-				header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php");
+				$trasnferFlag = false;
 			}
 			if($tokensUsedStatus == 1)
 			{
 				$_SESSION["invUsedToken"] = true;
-				header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php");
+				$trasnferFlag = false;
 			}
 
 			$tokensCount->free_result();
 			$tokensCount->close();
 
-			$receiverExist = 0;
-			$receiverExistQuery = $dbConnection->prepare("SELECT COUNT(*) FROM Customer WHERE customerID LIKE (?) ");
-			$receiverExistQuery->bind_param("s", mysqli_real_escape_string($dbConnection,trim($_POST['ReceiverId'])));
-			$receiverExistQuery->execute();
-			$receiverExistQuery->bind_result($receiverExistCount);
-			$receiverExistQuery->store_result();
+			// 			$receiverExist = 0;
+			// 			$receiverExistQuery = $dbConnection->prepare("SELECT COUNT(*) FROM Customer WHERE customerID LIKE (?) ");
+			// 			$receiverExistQuery->bind_param("s", mysqli_real_escape_string($dbConnection,trim($_POST['ReceiverId'])));
+			// 			$receiverExistQuery->execute();
+			// 			$receiverExistQuery->bind_result($receiverExistCount);
+			// 			$receiverExistQuery->store_result();
 
-			while($receiverExistQuery->fetch())
+			// 			while($receiverExistQuery->fetch())
+			// 			{
+			// 				$receiverExist = $receiverExistCount;
+			// 			}			if(input)
+			
+			// 			if($receiverExist != 1)
+			// 			{
+			// 				$_SESSION["invNotFoundReceiver"] = true;
+			// 				$trasnferFlag = false;
+			// 			}
+			// 			if(trim($_POST['ReceiverId']) == $userID)
+			// 			{
+			// 				$_SESSION["invNotYourself"] = true;
+			// 				$trasnferFlag = false;
+			// 			}
+
+			// 			$receiverExistQuery->free_result();
+			// 			$receiverExistQuery->close();
+
+			$customerBalance = 0.0;
+			$customerAccount = $dbConnection->prepare("SELECT accountBalance, accountNumber FROM Account WHERE accountOwner LIKE (?) ");
+			$customerAccount->bind_param("s", mysqli_real_escape_string($dbConnection,$userID));
+			$customerAccount->execute();
+			$customerAccount->bind_result($customerBalanceDB, $customerAccountNumber);
+			$customerAccount->store_result();
+
+			while($customerAccount->fetch())
 			{
-				$receiverExist = $receiverExistCount;
+				$customerBalance = $customerBalanceDB;
 			}
-			if($receiverExist != 1)
+
+			if($customerBalance - floatval(trim($_POST['Amount'])) < 0)
 			{
-				$_SESSION["invNotFoundReceiver"] = true;
-				header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php");
+				$_SESSION["invNotEnoughMoney"] = true;
+				$trasnferFlag = false;
 			}
-				
-			$receiverExistQuery->free_result();
-			$receiverExistQuery->close();
 
-			// 			if (registerCustomer())
-				// 				header("Location: ../notify.php?mode=success");
-				// 			else
-					// 				header("Location: ../error.php");
+			$customerAccount->free_result();
+			$customerAccount->close();
 
+			$accountOwner = Null;
+			$accountOwnerBalance = 0.0;
+			$accountExistQuery = $dbConnection->prepare("SELECT accountOwner, accountBalance FROM Account WHERE accountNumber LIKE (?) ");
+			$accountExistQuery->bind_param("s", mysqli_real_escape_string($dbConnection,trim($_POST['ReceiverId'])));
+			$accountExistQuery->execute();
+			$accountExistQuery->bind_result($accountOwner,$accountExistBalance);
+			$accountExistQuery->store_result();
+
+			while($accountExistQuery->fetch())
+			{
+				$accountOwner = $accountOwner;
+				$accountOwnerBalance = $accountExistBalance;
+			}
+			if($accountOwner == Null)
+			{
+				$_SESSION["invNotFoundAccount"] = true;
+				$trasnferFlag = false;
+			}
+			if($accountOwner == $userID)
+			{
+				$_SESSION["invNotYourself"] = true;
+				$trasnferFlag = false;
+			}
+
+
+			$accountExistQuery->free_result();
+			$accountExistQuery->close();
+
+
+			if($trasnferFlag)
+			{
+				if (doTransfer($userID, $accountOwner, floatval(trim($_POST['Amount'])), trim($_POST['TransferToken'])))
+					$_SESSION["invSuccessPaid"] = true;
+				else
+					header("Location: ../error.php");
+			}
 		}
 		else{
-			// Otherwise, post back to signup.php to inform user of failure
 			$_SESSION["invReceiverId"] = $receiverId ? NULL : $_POST["ReceiverId"];
 			$_SESSION["invTransferToken"] = $transferToken ? NULL : $_POST["TransferToken"];
 			$_SESSION["invAmount"] = $amount ? NULL : $_POST["Amount"];
-			header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php");
 		}
+		header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php");
 
 	}catch(Exception $e){
 		header("Location ../error.php");
 	}
 	?>
-	<table width="100%">
+	<table style="width: 100%">
 		<tr>
 			<td align="center">
 				<h1>Your request is being processed. Please wait.</h1>
-			<td>	
+			
+			<td>
+		
 		</tr>
 		<tr>
 			<td align="center"><img src="../images/loading.gif" alt="loading.gif" />

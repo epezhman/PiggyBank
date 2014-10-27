@@ -143,7 +143,7 @@
 	generateAndSend();
 
 	?>
-	<table width="100%">
+	<table style="width: 100%">
 		<tr>
 			<td align="center">
 				<h1>Your request is being processed. Please wait.</h1>
