@@ -84,6 +84,7 @@
 						echo "<h4><b>The chosen username is already taken. <a href=\"signup.php\">Try</a> again?</b><h4>";
 					}
 					echo "</table>";
+					echo "</div>";
 					echo "<br/>";
 					?>
 				</div>

@@ -11,7 +11,7 @@
 <link rel="icon" href="/PiggyBank/images/piggyFav.ico">
 
 <!-- To be Changed!! -->
-<title>PiggyBank GmbH - Oink!!</title>
+<title>PiggyBank GmbH - Help</title>
 
 <!-- Bootstrap core CSS -->
 <link href="./css/bootstrap.min.css" rel="stylesheet">

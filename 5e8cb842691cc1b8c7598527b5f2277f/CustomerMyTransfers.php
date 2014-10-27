@@ -156,7 +156,7 @@ try{
 							<tbody>
 								<?php
 								try{
-									$transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionAmont, transactionTime, transactionApproved FROM Transaction WHERE transactionSender LIKE (?) ");
+									$transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionAmont, transactionTime, transactionApproved FROM Transaction WHERE transactionSender LIKE (?) ORDER BY transactionTime DESC LIMIT 5,10");
 									$transfers->bind_param("s", mysqli_real_escape_string($dbConnection,$userID));
 									$transfers->execute();
 									$transfers->bind_result( $transactionReceiver, $transactionAmont, $transactionTime, $transactionApproved);
