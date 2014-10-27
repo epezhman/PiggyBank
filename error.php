@@ -32,7 +32,6 @@
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-<<<<<<< HEAD
 					<?php
 						session_start();
 						if($_SESSION["userrole"] == "admin")
@@ -62,24 +61,7 @@
                         <li><a href=\"/PiggyBank/signup.php\">Sign up</a></li><li><a href=\"joinus.php\">Join us</a></li>";
                         ?>
                     </ul>
-=======
-					<a class="navbar-brand" href="#"><img src="./images/logo.png"
-						alt="" class="logoStyle" /> Piggy Bank GmbH</a>
-				</div>
-				<div class="navbar-collapse collapse">
-					<ul class="nav navbar-nav navbar-right">
-						<?php
-						session_start();
-						if($_SESSION["loginstatus"] == "authenticated"){
-							echo "<li><a href=\"f8d890ce88bd1791b6eaddf06e58ceb5/logout.php\">Log out</a></li>";
-						}
-						else
-							echo "<li><a href=\"signin.php\">Sign in</a></li>
-							<li><a href=\"signup.php\">Sign up</a></li>";
-						?>
-					</ul>
 
->>>>>>> b04fcb53ffd617459d6bc0bddef2d92af8195ef6
 
 				</div>
 			</div>
