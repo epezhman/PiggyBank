@@ -27,39 +27,88 @@
 
 	function doTransfer($transactionSender, $transactionReceiver, $transactionAmont, $transactionToken){
 		try{
+			global $dbConnection;
 			$sender = mysqli_real_escape_string($dbConnection, $transactionSender);
 			$receiver = mysqli_real_escape_string($dbConnection, $transactionReceiver);
 			$amount = mysqli_real_escape_string($dbConnection, $transactionAmont);
 			$token = mysqli_real_escape_string($dbConnection, $transactionToken);
-			$approved = 0;
-			if($amount <= 10000 )
-				$approved = 1;
+			$approved = false;
+			if($transactionAmont <= 10000 )
+				$approved = true;
 			$transactionID = "";
 			$loop = true;
 			while($loop)
 			{
-				$transactionID = getRandomString(20);
+				$transactionID = getRandomStringWithoutDot(20);
 				$checkAny = $dbConnection->prepare("SELECT * FROM Transaction WHERE transactionID LIKE (?)");
 				$checkAny->bind_param("s", mysqli_real_escape_string($dbConnection,$transactionID));
 				$checkAny->execute();
 				$checkAny->store_result();
-				$checkAny->free_result();
-				$checkAny->close();
-				if($customerID->num_rows() == 0)
+				if($checkAny->num_rows() == 0)
 				{
+					$checkAny->free_result();
+					$checkAny->close();
 					$loop = false;
 				}
+				$checkAny->free_result();
+				$checkAny->close();
+
 			}
-			
-			$transferDB = $dbConnection->prepare("INSERT INTO Token VALUES (?,?,?,?,?,?,?)");
+
+			$transferDB = $dbConnection->prepare("INSERT INTO Transaction VALUES (?,?,?,?,?,?,?)");
 			$transferDB->bind_param("sssssss", mysqli_real_escape_string($dbConnection,$transactionID)
-					, $sender, $receiver, $amount, time, mysqli_real_escape_string($dbConnection,$approved), $token);
+					, $sender, $receiver, $amount, mysqli_real_escape_string($dbConnection,date('Y-m-d H:i:s')), $approved, $token);
 			$transferDB->execute();
 			if($transferDB->affected_rows >= 1){
-				$updateToken = $dbConnection->prepare("INSERT INTO Token VALUES (?,?,0)");
-				$updateToken->bind_param("ss", mysqli_real_escape_string($dbConnection,$tempToken), mysqli_real_escape_string($dbConnection,$userID));
+				$updateToken = $dbConnection->prepare("UPDATE Token SET tokenUsed=1 WHERE tokenID LIKE (?)");
+				$updateToken->bind_param("s",$token);
 				$updateToken->execute();
+				$updateToken->close();
+
+				if($approved)
+				{
+					$customerBalance = 0.0;
+					$customerAccount = $dbConnection->prepare("SELECT accountBalance FROM Account WHERE accountOwner LIKE (?) ");
+					$customerAccount->bind_param("s", $sender);
+					$customerAccount->execute();
+					$customerAccount->bind_result($customerBalanceDB);
+					$customerAccount->store_result();
+
+					while($customerAccount->fetch())
+					{
+						$customerBalance = $customerBalanceDB;
+					}
+					$customerAccount->close();
+
+					$updateAccount = $dbConnection->prepare("UPDATE Account SET accountBalance= ? WHERE accountOwner LIKE (?)");
+					$updateAccount->bind_param("ss",mysqli_real_escape_string($dbConnection, $customerBalance -$transactionAmont),$sender);
+					$updateAccount->execute();
+					$updateAccount->close();
+					
+					
+					$customerBalance = 0.0;
+					$customerAccount = $dbConnection->prepare("SELECT accountBalance FROM Account WHERE accountOwner LIKE (?)");
+					$customerAccount->bind_param("s", $receiver);
+					$customerAccount->execute();
+					$customerAccount->bind_result($customerBalanceDB);
+					$customerAccount->store_result();
+					
+					while($customerAccount->fetch())
+					{
+						$customerBalance = $customerBalanceDB;
+					}
+					$customerAccount->close();
+					
+					
+					$updateAccount = $dbConnection->prepare("UPDATE Account SET accountBalance= ? WHERE accountOwner LIKE (?)");
+					$updateAccount->bind_param("ss",mysqli_real_escape_string($dbConnection, $customerBalance  + $transactionAmont),$receiver);
+					$updateAccount->execute();
+					$updateAccount->close();
+				}
+
 			}
+			else
+				return false;
 			$transferDB->close();
 
 		}catch(Exception $e){
@@ -138,7 +187,7 @@
 			// 			{
 			// 				$receiverExist = $receiverExistCount;
 			// 			}			if(input)
-			
+
 			// 			if($receiverExist != 1)
 			// 			{
 			// 				$_SESSION["invNotFoundReceiver"] = true;
@@ -147,81 +196,81 @@
 			// 			if(trim($_POST['ReceiverId']) == $userID)
 			// 			{
 			// 				$_SESSION["invNotYourself"] = true;
-			// 				$trasnferFlag = false;
-			// 			}
+				// 				$trasnferFlag = false;
+				// 			}
 
-			// 			$receiverExistQuery->free_result();
-			// 			$receiverExistQuery->close();
+				// 			$receiverExistQuery->free_result();
+				// 			$receiverExistQuery->close();
 
-			$customerBalance = 0.0;
-			$customerAccount = $dbConnection->prepare("SELECT accountBalance, accountNumber FROM Account WHERE accountOwner LIKE (?) ");
-			$customerAccount->bind_param("s", mysqli_real_escape_string($dbConnection,$userID));
-			$customerAccount->execute();
-			$customerAccount->bind_result($customerBalanceDB, $customerAccountNumber);
-			$customerAccount->store_result();
+				$customerBalance = 0.0;
+				$customerAccount = $dbConnection->prepare("SELECT accountBalance, accountNumber FROM Account WHERE accountOwner LIKE (?) ");
+				$customerAccount->bind_param("s", mysqli_real_escape_string($dbConnection,$userID));
+				$customerAccount->execute();
+				$customerAccount->bind_result($customerBalanceDB, $customerAccountNumber);
+				$customerAccount->store_result();
 
-			while($customerAccount->fetch())
-			{
-				$customerBalance = $customerBalanceDB;
+				while($customerAccount->fetch())
+				{
+					$customerBalance = $customerBalanceDB;
+				}
+
+				if($customerBalance - floatval(trim($_POST['Amount'])) < 0)
+				{
+					$_SESSION["invNotEnoughMoney"] = true;
+					$trasnferFlag = false;
+				}
+
+				$customerAccount->free_result();
+				$customerAccount->close();
+
+				$accountOwner = Null;
+				$accountOwnerBalance = 0.0;
+				$accountExistQuery = $dbConnection->prepare("SELECT accountOwner, accountBalance FROM Account WHERE accountNumber LIKE (?) ");
+				$accountExistQuery->bind_param("s", mysqli_real_escape_string($dbConnection,trim($_POST['ReceiverId'])));
+				$accountExistQuery->execute();
+				$accountExistQuery->bind_result($accountOwner,$accountExistBalance);
+				$accountExistQuery->store_result();
+
+				while($accountExistQuery->fetch())
+				{
+					$accountOwner = $accountOwner;
+					$accountOwnerBalance = $accountExistBalance;
+				}
+				if($accountOwner == Null)
+				{
+					$_SESSION["invNotFoundAccount"] = true;
+					$trasnferFlag = false;
+				}
+				if($accountOwner == $userID)
+				{
+					$_SESSION["invNotYourself"] = true;
+					$trasnferFlag = false;
+				}
+
+
+				$accountExistQuery->free_result();
+				$accountExistQuery->close();
+
+
+				if($trasnferFlag)
+				{
+					if (doTransfer($userID, $accountOwner, floatval(trim($_POST['Amount'])), trim($_POST['TransferToken'])))
+						$_SESSION["invSuccessPaid"] = true;
+					else
+						header("Location: ../error.php");
+				}
 			}
-
-			if($customerBalance - floatval(trim($_POST['Amount'])) < 0)
-			{
-				$_SESSION["invNotEnoughMoney"] = true;
-				$trasnferFlag = false;
+			else{
+				$_SESSION["invReceiverId"] = $receiverId ? NULL : $_POST["ReceiverId"];
+				$_SESSION["invTransferToken"] = $transferToken ? NULL : $_POST["TransferToken"];
+				$_SESSION["invAmount"] = $amount ? NULL : $_POST["Amount"];
 			}
+			header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php");
 
-			$customerAccount->free_result();
-			$customerAccount->close();
-
-			$accountOwner = Null;
-			$accountOwnerBalance = 0.0;
-			$accountExistQuery = $dbConnection->prepare("SELECT accountOwner, accountBalance FROM Account WHERE accountNumber LIKE (?) ");
-			$accountExistQuery->bind_param("s", mysqli_real_escape_string($dbConnection,trim($_POST['ReceiverId'])));
-			$accountExistQuery->execute();
-			$accountExistQuery->bind_result($accountOwner,$accountExistBalance);
-			$accountExistQuery->store_result();
-
-			while($accountExistQuery->fetch())
-			{
-				$accountOwner = $accountOwner;
-				$accountOwnerBalance = $accountExistBalance;
-			}
-			if($accountOwner == Null)
-			{
-				$_SESSION["invNotFoundAccount"] = true;
-				$trasnferFlag = false;
-			}
-			if($accountOwner == $userID)
-			{
-				$_SESSION["invNotYourself"] = true;
-				$trasnferFlag = false;
-			}
-
-
-			$accountExistQuery->free_result();
-			$accountExistQuery->close();
-
-
-			if($trasnferFlag)
-			{
-				if (doTransfer($userID, $accountOwner, floatval(trim($_POST['Amount'])), trim($_POST['TransferToken'])))
-					$_SESSION["invSuccessPaid"] = true;
-				else
-					header("Location: ../error.php");
-			}
+		}catch(Exception $e){
+			header("Location ../error.php");
 		}
-		else{
-			$_SESSION["invReceiverId"] = $receiverId ? NULL : $_POST["ReceiverId"];
-			$_SESSION["invTransferToken"] = $transferToken ? NULL : $_POST["TransferToken"];
-			$_SESSION["invAmount"] = $amount ? NULL : $_POST["Amount"];
-		}
-		header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php");
-
-	}catch(Exception $e){
-		header("Location ../error.php");
-	}
-	?>
+		?>
 	<table style="width: 100%">
 		<tr>
 			<td align="center">

@@ -82,7 +82,7 @@
 									$checkAny->bind_param("s", mysqli_real_escape_string($dbConnection,$userID));
 									$checkAny->execute();
 									$checkAny->store_result();
-									if($customerID->num_rows() == 0)
+									if($checkAny->num_rows() == 0)
 									{
 										$tokenDB = $dbConnection->prepare("INSERT INTO Token VALUES (?,?,0)");
 										$tokenDB->bind_param("ss", mysqli_real_escape_string($dbConnection,$tempToken), mysqli_real_escape_string($dbConnection,$userID));
