@@ -68,6 +68,11 @@ try{
         validated["ReceiverId"] = false;
         validated["TransferToken"] = false;
         validated["Amount"] = false;
+        <?php
+        if (isset($_GET['token'])) {
+        	echo "validateElement(document.getElementById('TransferToken'), 'TransferToken')";
+        } 
+        ?>
     }
     
     function validateElement(e, type){
@@ -334,39 +339,39 @@ try{
 											echo "<span class='alert alert-danger' >";
 											if(isset($_SESSION["invReceiverId"]))
 											{
-												echo "Invalid Receiver Id <br />";
+												echo "Invalid Receiver Id.  ";
 											}
 											if(isset($_SESSION["invTransferToken"]))
 											{
-												echo "Invalid Transfer Token <br />";
+												echo "Invalid Transfer Token.  ";
 											}
 											if(isset($_SESSION["invAmount"]))
 											{
-												echo "Invalid Amount <br />";
+												echo "Invalid Amount.  ";
 											}
 											if(isset($_SESSION["invNotFoundToken"]))
 											{
-												echo "Token could not be found ";
+												echo "Token could not be found.   ";
 											}
 											if(isset($_SESSION["invUsedToken"]))
 											{
-												echo "You already used this token";
+												echo "You already used this token.  ";
 											}
 											if(isset($_SESSION["invNotFoundReceiver"]))
 											{
-												echo "This Reciver does not exist ";
+												echo "This Reciver does not exist.   ";
 											}
 											if(isset($_SESSION["invNotYourself"]))
 											{
-												echo "You can't transfer money to yourself ";
+												echo "You can't transfer money to yourself.   ";
 											}
 											if(isset($_SESSION["invNotEnoughMoney"]))
 											{
-												echo "Can't do the transfer while your balance is not enough";
+												echo "Can't do the transfer while your balance is not enough.  ";
 											}
 											if(isset($_SESSION["invNotFoundAccount"]))
 											{
-												echo "Receiver account not found";
+												echo "Receiver account not found.  ";
 											}
 											echo "</span>";
 
@@ -433,23 +438,23 @@ try{
 											echo "<span class='alert alert-danger' >";
 											if(isset($_SESSION["invFileBig"]))
 											{
-												echo "File Too Big <br />";
+												echo "File is too big.  ";
 											}
 											if(isset($_SESSION["invMimeError"]))
 											{
-												echo "Only Plain text is expected <br />";
+												echo "Only Plain Text is accepted.  ";
 											}
 											if(isset($_SESSION["invUnknownError"]))
 											{
-												echo "Sorry, Your File was not Uploaded <br />";
+												echo "Sorry, Your File was not Uploaded.  ";
 											}
 											if(isset($_SESSION["invDupFile"]))
 											{
-												echo "Duplicate File <br />";
+												echo "Duplicate File.  ";
 											}
 											if(isset($_SESSION["InvFormatError"]))
 											{
-												echo "File was wrong <br />";
+												echo "File has a wrong format.  ";
 											}
 
 											echo "</span>";

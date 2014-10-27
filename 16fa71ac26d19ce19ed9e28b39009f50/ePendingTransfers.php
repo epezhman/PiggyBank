@@ -1,43 +1,41 @@
 
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Piggy Bank GmbH">
-    <meta name="author" content="Alei , Sara , ePezhman">
-    <link rel="icon" href="../images/piggyFav.ico">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Piggy Bank GmbH">
+<meta name="author" content="Alei , Sara , ePezhman">
+<link rel="icon" href="../images/piggyFav.ico">
 
-    <!-- To be Changed!! -->
-    <title>
-        PiggyBank GmbH - Pending Transfers
-    </title>
+<!-- To be Changed!! -->
+<title>PiggyBank GmbH - Pending Transfers</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap core CSS -->
+<link href="../css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- our CSS -->
-    <link href="../css/framework.css" rel="stylesheet">
+<!-- our CSS -->
+<link href="../css/framework.css" rel="stylesheet">
 
 </head>
 <?php
-     ob_start();
-	require "../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php";
-	$authenticated =  ob_get_clean();
-	if($authenticated == -1){
-		header("Location: ../error.php?id=404");
-		exit();
-	}
-	if($authenticated == -2){
-		header("Location: ../error.php?id=440");
-		exit();
-	}
+ob_start();
+require "../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php";
+$authenticated =  ob_get_clean();
+if($authenticated == -1){
+	header("Location: ../error.php?id=404");
+	exit();
+}
+if($authenticated == -2){
+	header("Location: ../error.php?id=440");
+	exit();
+}
 
-    session_start();
-    if($_SESSION["userrole"] != "admin"){
-        header("Location: ../error.php?id=404");
-        exit();
-    }
+session_start();
+if($_SESSION["userrole"] != "admin"){
+	header("Location: ../error.php?id=404");
+	exit();
+}
 ?>
 <body>
     <div id="wrap">
@@ -187,22 +185,20 @@
 
    			
 		</table>
+</div>
+				</div>
+			</div>
+
 		</div>
-
-                    <!-- End of body, bottom is Layout -->
-
-                </div>
-            </div>
-        </div>
-        <div id="push"></div>
-    </div>
-    <div id="footer">
-        <div class="container">
-            <p class="text-muted text-center">© 2014 Piggy Bank GmbH</p>
-        </div>
-    </div>
-    <script src="../js/jquery-1.11.1.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
+		<div id="push"></div>
+	</div>
+	<div id="footer">
+		<div class="container">
+			<p class="text-muted text-center">© 2014 Piggy Bank GmbH</p>
+		</div>
+	</div>
+	<script src="../js/jquery-1.11.1.min.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
 
 </body>
 </html>
