@@ -10,7 +10,7 @@ session_start();
    if(isset($_SESSION["LAST_ACTIVITY"]) and (time() - $_SESSION["LAST_ACTIVITY"] > 900)){
        session_unset();
        session_destroy();
-       return -1;
+       return -2;
    }
    return 0;
 ?>
