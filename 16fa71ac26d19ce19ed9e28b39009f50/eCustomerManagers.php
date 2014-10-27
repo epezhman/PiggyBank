@@ -39,6 +39,10 @@
                             header("Location: ../error.php?id=404");
                             exit();
                         }
+                        if($authenticated == -2){
+                            header("Location: ../error.php?id=440");
+                            exit();
+                        }
 
                         session_start();
                         if($_SESSION['userrole'] != 'admin'){

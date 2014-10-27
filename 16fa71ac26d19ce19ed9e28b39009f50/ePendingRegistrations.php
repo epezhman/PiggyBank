@@ -51,8 +51,13 @@
 <?php
 	ob_start();
 	require "../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php";
-	if(ob_get_clean() == -1){
+	$authenticated =  ob_get_clean();
+	if($authenticated == -1){
 		header("Location: ../error.php?id=404");
+		exit();
+	}
+	if($authenticated == -2){
+		header("Location: ../error.php?id=440");
 		exit();
 	}
 	session_start();
