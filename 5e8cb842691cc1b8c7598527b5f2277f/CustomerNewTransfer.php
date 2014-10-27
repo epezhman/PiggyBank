@@ -141,8 +141,7 @@ try{
                 $('#'+e.id+'Span').text("Amount is required");
                 validated["Amount"] = false;
             }
-            elseew
-			Transfer
+            else
                 if(!e.value.match("^[0-9.]+$")){
                 	$('#'+e.id+'Span').addClass("alert-danger");
                     $('#'+e.id+'Span').removeClass("alert-success");
