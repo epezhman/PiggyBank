@@ -88,7 +88,7 @@
 
                      <fieldset>
 			<br></br>	
-                        <form class="form-horizontal" role="form">
+       <!--                 <form class="form-horizontal" role="form">
                             <div class="form-group">
                                 <label class="control-label col-sm-1" for="">Transfer</label>
                                 <div class="col-sm-10">
@@ -97,18 +97,20 @@
                                 </div>
                             </div>
                     
-                        </form>
+                        </form> -->
                     </fieldset>
 		    <br></br>	
 
 
 <?php
     // Check the referer first to deny nosey requests
-    if (strpos(getenv("HTTP_REFERER"), "/PiggyBank/") === false)
-        header("Location: ../error.php?id=404");
+ //   if (strpos(getenv("HTTP_REFERER"), "/PiggyBank/") === false)
+ //       header("Location: ../error.php?id=404");
        require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/dbconnect.php");
+       
         if(mysqli_connect_errno()){
             header("Location: ../error.php");
+            exit();
         }
 ?>
 
@@ -125,23 +127,33 @@
                             </thead>
                            
 		<?php
-
+		
 		if(isset($_POST['remove'])){
 		$var = $_POST['remove'];
-		$dbConnection->query("delete from Transaction where transactionID=" .$var)or die(mysql_error());
+		$deleteTransactionStmt = $dbConnection->prepare("delete from Transaction where transactionID=?");
+		$deleteTransactionStmt->bind_param("s",$var);
+		$deleteTransactionStmt->execute();
 		}
 
 		if(isset($_POST['approve'])){
 		$var = $_POST['approve'];
-		$dbConnection->query("update Transaction set transactionApproved=1 where transactionID=" .$var)or die(mysql_error());
+		
+		$updateStmt = $dbConnection->prepare("update Transaction set transactionApproved=1 where transactionID=?");
+		$updateStmt->bind_param("s",$var);
+		$updateStmt->execute();
 
 		$result1 = $dbConnection->query("select transactionSender,transactionReceiver,transactionAmont from Transaction where transactionID=" .$var)or die(mysql_error());
 		$row1 = mysqli_fetch_row($result1);
+		echo $row1;
 		
-		$dbConnection->query("update Account set accountBalance=accountBalance+" .$row1[2]. " where accountOwner='" .$row1[1] ."'")or die(mysql_error());
+		$updateReceiverStmt = $dbConnection->prepare("update Account set accountBalance=accountBalance+? where accountOwner=?");//or die(mysql_error());
+		$updateReceiverStmt->bind_param("ds",$row1[2], $row1[1]);
+		$updateReceiverStmt->execute();
 
-		$dbConnection->query("update Account set accountBalance=accountBalance-" .$row1[2]. " where accountOwner='". $row1[0] ."'")or die(mysql_error());
-
+		$updateSenderStmt = $dbConnection->prepare("update Account set accountBalance=accountBalance-? where accountOwner=?");
+		$updateSenderStmt->bind_param("ds", $row1[2], $row1[0]);
+		$updateSenderStmt->execute();
+		
 		}
 		
 		$result = $dbConnection->query("select C1.customerName,C2.customerName,transactionAmont,transactionTime,C1.customerID,C2.customerID,Transaction.transactionID from Transaction,Customer C1,Customer C2 where transactionSender=C1.customerID and transactionReceiver=C2.customerID and transactionApproved=0 and transactionAmont>10000") or die(mysql_error());
@@ -154,12 +166,12 @@
 		echo '<td style="width:20%" >' . $row[2]. '</td>';
 		echo '<td style="width:20%" >' . $row[3]. '</td>';
 		echo '<td>';
-		echo '<form method="post">';
-		echo '<button  type="submit" name="remove"  class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' . $row[6]. '>
+		echo '<form method="post" action="ePendingTransfers.php">';
+		echo '<button  type="submit" name="remove" id="remove" class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' . $row[6]. '>
                       <span class="glyphicon glyphicon-remove"></span>
                       </button>
 
-                      <button type="submit" name="approve"  class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve" value=' . $row[6]. '>
+                      <button type="submit" name="approve" id="approve" class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve" value=' . $row[6]. '>
                       <span class="glyphicon glyphicon-ok"></span>
                        </button>';
 		$index++;

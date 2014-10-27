@@ -13,7 +13,7 @@
 
 	$_SESSION["invUploadingFile"] = true;
 
-	define("UPLOAD_DIR", "/home/samurai/Desktop/dew/");
+	define("UPLOAD_DIR", "./tmp/");
 
 
 	try{
@@ -89,6 +89,7 @@
 		else
 			$_SESSION["invUnknownError"] = true;
 		header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php");
+                exit();
 
 	}catch(Exception $e){
 		header("Location: ../error.php");
