@@ -46,6 +46,7 @@
 -->
                         <li><a href="signin.php">Sign in</a></li>
                         <li><a href="signup.php">Sign up</a></li>
+                        <li><a href="joinus.php">Join us</a></li>
                     </ul>
 
                 </div>

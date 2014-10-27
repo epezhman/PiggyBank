@@ -32,7 +32,7 @@
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-						<a class="navbar-brand" href="#"><img src="./images/logo.png"
+					<a class="navbar-brand" href="#"><img src="./images/logo.png"
 						alt="" class="logoStyle" /> Piggy Bank GmbH</a>
 				</div>
 				<div class="navbar-collapse collapse">
@@ -48,16 +48,14 @@
 						?>
 					</ul>
 
+
 				</div>
 			</div>
 		</div>
 
 		<div class="container-fluid">
 			<div class="row">
-				<!--     <div class="col-sm-8 hidden-xs">
-                    <img src="/PiggyBank/images/piggy-banks.jpg" alt="" class="img-responsive" />
-                </div> -->
-				<div class="col-sm-12">
+				<div class="col-md-12">
 					<?php
 					echo "<br/><br/><br/>";
 					echo "<div class=\"form-error\" >";
