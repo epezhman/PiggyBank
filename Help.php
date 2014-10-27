@@ -32,7 +32,7 @@
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-				<a class="navbar-brand" href="#"><img src="./images/logo.png"
+				<a class="navbar-brand" ><img src="./images/logo.png"
 						alt="" class="logoStyle" /> Piggy Bank GmbH</a>
 				</div>
 				<div class="navbar-collapse collapse">

@@ -60,7 +60,7 @@ try{
 
 <body>
 	<div id="wrap">
-		<div class="navbar navbar-inverse navbar-fixed-top" >
+		<div class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container-fluid">
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle collapsed"
@@ -69,8 +69,8 @@ try{
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" ><img src="../images/logo.png"
-						alt="" class="logoStyle" /> Piggy Bank GmbH</a>
+					<a class="navbar-brand"><img src="../images/logo.png" alt=""
+						class="logoStyle" /> Piggy Bank GmbH</a>
 				</div>
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav navbar-right">
@@ -117,21 +117,25 @@ try{
 					<h1 class="page-header">My Transfers and Accounts</h1>
 
 					<fieldset>
-						<legend>My Account Numbers</legend>
+						<legend>
+							<?php echo $fullName;?>
+							Accounts
+						</legend>
 						<div class="row">
 							<?php
 							try{
-								$customerAccount = $dbConnection->prepare("SELECT accountNumber FROM Account WHERE accountOwner LIKE (?) ");
+								$customerAccount = $dbConnection->prepare("SELECT accountNumber, accountBalance FROM Account WHERE accountOwner LIKE (?) ");
 								$customerAccount->bind_param("s", mysqli_real_escape_string($dbConnection,$userID));
 								$customerAccount->execute();
-								$customerAccount->bind_result($customerAccountNumber );
+								$customerAccount->bind_result($customerAccountNumber, $accountBalance );
 								$customerAccount->store_result();
 
 								while($customerAccount->fetch())
 								{
-									echo "<div class=\"col-md-12\"><h3 class=\"\">";
-									echo $customerAccountNumber;
-									echo "</div></h3>";
+									echo "<div class=\"col-md-12\"><h4 class=\"\">";
+									echo "Account Number: $customerAccountNumber <br>";
+									echo "Balance: $accountBalance €";
+									echo "</div></h4>";
 								}
 
 								$customerAccount->free_result();
@@ -176,15 +180,16 @@ try{
 									$transfers->free_result();
 									$transfers->close();
 
+									$totalPage = $count%10 == 0 ? floor($count/10) : floor($count/10) +1;
+
 									if($page != 1)
 									{
-										if($page > floor($count/10)+1 or $page < 1)
+										if($page > $totalPage or $page < 1)
 											$page = 1;
 									}
 									$begin = ($page - 1) *10;
-									$end = $begin +10;
 									
-									$transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionAmont, transactionTime, transactionApproved FROM Transaction WHERE transactionSender LIKE (?) ORDER BY transactionTime DESC LIMIT $begin,$end");
+									$transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionAmont, transactionTime, transactionApproved FROM Transaction WHERE transactionSender LIKE (?) ORDER BY transactionTime DESC LIMIT 10 OFFSET $begin ");
 									$transfers->bind_param("s", mysqli_real_escape_string($dbConnection,$userID));
 									$transfers->execute();
 									$transfers->bind_result( $transactionReceiver, $transactionAmont, $transactionTime, $transactionApproved);
@@ -241,16 +246,39 @@ try{
 							<tfoot>
 								<tr>
 									<td colspan="3"><span>Count : <?php echo $count;?> - Page <?php echo $page;?>
-											of <?php echo floor($count/10)+1;?>
+											of <?php echo $totalPage;?>
 									</span>
 									</td>
 									<td colspan="3">
 										<div class="marginPagingHeight30">
 											<ul class="pagination pagination-sm marginPaging">
-												<li class="active"><a href="javascript:void(0);">1</a>
-												</li>
-												<li><a href="#">2</a>
-												</li>
+												<?php 
+												if($page - 2 > 1)
+												{
+													echo "<li><a href=\"CustomerMyTransfers.php?page=1\"><<</a></li>";
+												}
+												for ($j = 2 ; $j >= 1; $j--)
+												{
+													if($page - $j >= 1)
+													{
+														$m = $page - $j;
+														echo "<li><a href=\"CustomerMyTransfers.php?page=$m\">$m</a></li>";
+													}
+												}
+												echo "<li class='active'><a href=\"javascript:void(0);\">$page</a></li>";
+												for ($j = 1 ; $j <= 2; $j++)
+												{
+													if($page + $j <= $totalPage)
+													{
+														$m = $page + $j;
+														echo "<li><a href=\"CustomerMyTransfers.php?page=$m\">$m</a></li>";
+													}
+												}
+												if($page + 2 < $totalPage)
+												{
+													echo "<li><a href=\"CustomerMyTransfers.php?page=$totalPage\">>></a></li>";
+												}
+												?>
 											</ul>
 										</div>
 									</td>
