@@ -112,23 +112,20 @@ function getRandomString($length = 8){
     return $result;
 }
 
-function sendEmail($eAddress, $eSubject, $eBody){
-    $eMessage = "Dear Customer,\r\nThank you for choosing PiggyBank GmbH. Your online banking account is now activated.\r\nFollowing are your generated TAN's that you can use to transfer money via our online banking system:\r\n";
-    // Build email message
-    foreach($eBody as $token)
-        $eMessage = $eMessage.$token."\r\n";
-    // Send the email message
+function sendEmail($eAddress, $eSubject, $eMessage){
+    // Send the email message via the sendmail MTA
     mail($eAddress, $eSubject, $eMessage, "From:noreply@piggybank.de");
 }
 function generateTokens($custID){
     // Generates 100 unique tokens and returns them to the caller
     $customerTokens = array();
     $counter = 0;
-            $dbHost= "localhost";
-        $dbUser= "piggy";
-        $dbPassword= "8aa259f4c7";
-        $dbName= "piggybank";
-
+    // There is a problem with using "require_once" here. For some reason, the function does not see the "$dbConnection"
+    // .. variable unless it is redefined as below.
+	$dbHost= "localhost";
+	$dbUser= "piggy";
+	$dbPassword= "8aa259f4c7";
+	$dbName= "piggybank";
     $dbConnection = new mysqli($dbHost, $dbUser, $dbPassword, $dbName);
     try{
         while($counter < 100){
@@ -163,10 +160,29 @@ function generateTokens($custID){
 	}
 	
 	if(isset($_POST['remove'])){
-	   //mail should be sent
-	$var = $_POST['remove'];
-	$dbConnection->query("delete from User where User.userUsername='$var'")or die(mysql_error());
-	
+		$var = $_POST['remove'];
+		//$dbConnection->query("delete from User where User.userUsername='$var'")or die(mysql_error());
+		// Retrieve customer details
+		$customerStmt = $dbConnection->prepare("SELECT customerID, customerName, customerEmail FROM Customer WHERE customerUsername LIKE (?)");
+		$customerStmt->bind_param("s", $var);
+		$customerStmt->execute();
+		$customerStmt->store_result();
+		if($customerStmt->num_rows > 0){
+			$result = $customerStmt->bind_result($cID, $cName, $cEmail);
+			while($customerStmt->fetch()){
+				$customerID = $cID;
+				$customerName = $cName;
+				$customerEmail = $cEmail;
+			}
+			$disapproveStmt = $dbConnection->prepare("UPDATE User SET userApproved=0 userUsername=?") or die(mysql_error());
+			$disapproveStmt->bind_param("s", $var);
+			$disapproveStmt->execute();
+			if($disapproveStmt->affected_rows > 0){
+				// Disable tokens?!
+				$emailMessage = "Dear Customer,\r\n\r\nWe regret to inform you that your PiggyBank online banking account has been suspended.";
+				sendEmail($cEmail, "PiggyBank Online Banking Account Suspended". $emailMessage);
+			}
+		}
 	}
 
 	if(isset($_POST['approve'])){
@@ -185,12 +201,16 @@ function generateTokens($custID){
 					$customerID = $cID;
 					$customerName = $cName;
 					$customerEmail = $cEmail;
-			}
+				}
 			 }
 			// Generate TAN's
 			$customerTokens = generateTokens($customerID);
+			$eMessage = "Dear Customer,\r\n\r\nThank you for choosing PiggyBank GmbH.\r\n\r\nYour online banking account is now activated.\r\n\r\nFollowing are your generated TAN's that you can use to transfer money via our online banking system:\r\n\r\n";
+			// Build email message
+			foreach($customerTokens as $token)
+				$eMessage = $eMessage.$token."\r\n";
 			// Send notification email
-			sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $customerTokens);
+			sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage);
 		}
 	// Populate the table of pending requests	           
 	$result = $dbConnection->query("select User.userUsername,Customer.customerDOB,Customer.customerAddress,Account.accountType,Account.accountBalance,Customer.customerEmail,Customer.customerID  from User,Customer,Account where User.userUsername=Customer.customerUsername and User.userApproved=0 and Account.accountOwner= Customer.customerID") or die(mysql_error());
