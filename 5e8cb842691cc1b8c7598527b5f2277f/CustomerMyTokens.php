@@ -3,14 +3,11 @@
     require("../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php");
     if($_SESSION["userrole"] != "customer")
         header("Location: ../error.php?id=404");
-?>
-<?php 
+     
 try{
 	// Connect to the database
 	require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/dbconnect.php");
-	
-	//require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/UserInfo.php");
-	
+		
 	$fullName = NULL;
 
 	$userUsername = mysqli_real_escape_string($dbConnection,$_SESSION['username']);
@@ -28,10 +25,9 @@ try{
 		{
 			$fullName = $name;
 		}
-		$customerFullName->free_result();
-		$customerFullName->close();
-
 	}
+	$customerFullName->free_result();
+	$customerFullName->close();
 }catch(Exception $e){
 	header("Location ../error.php");
 }
@@ -48,7 +44,8 @@ try{
 <link rel="icon" href="../images/piggyFav.ico">
 
 <!-- To be Changed!! -->
-<title>PB - Customer Home</title>
+<title>        PiggyBank GmbH - My Tokens
+</title>
 
 <!-- Bootstrap core CSS -->
 <link href="../css/bootstrap.min.css" rel="stylesheet">
