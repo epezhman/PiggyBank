@@ -79,7 +79,7 @@ try{
 						<li class="visible-xs"><a href="CustomerMyTokens.php">My Tokens</a>
 						</li>
 						<li class="visible-xs active"><a href="CustomerMyTransfers.php">My
-								Transfers</a></li>
+								Transfers and Accounts</a></li>
 						<li><a href="../Help.php">Help</a></li>
 						<?php 
 						try{
@@ -91,7 +91,7 @@ try{
 							header("Location ../error.php");
 						}
 						?>
-						<li><a href="#">Log Out</a></li>
+						<li><a href="../f8d890ce88bd1791b6eaddf06e58ceb5/logout.php">Log Out</a></li>
 					</ul>
 				</div>
 			</div>
@@ -103,7 +103,7 @@ try{
 					<ul class="nav nav-sidebar">
 						<li><a href="CustomerNewTransfer.php">New Transfer</a></li>
 						<li><a href="CustomerMyTokens.php">My Tokens</a></li>
-						<li class="active"><a href="CustomerMyTransfers.php">My Transfers</a>
+						<li class="active"><a href="CustomerMyTransfers.php">My Transfers and Accounts</a>
 						</li>
 					</ul>
 				</div>

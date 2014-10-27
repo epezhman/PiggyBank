@@ -38,7 +38,7 @@ try{
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="X-UA-Compatible" content="IE=ed$approvedge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Piggy Bank GmbH">
 <meta name="author" content="Alei , Sara , ePezhman">
@@ -200,7 +200,7 @@ try{
 						<li class="visible-xs"><a href="CustomerMyTokens.php">My Tokens</a>
 						</li>
 						<li class="visible-xs"><a href="CustomerMyTransfers.php">My
-								Transfers</a></li>
+								Transfers and Accounts</a></li>
 						<li><a href="../Help.php">Help</a></li>
 						<?php 
 						try{
@@ -212,7 +212,7 @@ try{
 							header("Location ../error.php");
 						}
 						?>
-						<li><a href="#">Log Out</a></li>
+						<li><a href="../f8d890ce88bd1791b6eaddf06e58ceb5/logout.php">Log Out</a></li>
 					</ul>
 				</div>
 			</div>
@@ -224,7 +224,7 @@ try{
 						<li class="active"><a href="CustomerNewTransfer.php">New Transfer</a>
 						</li>
 						<li><a href="CustomerMyTokens.php">My Tokens</a></li>
-						<li><a href="CustomerMyTransfers.php">My Transfers</a></li>
+						<li><a href="CustomerMyTransfers.php">My Transfers and Accounts</a></li>
 					</ul>
 				</div>
 				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
