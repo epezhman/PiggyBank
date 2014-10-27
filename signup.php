@@ -107,7 +107,7 @@
                 validated["email"] = false;
             }
             else
-                if(!e.value.match("^[a-zA-Z0-9_.]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,3}?(\.[a-zA-Z]{2})$")){
+                if(!e.value.match("^[a-zA-Z0-9_.]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,3}(\.[a-zA-Z]{2})?$")){
                     $('#'+e.id+'span').css("background","#CC0000");
                     $('#'+e.id+'span').html("Invalid email address");
                     validated["email"] = false;
@@ -233,20 +233,26 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="signin.php"><img src="./images/logo.png" alt="" class="logoStyle" /> Piggy Bank GmbH</a>
+                    <?php
+                        session_start();
+                        if($_SESSION["userrole"] == "admin")
+                            echo "<a class=\"navbar-brand\" href=\"16fa71ac26d19ce19ed9e28b39009f50/eCustomerManagers.php\"><img src=\"/PiggyBank/images/logo.png\" alt=\"\" class=\"logoStyle\" /> PiggyBank GmbH</a>";
+                        else if($_SESSION["userrole"] == "customer")
+                            echo "<a class=\"navbar-brand\" href=\"16fa71ac26d19ce19ed9e28b39009f50/eCustomerManagers.php\"><img src=\"/PiggyBank/images/logo.png\" alt=\"\" class=\"logoStyle\" /> PiggyBank GmbH</a>";
+                        else
+                            echo "<a class=\"navbar-brand\" href=\"signin.php\"><img src=\"/PiggyBank/images/logo.png\" alt=\"\" class=\"logoStyle\" /> PiggyBank GmbH</a>";
+                    ?>
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
-<!--                        <li class="dropdown">
-                            <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">Language/Sprache <b class="caret"></b></a>
-                            <ul class="dropdown-menu" id="langs">
-                                <li id="enLang" class="active"><a href="javascript:void(0);" class="EN">English</a></li>
-                                <li id="deLang"><a href="javascript:void(0);" class="DE">Deutsch</a></li>
-                            </ul>
-                        </li> -->
-
-                        <li><a href="signin.php">Sign in</a></li>
-                        <li><a href="signup.php">Sign up</a></li>
+                        <?php
+                            if($_SESSION["loginstatus"] == "authenticated"){
+                                echo "<li><a href=\"f8d890ce88bd1791b6eaddf06e58ceb5/logout.php\">Log out</a></li>";
+                            }
+                            else
+                                echo "<li><a href=\"/PiggyBank/signin.php\">Sign in</a></li>
+                        <li><a href=\"/PiggyBank/signup.php\">Sign up</a></li>";
+                        ?>
                     </ul>
 
                 </div>

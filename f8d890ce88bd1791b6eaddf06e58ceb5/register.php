@@ -71,7 +71,6 @@ function registerCustomer(){
                 header("Location: ../error.php?id=available");
                 exit();
             }
-            return false;
             $userStmt->execute();
             if($userStmt->affected_rows < 1){
                 return false;
