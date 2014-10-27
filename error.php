@@ -59,7 +59,7 @@
                             }
                             else
                                 echo "<li><a href=\"/PiggyBank/signin.php\">Sign in</a></li>
-                        <li><a href=\"/PiggyBank/signup.php\">Sign up</a></li>";
+                        <li><a href=\"/PiggyBank/signup.php\">Sign up</a></li><li><a href=\"joinus.php\">Join us</a></li>";
                         ?>
                     </ul>
 

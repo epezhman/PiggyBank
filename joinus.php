@@ -10,7 +10,7 @@
 
     <!-- To be Changed!! -->
     <title>
-        PiggyBank GmbH - Sign up for Online Banking
+        PiggyBank GmbH - Join Our Staff
     </title>
 
     <!-- Bootstrap core CSS -->
@@ -267,14 +267,14 @@
         -->
                 <div class="col-sm-12">
                     <div style="padding-top:40px;">
-                        <form class="form-signup" role="form" action="f8d890ce88bd1791b6eaddf06e58ceb5/register.php" method="POST">
+                        <form class="form-signup" role="form" action="f8d890ce88bd1791b6eaddf06e58ceb5/registeremployee.php" method="POST">
                             <table width=700px>
                             <tr><td>
-                            <h2>Thank you for choosing PiggyBank GmbH</h2>
+                            <h2>Fancy a position at PiggyBank GmbH?</h2>
                             <noscript>Javascript is switched off. Some features will not work properly. Please enable Javascript.</noscript>
                             </td>
                             <td>
-                            <img src="./images/piggybankicon.jpeg" alt="piggybankicon.jpeg" style="width:120px; heigh:120px;"/>
+                            <img src="./images/judgepig.png" alt="judgepig.png" style="width:120px; heigh:120px;"/>
                             </td>
                             </tr>
                             </table>
@@ -331,6 +331,63 @@
                                     <td><input class=\"form-control\" style=\"width:250px\" id=\"email\" name=\"email\" type=\"text\" onblur=\"validateElement(this, 'email')\" placeholder=\"john.doe@piggybank.de\">
                                     </td>
                                     <td><span id=\"emailspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            echo "</tr><tr>";
+							if(isset($_SESSION["invDept"]))
+                                    echo "<td style=\"padding: 10px 0px;\"><label for=\"department\">Department</label></td>
+                                    <td><select class=\"form-control\" style=\"width:250px\" id=\"department\" name=\"department\" onload=\"validateElement(this, 'dept')\" onblur=\"validateElement(this, 'dept')\">
+                                    <option value=\"0\">No Preference</option>
+                                    <option value=\"1\">Customer Service</option>
+                                    <option value=\"2\">Investment</option>
+                                    <option value=\"3\">Sales</option>
+                                    </select>
+                                    </td>";
+                                    //<td><span id=\"deptspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            else
+								    echo "<td style=\"padding: 10px 0px;\"><label for=\"department\">Department</label></td>
+                                    <td><select class=\"form-control\" style=\"width:250px\" id=\"department\" name=\"department\" onblur=\"validateElement(this, 'dept')\">
+                                    <option value=\"0\">No Preference</option>
+                                    <option value=\"1\">Customer Service</option>
+                                    <option value=\"2\">Investment</option>
+                                    <option value=\"3\">Sales</option>
+                                    </select>
+                                    </td>";
+                                    //<td><span id=\"deptspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            echo "</tr><tr>";
+							if(isset($_SESSION["invBranch"]))
+                                    echo "<td style=\"padding: 10px 0px;\"><label for=\"branch\">Branch</label></td>
+                                    <td><select class=\"form-control\" style=\"width:250px\" id=\"branch\" name=\"branch\" onblur=\"validateElement(this, 'branch')\">
+                                    <option value=\"0\">Aachen</option>
+                                    <option value=\"1\">Berlin</option>
+                                    <option value=\"2\">Cologne</option>
+                                    <option value=\"3\">Frankfurt</option>
+                                    <option value=\"4\">Freiburg</option>
+                                    <option value=\"5\">Dortmund</option>
+                                    <option value=\"6\">Dresden</option>
+                                    <option value=\"7\">Hamburg</option>
+                                    <option value=\"8\">Hannover</option>
+                                    <option value=\"9\">Nuremburg</option>
+                                    <option value=\"10\">Munich</option>
+                                    </select>
+                                    </td>";
+                                    //<td><span id=\"branchspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            else
+								echo "<td style=\"padding: 10px 0px;\"><label for=\"branch\">Branch</label></td>
+								<td><select class=\"form-control\" style=\"width:250px\" id=\"branch\" name=\"branch\" onblur=\"validateElement(this, 'branch')\">
+								<option value=\"0\">No Preference</option>
+								<option value=\"1\">Aachen</option>
+								<option value=\"2\">Berlin</option>
+								<option value=\"3\">Cologne</option>
+								<option value=\"4\">Frankfurt</option>
+								<option value=\"5\">Freiburg</option>
+								<option value=\"6\">Dortmund</option>
+								<option value=\"7\">Dresden</option>
+								<option value=\"8\">Hamburg</option>
+								<option value=\"9\">Hannover</option>
+								<option value=\"10\">Nuremburg</option>
+								<option value=\"11\">Munich</option>
+								</select>
+								</td>";
+								//<td><span id=\"branchspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
                             echo "</tr><tr>";
                             if(isset($_SESSION["invUsername"]))
                                     echo "<td style=\"padding: 10px 0px;\"><label for=\"username\">Username</label></td>
