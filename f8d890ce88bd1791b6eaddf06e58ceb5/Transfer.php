@@ -129,6 +129,12 @@
 		$transferToken = validateInput(trim($_POST['TransferToken']), "TransferToken");
 		$amount = validateInput(trim($_POST['Amount']), "Amount");
 
+		if (isset($_POST['Amount'])) {
+			if(!filter_var(trim($_POST['Amount']), FILTER_VALIDATE_FLOAT)) {
+				$amount = false;
+			}
+		}
+		
 		$userID = NULL;
 		$userUsername = mysqli_real_escape_string($dbConnection,$_SESSION['username']);
 		$customerID = $dbConnection->prepare("SELECT customerID FROM Customer WHERE customerUsername LIKE (?)");

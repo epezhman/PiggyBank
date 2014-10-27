@@ -6,6 +6,13 @@ if($_SESSION["userrole"] != "customer")
 try{
 	require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/dbconnect.php");
 
+	$page = 1;
+
+	if (isset($_GET['page'])) {
+		if(filter_var(trim($_GET['page']), FILTER_VALIDATE_INT)) {
+			$page = trim($_GET['page']);
+		}
+	}
 
 	$fullName = NULL;
 	$userID = NULL;
@@ -49,12 +56,11 @@ try{
 
 <!-- our CSS -->
 <link href="../css/framework.css" rel="stylesheet">
-
 </head>
 
 <body>
 	<div id="wrap">
-		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="navbar navbar-inverse navbar-fixed-top" >
 			<div class="container-fluid">
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle collapsed"
@@ -63,7 +69,7 @@ try{
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="#"><img src="../images/logo.png"
+					<a class="navbar-brand" ><img src="../images/logo.png"
 						alt="" class="logoStyle" /> Piggy Bank GmbH</a>
 				</div>
 				<div class="navbar-collapse collapse">
@@ -156,12 +162,34 @@ try{
 							<tbody>
 								<?php
 								try{
-									$transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionAmont, transactionTime, transactionApproved FROM Transaction WHERE transactionSender LIKE (?) ORDER BY transactionTime DESC LIMIT 5,10");
+									$count = 0;
+
+									$transfers = $dbConnection->prepare("SELECT COUNT(*) FROM Transaction WHERE transactionSender LIKE (?)");
+									$transfers->bind_param("s", mysqli_real_escape_string($dbConnection,$userID));
+									$transfers->execute();
+									$transfers->bind_result( $total);
+									$transfers->store_result();
+									while($transfers->fetch())
+									{
+										$count = $total;
+									}
+									$transfers->free_result();
+									$transfers->close();
+
+									if($page != 1)
+									{
+										if($page > floor($count/10)+1 or $page < 1)
+											$page = 1;
+									}
+									$begin = ($page - 1) *10;
+									$end = $begin +10;
+									
+									$transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionAmont, transactionTime, transactionApproved FROM Transaction WHERE transactionSender LIKE (?) ORDER BY transactionTime DESC LIMIT $begin,$end");
 									$transfers->bind_param("s", mysqli_real_escape_string($dbConnection,$userID));
 									$transfers->execute();
 									$transfers->bind_result( $transactionReceiver, $transactionAmont, $transactionTime, $transactionApproved);
 									$transfers->store_result();
-									$i = 0;
+									$i = $begin;
 									while($transfers->fetch())
 									{
 										$i++;
@@ -175,12 +203,12 @@ try{
 										$customerFullName->bind_result($name);
 										$customerFullName->store_result();
 											
-										 
-											while($customerFullName->fetch())
-											{
-												echo "<td>$name</td>";
-											}
-										 
+											
+										while($customerFullName->fetch())
+										{
+											echo "<td>$name</td>";
+										}
+											
 										$customerFullName->free_result();
 										$customerFullName->close();
 
@@ -196,7 +224,7 @@ try{
 										else
 										{
 											echo "<td><span class=\"label label-warning\"><span
-										class=\"glyphicon glyphicon-time\"></span> Pending</span></td>";
+											class=\"glyphicon glyphicon-time\"></span> Pending</span></td>";
 										}
 
 										echo "</tr>";
@@ -212,7 +240,9 @@ try{
 							</tbody>
 							<tfoot>
 								<tr>
-									<td colspan="3"><span>Count : 20; Page 1 of 2</span>
+									<td colspan="3"><span>Count : <?php echo $count;?> - Page <?php echo $page;?>
+											of <?php echo floor($count/10)+1;?>
+									</span>
 									</td>
 									<td colspan="3">
 										<div class="marginPagingHeight30">

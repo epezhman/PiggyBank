@@ -180,7 +180,7 @@ try{
 
 <body onload="prepareForm()">
 	<div id="wrap">
-		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container-fluid">
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle collapsed"
@@ -189,7 +189,7 @@ try{
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="#"><img src="../images/logo.png"
+					<a class="navbar-brand" ><img src="../images/logo.png"
 						alt="" class="logoStyle" /> Piggy Bank GmbH</a>
 				</div>
 				<div class="navbar-collapse collapse">
@@ -236,7 +236,7 @@ try{
 					<noscript>Javascript is switched off. Some features will not work
 						properly. Please enable Javascript.</noscript>
 
-					<ul class="nav nav-tabs" role="tablist">
+					<ul class="nav nav-tabs" >
 						<?php 
 						if(isset($_SESSION["invUploadingFile"]))
 						{
@@ -261,7 +261,7 @@ try{
 
 							<div class="row">
 								<div class="col-md-12">
-									<form class="form-horizontal" role="form"
+									<form class="form-horizontal" 
 										action="../f8d890ce88bd1791b6eaddf06e58ceb5/Transfer.php"
 										method="POST">
 										<div class="form-group">
@@ -399,7 +399,7 @@ try{
 							id="TransferByFile">
 							<div class="row">
 								<div class="col-md-12">
-									<form class="form-horizontal" role="form"
+									<form class="form-horizontal" 
 										action="../f8d890ce88bd1791b6eaddf06e58ceb5/Upload.php"
 										method="post" enctype="multipart/form-data">
 										<div class="form-group">
@@ -438,7 +438,6 @@ try{
 											if(isset($_SESSION["invMimeError"]))
 											{
 												echo "Only Plain text is expected <br />";
-
 											}
 											if(isset($_SESSION["invUnknownError"]))
 											{
