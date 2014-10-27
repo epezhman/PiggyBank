@@ -26,10 +26,9 @@ try{
 		{
 			$fullName = $name;
 		}
-		$customerFullName->free_result();
-		$customerFullName->close();
-
 	}
+	$customerFullName->free_result();
+	$customerFullName->close();
 }catch(Exception $e){
 	header("Location ../error.php");
 }
@@ -45,7 +44,8 @@ try{
 <link rel="icon" href="../images/piggyFav.ico">
 
 <!-- To be Changed!! -->
-<title>PB - Customer Home</title>
+<title> PiggyBank GmbH - New
+								Transfer</title>
 
 <!-- Bootstrap core CSS -->
 <link href="../css/bootstrap.min.css" rel="stylesheet">
@@ -141,7 +141,8 @@ try{
                 $('#'+e.id+'Span').text("Amount is required");
                 validated["Amount"] = false;
             }
-            else
+            elseew
+			Transfer
                 if(!e.value.match("^[0-9.]+$")){
                 	$('#'+e.id+'Span').addClass("alert-danger");
                     $('#'+e.id+'Span').removeClass("alert-success");

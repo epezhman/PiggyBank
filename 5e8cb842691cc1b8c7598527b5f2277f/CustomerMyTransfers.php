@@ -1,25 +1,19 @@
 ﻿<?php
-    session_start();
-    require("../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php");
-    if($_SESSION["userrole"] != "customer")
-        header("Location: ../error.php?id=404");
-?>
-<?php 
+session_start();
+require("../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php");
+if($_SESSION["userrole"] != "customer")
+	header("Location: ../error.php?id=404");
 try{
-	// Connect to the database
 	require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/dbconnect.php");
-	
-	//require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/UserInfo.php");
-	
-	$fullName = NULL;
 
+
+	$fullName = NULL;
+	$userID = NULL;
 	$userUsername = mysqli_real_escape_string($dbConnection,$_SESSION['username']);
-	$customerFullName = $dbConnection->prepare("SELECT customerName FROM Customer WHERE customerUsername LIKE (?)");
+	$customerFullName = $dbConnection->prepare("SELECT customerName, customerID FROM Customer WHERE customerUsername LIKE (?)");
 	$customerFullName->bind_param("s", $userUsername);
 	$customerFullName->execute();
-
-	$customerFullName->bind_result($name);
-
+	$customerFullName->bind_result($name, $ID);
 	$customerFullName->store_result();
 
 	if($customerFullName->num_rows() == 1)
@@ -27,11 +21,12 @@ try{
 		while($customerFullName->fetch())
 		{
 			$fullName = $name;
+			$userID = $ID;
 		}
-		$customerFullName->free_result();
-		$customerFullName->close();
-
 	}
+	$customerFullName->free_result();
+	$customerFullName->close();
+
 }catch(Exception $e){
 	header("Location ../error.php");
 }
@@ -47,7 +42,7 @@ try{
 <link rel="icon" href="../images/piggyFav.ico">
 
 <!-- To be Changed!! -->
-<title>PB - Customer Home</title>
+<title>PiggyBank GmbH - My Transfers and Accounts</title>
 
 <!-- Bootstrap core CSS -->
 <link href="../css/bootstrap.min.css" rel="stylesheet">
@@ -91,7 +86,8 @@ try{
 							header("Location ../error.php");
 						}
 						?>
-						<li><a href="../f8d890ce88bd1791b6eaddf06e58ceb5/logout.php">Log Out</a></li>
+						<li><a href="../f8d890ce88bd1791b6eaddf06e58ceb5/logout.php">Log
+								Out</a></li>
 					</ul>
 				</div>
 			</div>
@@ -103,7 +99,8 @@ try{
 					<ul class="nav nav-sidebar">
 						<li><a href="CustomerNewTransfer.php">New Transfer</a></li>
 						<li><a href="CustomerMyTokens.php">My Tokens</a></li>
-						<li class="active"><a href="CustomerMyTransfers.php">My Transfers and Accounts</a>
+						<li class="active"><a href="CustomerMyTransfers.php">My Transfers
+								and Accounts</a>
 						</li>
 					</ul>
 				</div>
@@ -111,26 +108,40 @@ try{
 
 					<!-- Beggining of body, above is Layout -->
 
-					<h1 class="page-header">My Transfers</h1>
+					<h1 class="page-header">My Transfers and Accounts</h1>
 
 					<fieldset>
-						<legend>Filter</legend>
-						<form class="form-horizontal" role="form">
-							<div class="form-group">
-								<label class="control-label col-sm-2" for="">Receiver</label>
-								<div class="col-sm-10">
-									<input type="text" name="Receiver" />
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-sm-offset-2 col-sm-10">
-									<input type="submit" value="Filter" id="submit"
-										class="btn btn-default" />
-								</div>
-							</div>
-						</form>
-					</fieldset>
+						<legend>My Account Numbers</legend>
+						<div class="row">
+							<?php
+							try{
+								$customerAccount = $dbConnection->prepare("SELECT accountNumber FROM Account WHERE accountOwner LIKE (?) ");
+								$customerAccount->bind_param("s", mysqli_real_escape_string($dbConnection,$userID));
+								$customerAccount->execute();
+								$customerAccount->bind_result($customerAccountNumber );
+								$customerAccount->store_result();
 
+								while($customerAccount->fetch())
+								{
+									echo "<div class=\"col-md-12\"><h3 class=\"\">";
+									echo $customerAccountNumber;
+									echo "</div></h3>";
+								}
+
+								$customerAccount->free_result();
+								$customerAccount->close();
+
+							}catch(Exception $e){
+								header("Location ../error.php");
+							}
+							?>
+						</div>
+					</fieldset>
+					<br>
+					<fieldset>
+						<legend>My Transfers</legend>
+
+					</fieldset>
 					<div class="table-responsive">
 						<table class="table table-striped table-hover ">
 							<thead>
@@ -138,102 +149,66 @@ try{
 									<th>#</th>
 									<th>Receiver</th>
 									<th>Amount (€)</th>
-									<th>Submit Date</th>
 									<th>Sent Date</th>
 									<th>Status</th>
 								</tr>
 							</thead>
 							<tbody>
-								<tr>
-									<td>1</td>
-									<td>Stefan</td>
-									<td>100</td>
-									<td><span class="badge">12.12.2014 13:30</span></td>
-									<td></td>
-									<td><span class="label label-warning"><span
-											class="glyphicon glyphicon-time"></span> Pending</span></td>
-								</tr>
-								<tr>
-									<td>2</td>
-									<td>Stefan</td>
-									<td>100</td>
-									<td><span class="badge">12.12.2014 13:30</span></td>
-									<td></td>
-									<td><span class="label label-warning"><span
-											class="glyphicon glyphicon-time"></span> Pending</span></td>
-								</tr>
-								<tr>
-									<td>3</td>
-									<td>Stefan</td>
-									<td>100</td>
-									<td><span class="badge">12.12.2014 13:30</span></td>
-									<td></td>
-									<td><span class="label label-warning"><span
-											class="glyphicon glyphicon-time"></span> Pending</span></td>
-								</tr>
-								<tr>
-									<td>4</td>
-									<td>Stefan</td>
-									<td>100</td>
-									<td><span class="badge">12.12.2014 13:30</span></td>
-									<td><span class="badge">12.12.2014 13:30</span></td>
-									<td><span class="label label-success"><span
-											class="glyphicon glyphicon-ok"></span> Sent</span></td>
-								</tr>
-								<tr>
-									<td>5</td>
-									<td>Stefan</td>
-									<td>100</td>
-									<td><span class="badge">12.12.2014 13:30</span></td>
-									<td><span class="badge">12.12.2014 13:30</span></td>
-									<td><span class="label label-success"><span
-											class="glyphicon glyphicon-ok"></span> Sent</span></td>
-								</tr>
-								<tr>
-									<td>6</td>
-									<td>Stefan</td>
-									<td>100</td>
-									<td><span class="badge">12.12.2014 13:30</span></td>
-									<td><span class="badge">12.12.2014 13:30</span></td>
-									<td><span class="label label-success"><span
-											class="glyphicon glyphicon-ok"></span> Sent</span></td>
-								</tr>
-								<tr>
-									<td>7</td>
-									<td>Stefan</td>
-									<td>100</td>
-									<td><span class="badge">12.12.2014 13:30</span></td>
-									<td></td>
-									<td><span class="label label-danger"><span
-											class="glyphicon glyphicon-remove"></span> Rejected</span></td>
-								</tr>
-								<tr>
-									<td>8</td>
-									<td>Stefan</td>
-									<td>100</td>
-									<td><span class="badge">12.12.2014 13:30</span></td>
-									<td></td>
-									<td><span class="label label-danger"><span
-											class="glyphicon glyphicon-remove"></span> Rejected</span></td>
-								</tr>
-								<tr>
-									<td>9</td>
-									<td>Stefan</td>
-									<td>100</td>
-									<td><span class="badge">12.12.2014 13:30</span></td>
-									<td></td>
-									<td><span class="label label-danger"><span
-											class="glyphicon glyphicon-remove"></span> Rejected</span></td>
-								</tr>
-								<tr>
-									<td>10</td>
-									<td>Stefan</td>
-									<td>100</td>
-									<td><span class="badge">12.12.2014 13:30</span></td>
-									<td></td>
-									<td><span class="label label-danger"><span
-											class="glyphicon glyphicon-remove"></span> Rejected</span></td>
-								</tr>
+								<?php
+								try{
+									$transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionAmont, transactionTime, transactionApproved FROM Transaction WHERE transactionSender LIKE (?) ");
+									$transfers->bind_param("s", mysqli_real_escape_string($dbConnection,$userID));
+									$transfers->execute();
+									$transfers->bind_result( $transactionReceiver, $transactionAmont, $transactionTime, $transactionApproved);
+									$transfers->store_result();
+									$i = 0;
+									while($transfers->fetch())
+									{
+										$i++;
+										echo "<tr>";
+
+										echo "<td>$i</td>";
+
+										$customerFullName = $dbConnection->prepare("SELECT customerName FROM Customer WHERE customerID LIKE (?)");
+										$customerFullName->bind_param("s", mysqli_real_escape_string($dbConnection,$transactionReceiver));
+										$customerFullName->execute();
+										$customerFullName->bind_result($name);
+										$customerFullName->store_result();
+											
+										 
+											while($customerFullName->fetch())
+											{
+												echo "<td>$name</td>";
+											}
+										 
+										$customerFullName->free_result();
+										$customerFullName->close();
+
+										echo "<td>$transactionAmont</td>";
+
+										echo "<td>$transactionTime</td>";
+
+										if($transactionApproved)
+										{
+											echo "<td><span class=\"label label-success\"><span
+											class=\"glyphicon glyphicon-ok\"></span> Sent</span></td>";
+										}
+										else
+										{
+											echo "<td><span class=\"label label-warning\"><span
+										class=\"glyphicon glyphicon-time\"></span> Pending</span></td>";
+										}
+
+										echo "</tr>";
+									}
+
+									$transfers->free_result();
+									$transfers->close();
+
+								}catch(Exception $e){
+									header("Location ../error.php");
+								}
+								?>
 							</tbody>
 							<tfoot>
 								<tr>
