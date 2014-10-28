@@ -354,11 +354,11 @@
                             echo "</tr><tr>";
                             if(isset($_SESSION["invConfirm"]))
                                     echo "<td style=\"padding: 10px 0px;\"><label for=\"confirm\">Confirm Password</label></td>
-                                    <td><input class=\"form-control\" style=\"width:250px;\" id=\"confirm\" name=\"confirm\" type=\"password\" onload=\"validateElement(this, 'confirm')\" onblur=\"validateElement(this, 'confirm')\" placeholder=\"epiclysecret\"></td>
+                                    <td><input class=\"form-control\" style=\"width:250px;\" id=\"confirm\" name=\"confirm\" type=\"password\" onload=\"validateElement(this, 'confirm')\" onkeyup=\"validateElement(this, 'confirm')\" placeholder=\"epiclysecret\"></td>
                                     <td><span id=\"confirmspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
 							else
 							    echo "<td style=\"padding: 10px 0px;\"><label for=\"confirm\">Confirm Password</label></td>
-                                    <td><input class=\"form-control\" style=\"width:250px;\" id=\"confirm\" name=\"confirm\" type=\"password\" onblur=\"validateElement(this, 'confirm')\" placeholder=\"epiclysecret\"></td>
+                                    <td><input class=\"form-control\" style=\"width:250px;\" id=\"confirm\" name=\"confirm\" type=\"password\" onkeyup=\"validateElement(this, 'confirm')\" placeholder=\"epiclysecret\"></td>
                                     <td><span id=\"confirmspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
                             echo "</tr><tr>";
                             echo "<td colspan=\"3\" align=\"right\" style=\"padding: 30px 0px;\">

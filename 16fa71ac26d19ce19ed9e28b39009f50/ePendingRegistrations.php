@@ -101,7 +101,7 @@
 		<div class="table-responsive">
 		<table class="table table-striped table-hover ">
 		<thead>
-			<tr><th>Name</th><th>Date of Birth</th><th>Address</th><th>Account Balance</th><th>Action</th></tr>
+			<tr><th>Name</th><th>Date of Birth</th><th>Address</th><th>Account Balance (€)</th><th>Action</th></tr>
 		</thead>
 		
 		<tbody>	
@@ -225,7 +225,7 @@ function generateTokens($custID){
 	echo '<td style="width:20%" >' . $row[1]. '</td>';
 	echo '<td style="width:25%" >' . $row[2]. '</td>';
 	//echo '<td style="width:18%" >' . $row[3]. '</td>';
-	echo '<td style="width:20%" >' . $row[4]. '</td>';
+	echo '<td style="width:20%" >€' . $row[4]. '</td>';
 	echo '<td>';
 	echo '<form method="post" action="ePendingRegistrations.php">';
 	echo '<button  type="submit" name="remove"  class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' .$row[0]. '>

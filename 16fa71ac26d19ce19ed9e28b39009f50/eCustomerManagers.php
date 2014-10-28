@@ -48,8 +48,7 @@
                         if($_SESSION['userrole'] != 'admin'){
                             header("Location: ../error.php?id=404");
                             exit();
-                            exit();
-                            }
+						}
                     ?>
                     <a class="navbar-brand" href="eCustomerManagers.php"><img src="../images/logo.png" alt="" class="logoStyle" /> Piggy Bank GmbH</a>
                 </div>

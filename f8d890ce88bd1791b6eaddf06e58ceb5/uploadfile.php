@@ -4,14 +4,6 @@
 </head>
 <body>
 <?php
-//if(strpos(getenv("HTTP_REFERER"), "/PiggyBank/") === false){
-//    ob_start();
-//    require("accesscontrol.php");
-//    if(!ob_get_clean()){
-//        header("Location: ../error.php?id=404");
-//        exit();
-//    }
-
 
 function getRandomString($length = 8){
     $alphabet = "abcdefghijklmnopqrstuxyvwzABCDEFGHIJKLMNOPQRSTUXYVWZ._";
@@ -37,64 +29,46 @@ function validateInput($input, $type){
     } 
 }
 
-function authenticateUser($userUsername, $userPassword){
-// Carries out the necessary SQL statements to authenticate users
-   try{
-            // Connect to the database
-            require_once("dbconnect.php");
-            // Prepare the parameters
-            $userUsername = mysqli_real_escape_string($dbConnection, $_POST['username']);
-            $userPassword = mysqli_real_escape_string($dbConnection, $_POST['hashedpassword']);
-            // Prepare the SQL statements
-            $authStmt = $dbConnection->prepare("CALL authUser(?,?,@role)");
-            $roleStmt = $dbConnection->prepare("SELECT @role");
-            // Bind parameters
-            $authStmt->bind_param("ss", $userUsername, $userPassword);
-            // Execute the statements
-            // 1- Check if username is already taken
-            $authStmt->execute();
-            $result = $dbConnection->query("SELECT @role");
-            $row =  mysqli_fetch_row($result);
-        
-    }catch(Exception $e){
-        echo $e;
-        return "";
-    }
-    return $row[0];
-}
-
 try{
-    $usernameStatus = validateInput($_POST['username'], "username");
-    $passwordStatus = (strlen($_POST["hashedpassword"]) < 8) ? false : validateInput($_POST['hashedpassword'], "password");
-    // If validation succeeds, add user to database
-    if($usernameStatus and $passwordStatus){
-        // Authenticate user
-        $role = authenticateUser($_POST['username'], $_POST['hashedpassword']);
-        if(empty($role)){
-            header("Location: ../signin.php?failure=".$_POST["username"]);
-            exit();
-        }      
-        else{
-                session_start();
-                $_SESSION['loginstatus'] = 'authenticated';
-                $_SESSION['username'] = $_POST['username'];
-                $_SESSION['userrole'] = $role;
-                $_SESSION['userloggedin'] = time();
-            // Determine role and redirect accordingly
-            if($role == "customer"){
-                header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerMyTransfers.php");
-                exit();
-            }
-            else if($role == "admin"){
-                header("Location: ../16fa71ac26d19ce19ed9e28b39009f50/eCustomerManagers.php");
-                exit();
-            }
-        }
-    }
-    else{
-        header("Location: ../signin.php?failure=".$_POST["username"]);
+	// Some basic access control checks
+    ob_start();
+    require("accesscontrol.php");
+    if(ob_get_clean() == -1){
+        header("Location: ../error.php?id=404");
         exit();
     }
+   session_start();
+/*   if($_SESSION["userrole"] == "customer"){
+		header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerMyTransfers.php");
+		exit();
+	}
+	else if($_SESSION["userrole"] == "admin"){
+		header("Location: ../16fa71ac26d19ce19ed9e28b39009f50/eCustomerManagers.php");
+		exit();
+	}
+  */
+  $targetDir = "tmp/";
+  $targetDir = $targetDir.sha1($_FILES["transFile"]["name"]).".txt";
+  if(move_uploaded_file($_FILES["transFile"]["tmp_name"], $targetDir)){
+	$parsedTransaction = exec("./parseTransaction ".$targetDir);
+	if(!empty($parsedTransaction)){
+		list($transactionReciver, $transactionToken, $transactionAmount) = explode(":", $parsedTransaction);
+		// Return parameters to transfer
+		header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php?receiver=".$transactionReciver."&token=".$transactionToken."&amount=".$transactionAmount);
+		exit();
+	}
+	else{
+		//return "insufficient arguments".
+		header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php?parsefailure");
+		exit();
+	}
+  }
+  else{
+	  // return "unable to upload file".
+	header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php?uploadfailure");
+	exit();
+  }
+      
 }catch(Exception $e){
   header("Location ../error.php");
   exit();

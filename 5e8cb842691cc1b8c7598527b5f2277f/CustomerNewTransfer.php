@@ -70,7 +70,11 @@ try{
         validated["Amount"] = false;
         <?php
         if (isset($_GET['token'])) {
-        	echo "validateElement(document.getElementById('TransferToken'), 'TransferToken')";
+        	echo "validateElement(document.getElementById('TransferToken'), 'TransferToken');\n";
+		if (isset($_GET['receiver']))
+			echo "validateElement(document.getElementById('ReceiverId'), 'ReceiverId');\n";
+		if (isset($_GET['amount']))
+			echo "validateElement(document.getElementById('Amount'), 'Amount');\n";
         } 
         ?>
     }
@@ -272,21 +276,26 @@ try{
 										<div class="form-group">
 											<label for="ReceiverId" class="col-sm-2 control-label">Receiver</label>
 											<div class="col-sm-6">
-												<input type="text" class="form-control" id="ReceiverId"
-													placeholder="Receiver" name="ReceiverId"
-													onload="validateElement(this, 'ReceiverId')"
-													onblur="validateElement(this, 'ReceiverId')"
-													onkeyup="validateElement(this, 'ReceiverId')">
+												<?php
+													if(isset($_GET['receiver']))
+														echo "<input type=\"text\" class=\"form-control\" id=\"ReceiverId\" placeholder=\"Receiver\" name=\"ReceiverId\" onload=\"validateElement(this, 'ReceiverId')\"
+														onblur=\"validateElement(this, 'ReceiverId')\" onkeyup=\"validateElement(this, 'ReceiverId')\" value=\"".$_GET['receiver']."\">";													
+													else
+														echo "<input type=\"text\" class=\"form-control\" id=\"ReceiverId\" placeholder=\"Receiver\" name=\"ReceiverId\" onload=\"validateElement(this, 'ReceiverId')\"
+														onblur=\"validateElement(this, 'ReceiverId')\" onkeyup=\"validateElement(this, 'ReceiverId')\">";													
+											?>
 											</div>
 											<div class="col-sm-4">
 												<span class="alert" id="ReceiverIdSpan"> </span>
 											</div>
+													
 										</div>
 										<div class="form-group">
 											<label for="TransferToken" class="col-sm-2 control-label">Transfer
 												Token</label>
 											<div class="col-sm-6">
 												<?php
+												
 												if (isset($_GET['token'])) {
 													$token = trim($_GET['token']);
 													echo "<input type='text' class='form-control' id='TransferToken' placeholder='Transfer Token' name='TransferToken' value='$token' onload='validateElement(this, \"TransferToken\")' onblur='validateElement(this, \"TransferToken\")'  onkeyup='validateElement(this, \"TransferToken\")' >";
@@ -305,12 +314,15 @@ try{
 											<label for="Amount" class="col-sm-2 control-label">Amount</label>
 											<div class="col-sm-6">
 												<div class="input-group">
-													<input type="number" class="form-control" id="Amount"
-														placeholder="Amount in Euro" name="Amount"
-														onload="validateElement(this, 'Amount')"
-														onblur="validateElement(this, 'Amount')"
-														onkeyup="validateElement(this, 'Amount')"> <span
-														class="input-group-addon">€</span>
+													<?php
+													if(isset($_GET['amount']))
+															echo "<input type=\"number\" class=\"form-control\" id=\"Amount\" placeholder=\"Amount in Euro\" name=\"Amount\" onload=\"validateElement(this, 'Amount')\"
+														          onblur=\"validateElement(this, 'Amount')\" onkeyup=\"validateElement(this, 'Amount')\" value=\"".$_GET["amount"]."\"> <span class=\"input-group-addon\">€</span>";
+													else
+														echo "<input type=\"number\" class=\"form-control\" id=\"Amount\" placeholder=\"Amount in Euro\" name=\"Amount\" onload=\"validateElement(this, 'Amount')\"
+														          onblur=\"validateElement(this, 'Amount')\" onkeyup=\"validateElement(this, 'Amount')\"> <span class=\"input-group-addon\">€</span>";
+											?>
+											
 												</div>
 											</div>
 											<div class="col-sm-4">
@@ -411,11 +423,11 @@ try{
 											<label for="InputFile" class="col-sm-2 control-label">File
 												input</label>
 											<div class="col-sm-8">
-												<input type="file" id="InputFile"
+												<input type="file" id="transFile"
 													onchange="$('#submitFile').removeAttr('disabled');"
-													name="uploadFile">
-												<p class="help-block">Upload the file containing ReceiverId,
-													Transfer Token and Amount of Euros you wish to trasnfer.</p>
+													name="transFile">
+												<p class="help-block">Upload the file containing Account ID,
+													Transfer Token and Amount of Euros you wish to transfer.</p>
 											</div>
 										</div>
 										<div class="form-group">

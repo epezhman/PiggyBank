@@ -167,7 +167,7 @@ if($_SESSION["userrole"] != "admin"){
 		echo '<tr>';
 		echo '<td style="width:25%" >' . $row[0]. '</td>';
 		echo '<td style="width:25%" >' . $row[1]. '</td>';
-		echo '<td style="width:20%" >' . $row[2]. '</td>';
+		echo '<td style="width:20%" >€' . $row[2]. '</td>';
 		echo '<td style="width:20%" >' . $row[3]. '</td>';
 		echo '<td>';
 		echo '<form method="post" action="ePendingTransfers.php">';
