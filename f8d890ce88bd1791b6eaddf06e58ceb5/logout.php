@@ -12,8 +12,9 @@
     session_destroy();
     // Remove all temporary files
     $tmpFiles = glob("tmp/*");
-    foreach($f as $tmpFiles){
-		//if(is_file($f))
+    echo count($tmpFiles);
+    foreach($tmpFiles as $f){
+		if(is_file($f))
 			unlink($f);
 	}
     header("Location: ../notify.php?mode=signout");
