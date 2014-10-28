@@ -115,6 +115,13 @@ try{
 					<!-- Beggining of body, above is Layout -->
 
 					<h1 class="page-header">My Transfers and Accounts</h1>
+					<fieldset>
+						<legend>Export My Transfers</legend>
+						<a class="btn btn-default"
+							href="../f8d890ce88bd1791b6eaddf06e58ceb5/GenPDFCustomer.php"
+							target="blank">Export</a>
+					</fieldset>
+					<br> <br>
 
 					<fieldset>
 						<legend>
@@ -188,7 +195,7 @@ try{
 											$page = 1;
 									}
 									$begin = ($page - 1) *10;
-									
+
 									$transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionAmont, transactionTime, transactionApproved FROM Transaction WHERE transactionSender LIKE (?) ORDER BY transactionTime DESC LIMIT 10 OFFSET $begin ");
 									$transfers->bind_param("s", mysqli_real_escape_string($dbConnection,$userID));
 									$transfers->execute();
