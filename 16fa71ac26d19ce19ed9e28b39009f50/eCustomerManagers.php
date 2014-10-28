@@ -48,9 +48,10 @@
                         if($_SESSION['userrole'] != 'admin'){
                             header("Location: ../error.php?id=404");
                             exit();
+                            exit();
                             }
                     ?>
-                    <a class="navbar-brand" href=".."><img src="../images/logo.png" alt="" class="logoStyle" /> Piggy Bank GmbH</a>
+                    <a class="navbar-brand" href="eCustomerManagers.php"><img src="../images/logo.png" alt="" class="logoStyle" /> Piggy Bank GmbH</a>
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
@@ -59,8 +60,8 @@
                         <li class="visible-xs"><a href="ePendingTransfers.php">Pending Transfers</a></li>
                         <li class="visible-xs"><a href="eTransfers.php">All Transfers</a></li>
 
-                        <li><a href="#">Profile</a></li>
-                        <li><a href="#">Help</a></li>
+                      <!--  <li><a href="#">Profile</a></li>
+                        <li><a href="#">Help</a></li>-->
                         <li><a href="../f8d890ce88bd1791b6eaddf06e58ceb5/logout.php">Log Out</a></li>
 
                     </ul>
@@ -85,7 +86,7 @@
                     <h1 class="page-header">Registered Customers</h1>
 
 		 <fieldset>
-			<br></br>	
+			<br></br>	<!--
                         <form class="form-horizontal" role="form">
                             <div class="form-group">
                                 <label class="control-label col-sm-1" for="">Customer</label>
@@ -95,7 +96,7 @@
                                 </div>
                             </div>
                     
-                        </form>
+                        </form> -->
                     </fieldset>
 		    <br></br>
 
@@ -113,7 +114,7 @@
 		<div class="table-responsive">
 		<table class="table table-striped table-hover ">
 		<thead>
-			<tr><th>Name</th><th>Date of Birth</th><th>Address</th><th>Email</th><th>Account Balance</th><th>Account Number</th></tr>
+			<tr><th>Name</th><th>Date of Birth</th><th>Address</th><th>Email</th><th>Account Balance (€)</th><th>Account Number</th></tr>
 		</thead>
 	<tbody>	
 		<?php
@@ -126,7 +127,7 @@
 		echo '<td style="width:15%" >' . $row[2]. '</td>';
 		echo '<td style="width:15%" >' . $row[3]. '</td>';
 		//echo '<td style="width:15%" >' . $row[4]. '</td>';
-		echo '<td style="width:15%" >' . $row[5]. '</td>';
+		echo '<td style="width:15%" >€' . $row[5]. '</td>';
 		echo '<td style="width:15%" >' . $row[6]. '</td>';
 		}
 		?>

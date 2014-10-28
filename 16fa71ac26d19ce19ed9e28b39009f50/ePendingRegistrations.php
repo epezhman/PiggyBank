@@ -39,8 +39,8 @@
                         <li class="visible-xs active"><a href="ePendingTransfers.php">Pending Transfers</a></li>
                         <li class="visible-xs"><a href="eTransfers.php">All Transfers</a></li>
 
-                        <li><a href="#">Profile</a></li>
-                        <li><a href="#">Help</a></li>
+                      <!--  <li><a href="#">Profile</a></li>
+                        <li><a href="#">Help</a></li>-->
                         <li><a href="../f8d890ce88bd1791b6eaddf06e58ceb5/logout.php">Log Out</a></li>
 
                     </ul>
@@ -84,7 +84,7 @@
                     <h1 class="page-header">Pending Registrations</h1>
 
                     <fieldset>
-			<br></br>	
+			<br></br>	<!--
                         <form class="form-horizontal" role="form">
                             <div class="form-group">
                                 <label class="control-label col-sm-1" for="">Customer</label>
@@ -94,7 +94,7 @@
                                 </div>
                             </div>
                     
-                        </form>
+                        </form>-->
                     </fieldset>
 		    <br></br>	
 

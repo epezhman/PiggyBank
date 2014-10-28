@@ -58,8 +58,8 @@ if($_SESSION["userrole"] != "admin"){
                         <li class="visible-xs active"><a href="ePendingTransfers.php">Pending Transfers</a></li>
                         <li class="visible-xs"><a href="eTransfers.php">All Transfers</a></li>
 
-                        <li><a href="#">Profile</a></li>
-                        <li><a href="#">Help</a></li>
+                      <!--  <li><a href="#">Profile</a></li>
+                        <li><a href="#">Help</a></li>-->
                         <li><a href="../f8d890ce88bd1791b6eaddf06e58ceb5/logout.php">Log Out</a></li>
 
                     </ul>
@@ -140,9 +140,15 @@ if($_SESSION["userrole"] != "admin"){
 		$updateStmt->bind_param("s",$var);
 		$updateStmt->execute();
 
-		$result1 = $dbConnection->query("select transactionSender,transactionReceiver,transactionAmont from Transaction where transactionID=" .$var)or die(mysql_error());
-		$row1 = mysqli_fetch_row($result1);
-		echo $row1;
+		//$transactionStmt = $dbConnection->prepare("select transactionSender,transactionReceiver,transactionAmont from Transaction where transactionID=?");
+		//$transactionStmt->bind_param("s",$var);
+		//$transactionStmt->execute();
+		//$transactionStmt->store_results();
+		//if($transactionStmt->num_rows > 0) echo "<h1>>heyho</h1>";
+		$result = $dbConnection->query("select transactionSender,transactionReceiver,transactionAmont from Transaction where transactionID='".$var."'");
+		$row1 =  mysqli_fetch_row($result);
+		//$row1 = mysqli_fetch_row($result1);
+		
 		
 		$updateReceiverStmt = $dbConnection->prepare("update Account set accountBalance=accountBalance+? where accountOwner=?");//or die(mysql_error());
 		$updateReceiverStmt->bind_param("ds",$row1[2], $row1[1]);
@@ -185,7 +191,7 @@ if($_SESSION["userrole"] != "admin"){
 
    			
 		</table>
-</div>
+			</div>
 				</div>
 			</div>
 
