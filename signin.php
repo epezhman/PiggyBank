@@ -156,7 +156,7 @@
 		            <?php
                                 echo "<tr><td style=\"padding: 10px 0px;\"><label for=\"username\">Username</label></td>";
                                 if(isset($_GET["failure"]))
-								    echo "<td><input class=\"form-control\" id=\"username\" name=\"username\" type=\"text\" style=\"width: 200px\"  onblur=\"validateElement(this, 'username')\" value=".$_GET["failure"]."></td>";
+								    echo "<td><input class=\"form-control\" id=\"username\" name=\"username\" type=\"text\" style=\"width: 200px\"  onblur=\"validateElement(this, 'username')\" value=".htmlspecialchars($_GET["failure"], ENT_QUOTES)."></td>";
 								else
 								    echo "<td><input class=\"form-control\" id=\"username\" name=\"username\" type=\"text\" style=\"width: 200px\"  onblur=\"validateElement(this, 'username')\"></td>";
 								echo "<td><span id=\"usernamespan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>

@@ -292,7 +292,7 @@ try{
 												<?php
 													if(isset($_GET['receiver']))
 														echo "<input type=\"text\" class=\"form-control\" id=\"ReceiverId\" placeholder=\"Receiver\" name=\"ReceiverId\" onload=\"validateElement(this, 'ReceiverId')\"
-														onblur=\"validateElement(this, 'ReceiverId')\" onkeyup=\"validateElement(this, 'ReceiverId')\" value=\"".$_GET['receiver']."\">";													
+														onblur=\"validateElement(this, 'ReceiverId')\" onkeyup=\"validateElement(this, 'ReceiverId')\" value=\"".htmlspecialchars($_GET['receiver'], ENT_QUOTES)."\">";													
 													else
 														echo "<input type=\"text\" class=\"form-control\" id=\"ReceiverId\" placeholder=\"Receiver\" name=\"ReceiverId\" onload=\"validateElement(this, 'ReceiverId')\"
 														onblur=\"validateElement(this, 'ReceiverId')\" onkeyup=\"validateElement(this, 'ReceiverId')\">";													
@@ -310,7 +310,7 @@ try{
 												<?php
 												
 												if (isset($_GET['token'])) {
-													$token = trim($_GET['token']);
+													$token = C($_GET['token'], ENT_QUOTES);
 													echo "<input type='text' class='form-control' id='TransferToken' placeholder='Transfer Token' name='TransferToken' value='$token' onload='validateElement(this, \"TransferToken\")' onblur='validateElement(this, \"TransferToken\")'  onkeyup='validateElement(this, \"TransferToken\")' >";
 												}
 												else
@@ -330,7 +330,7 @@ try{
 													<?php
 													if(isset($_GET['amount']))
 															echo "<input type=\"number\" class=\"form-control\" id=\"Amount\" placeholder=\"Amount in Euro\" name=\"Amount\" onload=\"validateElement(this, 'Amount')\"
-														          onblur=\"validateElement(this, 'Amount')\" onkeyup=\"validateElement(this, 'Amount')\" value=\"".$_GET["amount"]."\"> <span class=\"input-group-addon\">€</span>";
+														          onblur=\"validateElement(this, 'Amount')\" onkeyup=\"validateElement(this, 'Amount')\" value=\"".htmlspecialchars($_GET["amount"], ENT_QUOTES)."\"> <span class=\"input-group-addon\">€</span>";
 													else
 														echo "<input type=\"number\" class=\"form-control\" id=\"Amount\" placeholder=\"Amount in Euro\" name=\"Amount\" onload=\"validateElement(this, 'Amount')\"
 														          onblur=\"validateElement(this, 'Amount')\" onkeyup=\"validateElement(this, 'Amount')\"> <span class=\"input-group-addon\">€</span>";
