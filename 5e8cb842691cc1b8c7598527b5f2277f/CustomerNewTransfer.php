@@ -1,8 +1,21 @@
 ﻿<?php
 session_start();
+ob_start();
 require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php");
-if($_SESSION["userrole"] != "customer")
+$authenticated = ob_get_clean();
+if($authenticated == -1){
 	header("Location: ../error.php?id=404");
+	exit();
+}
+if($authenticated == -2){
+	header("Location: ../error.php?id=440");
+	exit();
+}	
+	
+if($_SESSION["userrole"] != "customer"){
+	header("Location: ../error.php?id=404");
+	exit();
+}
 
 try{
 	// Connect to the database
@@ -198,7 +211,7 @@ try{
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" ><img src="../images/logo.png"
+					<a class="navbar-brand" href="CustomerMyTransfer.php"><img src="../images/logo.png"
 						alt="" class="logoStyle" /> Piggy Bank GmbH</a>
 				</div>
 				<div class="navbar-collapse collapse">
@@ -426,8 +439,9 @@ try{
 												<input type="file" id="transFile"
 													onchange="$('#submitFile').removeAttr('disabled');"
 													name="transFile">
-												<p class="help-block">Upload the file containing Account ID,
-													Transfer Token and Amount of Euros you wish to transfer.</p>
+												<p class="help-block">Kindly upload a file containing the account number,
+													one of your TANs and the amount (in Euros) you wish to transfer, each
+													on a separate line.</p>
 											</div>
 										</div>
 										<div class="form-group">
