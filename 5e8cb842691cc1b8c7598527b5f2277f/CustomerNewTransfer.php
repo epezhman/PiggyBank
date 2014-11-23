@@ -310,7 +310,7 @@ try{
 												<?php
 												
 												if (isset($_GET['token'])) {
-													$token = C($_GET['token'], ENT_QUOTES);
+													$token = htmlspecialchars($_GET['token'], ENT_QUOTES);
 													echo "<input type='text' class='form-control' id='TransferToken' placeholder='Transfer Token' name='TransferToken' value='$token' onload='validateElement(this, \"TransferToken\")' onblur='validateElement(this, \"TransferToken\")'  onkeyup='validateElement(this, \"TransferToken\")' >";
 												}
 												else

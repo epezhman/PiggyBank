@@ -55,10 +55,12 @@
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
                        
-			<li class="visible-xs"><a href="ePendingRegistrations.php">Pending Registrations</a></li>
-                        <li class="visible-xs"><a href="eCustomerManagers.php">Registered Customers</a></li>
+						<li class="visible-xs"><a href="ePendingRegistrations.php">Pending Registrations</a></li>
+						<li class="visible-xs"><a href="ePendingEmployees.php">Pending Employee </a></li>
+                        <li class="visible-xs active"><a href="eCustomerManagers.php">Registered Customers</a></li>
                         <li class="visible-xs"><a href="ePendingTransfers.php">Pending Transfers</a></li>
-                        <li class="visible-xs active"><a href="eTransfers.php">All Transfers</a></li>
+                        <li class="visible-xs"><a href="eTransfers.php">All Transfers</a></li>
+
 
                       <!--  <li><a href="#">Profile</a></li>
                         <li><a href="#">Help</a></li>-->

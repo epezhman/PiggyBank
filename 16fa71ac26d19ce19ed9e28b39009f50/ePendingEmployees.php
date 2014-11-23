@@ -9,7 +9,7 @@
    			
     <!-- To be Changed!! -->
     <title>
-        PiggyBank - Pending Customer Requests 
+        PiggyBank - Pending Employee Requests 
     </title>
 
     <!-- Bootstrap core CSS -->
@@ -83,7 +83,7 @@
 
                     <!-- Beggining of body, above is Layout -->
 
-                    <h1 class="page-header">Pending Registrations</h1>
+                    <h1 class="page-header">Pending Employee Registrations</h1>
 
                     <fieldset>
 			<br></br>	<!--
@@ -103,7 +103,7 @@
 		<div class="table-responsive">
 		<table class="table table-striped table-hover ">
 		<thead>
-			<tr><th>Name</th><th>Date of Birth</th><th>Address</th><th>Account Balance (€)</th><th>Action</th></tr>
+			<tr><th>Name</th><th>Date of Birth</th><th>Address</th><th>Email</th><th>Action</th></tr>
 		</thead>
 		
 		<tbody>	
@@ -170,7 +170,7 @@ function generateTokens($custID){
 		$var = $_POST['remove'];
 		//$dbConnection->query("delete from User where User.userUsername='$var'")or die(mysql_error());
 		// Retrieve customer details
-		$customerStmt = $dbConnection->prepare("SELECT customerID, customerName, customerEmail FROM Customer WHERE customerUsername LIKE (?)");
+		$customerStmt = $dbConnection->prepare("SELECT employeeID, employeeName, employeeEmail FROM Employee WHERE employeeUsername LIKE (?)");
 		$customerStmt->bind_param("s", $var);
 		$customerStmt->execute();
 		$customerStmt->store_result();
@@ -186,7 +186,7 @@ function generateTokens($custID){
 			$disapproveStmt->execute();
 			if($disapproveStmt->affected_rows > 0){
 				// Disable tokens?!
-				$emailMessage = "Dear Customer,\r\n\r\nWe regret to inform you that your PiggyBank online banking account has been suspended.";
+				$emailMessage = "Dear Staff Member,\r\n\r\nWe regret to inform you that your PiggyBank online banking account has been suspended.";
 				sendEmail($cEmail, "PiggyBank Online Banking Account Suspended". $emailMessage);
 			}
 		}
@@ -198,29 +198,12 @@ function generateTokens($custID){
 			$dbConnection->query("UPDATE User SET userApproved=1 WHERE User.userUsername='$var'")or die(mysql_error());
 			// Generate tokens and email customer
 			// 1- Retrieve customer details based on username
-			$customerStmt = $dbConnection->prepare("SELECT customerID, customerName, customerEmail FROM Customer WHERE customerUsername LIKE (?)");
-			$customerStmt->bind_param("s", $var);
-			$customerStmt->execute();
-			$customerStmt->store_result();
-			if($customerStmt->num_rows > 0){
-				$result = $customerStmt->bind_result($cID, $cName, $cEmail);
-				while($customerStmt->fetch()){
-					$customerID = $cID;
-					$customerName = $cName;
-					$customerEmail = $cEmail;
-				}
-			 }
-			// Generate TAN's
-			$customerTokens = generateTokens($customerID);
-			$eMessage = "Dear Customer,\r\n\r\nThank you for choosing PiggyBank GmbH.\r\n\r\nYour online banking account is now activated.\r\n\r\nFollowing are your generated TAN's that you can use to transfer money via our online banking system:\r\n\r\n";
-			// Build email message
-			foreach($customerTokens as $token)
-				$eMessage = $eMessage.$token."\r\n";
+			$eMessage = "Dear Staff,\r\n\r\nThank you for choosing PiggyBank GmbH.\r\n\r\nYour online banking account is now activated.\r\n\r\nWelcome Aboard\r\n\r\n";
 			// Send notification email
 			sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage);
 		}
 	// Populate the table of pending requests	           
-	$result = $dbConnection->query("select User.userUsername,Customer.customerDOB,Customer.customerAddress,Account.accountType,Account.accountBalance,Customer.customerEmail,Customer.customerID  from User,Customer,Account where User.userUsername=Customer.customerUsername and User.userApproved=0 and Account.accountOwner= Customer.customerID") or die(mysql_error());
+	$result = $dbConnection->query("select User.userUsername,employeeDOB,employeeAddress,employeeEmail,employeeID  from User,Employee where User.userUsername=Employee.employeeUsername and User.userApproved=0") or die(mysql_error());
 	while($row = mysqli_fetch_row($result)){
 	echo '<tr>';
 	echo '<td style="width:25%" >' . $row[0]. '</td>';
@@ -229,7 +212,7 @@ function generateTokens($custID){
 	//echo '<td style="width:18%" >' . $row[3]. '</td>';
 	echo '<td style="width:20%" >€' . $row[4]. '</td>';
 	echo '<td>';
-	echo '<form method="post" action="ePendingRegistrations.php">';
+	echo '<form method="post" action="ePendingEmployees.php">';
 	echo '<button  type="submit" name="remove"  class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' .$row[0]. '>
 				  <span class="glyphicon glyphicon-remove"></span>
 				  </button>
