@@ -1,0 +1,3 @@
+add this one to the end of apache2.conf file
+
+Header always append X-Frame-Options DENY
