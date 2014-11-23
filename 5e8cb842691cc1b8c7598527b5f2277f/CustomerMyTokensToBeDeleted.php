@@ -56,6 +56,13 @@ try{
 <meta name="author" content="Alei , Sara , ePezhman">
 <link rel="icon" href="../images/piggyFav.ico">
 
+<style id="antiClickjack">
+body {
+	display: none !important;
+}
+</style>
+<script src="../js/secure.js"></script>
+
 <!-- To be Changed!! -->
 <title>PiggyBank GmbH - My Tokens</title>
 
