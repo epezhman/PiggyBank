@@ -31,6 +31,13 @@
     <!-- Bootstrap core CSS -->
     <link href="./css/bootstrap.min.css" rel="stylesheet">
 
+<style id="antiClickjack">
+body {
+	display: none !important;
+}
+</style>
+<script src="./js/secure.js"></script>
+    
     <!-- our CSS -->
     <link href="./css/framework.css" rel="stylesheet">
 	<script src="./js/jquery-1.11.1.min.js"></script>

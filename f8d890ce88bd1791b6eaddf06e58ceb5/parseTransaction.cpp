@@ -1,88 +1,99 @@
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <istream>
 #include <string.h>
 #include <stdlib.h>
+#include <vector>
 
 /////////////////////////////////////////
 // Transaction data should contain     //
 //-------------------------------------//
 // Transaction receiver: varchar(10)   //
-// Transaction amount: double          //
 // Transaction token/TAN: varchar(15)  //
+// Transaction amount: double          //
 /////////////////////////////////////////
 
 class Transaction{
     // A class to hold the transaction data read from a file
     // Private by default
-//    std::string transactionSender;
     std::string transactionReceiver;
     double transactionAmount;
     std::string transactionToken;
     
     public:
         Transaction (std::string, double, std::string);
-//        void setSender(std::string tSender);
         void setReceiver(std::string tReceiver);
         void setAmount(double tAmount);
         void setToken(std::string tToken);
-//        std::string getSender();
         std::string getReceiver();
         double getAmount();
         std::string getToken();
 };
 
 Transaction::Transaction(std::string tReceiver, double tAmount, std::string tToken){
-//    this->transactionSender = tSender;
     this->transactionReceiver = tReceiver;
     this->transactionAmount = tAmount;
     this->transactionToken = tToken;
 }
-//void Transaction::setSender(std::string tSender){ this->transactionSender = tSender; }
 void Transaction::setReceiver(std::string tReceiver){ this->transactionReceiver = tReceiver; }
 void Transaction::setAmount(double tAmount){ this->transactionAmount = tAmount; }
 void Transaction::setToken(std::string tToken){ this->transactionToken = tToken; }
 
-//std::string Transaction::getSender(){ return this->transactionSender; }
 std::string Transaction::getReceiver(){ return this->transactionReceiver; }
 double Transaction::getAmount(){ return this->transactionAmount; }
 std::string Transaction::getToken(){ return this->transactionToken; }
 
-void parseTransactionFile(Transaction* t, std::string fileName){
-    std::ifstream tFile;
+// Creates a JSON string from an array of Transactions to be POSTed to a PHP page
+std::string createJSON(std::vector<Transaction> aTransactions){
+    std::stringstream convert;
+    std::string amountString = "";
+    std::string transactions = "{\"transactions\": [";
+    for ( std::vector<Transaction>::iterator itr = aTransactions.begin(); itr < aTransactions.end(); ++itr ){
+        Transaction t = *itr;
+        transactions += "{\"receiver\": \"";
+        transactions += t.getReceiver();
+        transactions += "\", \"token\": \"";
+        transactions += t.getToken();
+        transactions += "\", \"amount\": \"";
+        convert << t.getAmount();
+        convert >> amountString;
+        transactions += amountString;
+        transactions += "\"}, ";
+    }
+    transactions = transactions.substr(0, transactions.length() - 2); // Clip the last comma
+    transactions += "]}";
+    return transactions;
+}
+
+// Parses the contents of a file, retrieves Transactions and appends them to an array
+void parseTransactionFile(std::vector<Transaction>& aTransactions, std::string fileName){
     try{
-        // Open the file 
-        tFile.open(fileName.c_str(), std::ifstream::in);
-        char* c = new char [1];
-        std::string currentField = "";
-        int fieldCount = 1; // Expected to be only 3
-        tFile.read(c, 1); // Read a character from the file
-        while(c[0] != EOF && fieldCount < 4){  
-            while(c[0] != '\n'){
-                currentField += c[0];
-                tFile.read(c, 1);
-            }
-            switch(fieldCount){
-                case 1:
-                    t->setReceiver(currentField);
-                    break;
-                case 2:
-                    t->setToken(currentField);
-                    break;
-                case 3:
-                    t->setAmount(atof(currentField.c_str())); // Cannot use std::stod to support older compilers
-                    break;
-//                case 4:
-//                    t->setToken(currentField);
-//                    break;
-            };
-            currentField = "";
-            fieldCount += 1;
-            tFile.read(c, 1);
-        }
+        std::string dummyField = "";
+        int fieldCount = 1;
+        Transaction dummyT = Transaction("", 0, "");
+        std::ifstream tFile(fileName.c_str());
+        std::string fileContent((std::istreambuf_iterator<char>(tFile)) ,(std::istreambuf_iterator<char>()));
+        if(fileContent.length() < 1 )
+            return;
+       tFile.close(); // Close file and start working on the local string
+       for(int i=0; i < fileContent.length(); i++){
+           if(fileContent.at(i) != '\n' && fileContent.at(i) != '\r')
+               dummyField += fileContent.at(i);
+           else{
+               if(fieldCount == 1){ dummyT.setReceiver(dummyField); fieldCount += 1; dummyField = "";}
+               else if(fieldCount == 2){ dummyT.setToken(dummyField); fieldCount += 1; dummyField = "";}
+               else if(fieldCount == 3){ 
+                   dummyT.setAmount(atoi(dummyField.c_str())); 
+                   fieldCount = 0; 
+                   dummyField = "";
+                   aTransactions.push_back(dummyT);
+               }
+               else fieldCount += 1;
+           }
+       }
    }catch(std::exception& e){
        std::cout << "Error encountered: " << e.what() << std::endl;
-       tFile.close();
    }    
 }
 
@@ -95,10 +106,14 @@ int main(int argc, char* argv[]){
         else
             fileName = argv[1]; // Assume the first argument is the file name
        
-        Transaction currentTransaction ("", 0, ""); // Initialize a dummy transaction instant
-        parseTransactionFile(&currentTransaction, fileName); // .. and pass it [by reference] for parsing
-       
-        std::cout <<  currentTransaction.getReceiver() << ":" << currentTransaction.getToken() << ":" << currentTransaction.getAmount();
+        std::vector<Transaction> allTransactions; // Create a vector of Transactions
+        parseTransactionFile(allTransactions, fileName); // .. and pass it [default by reference] for parsing
+        // std::cout << "Size: " << allTransactions.size() << std::endl;
+        
+        // Create a JSON file of all retrieved Transactions and pass it to a PHP page to carry out the transaction
+        std::string jsonTransactions = createJSON( allTransactions );
+        std::cout << jsonTransactions;
+        
         return 1;
    }catch(std::exception& e){
        std::cout << "Error encountered: " << e.what() << std::endl;

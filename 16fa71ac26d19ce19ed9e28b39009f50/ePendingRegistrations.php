@@ -121,8 +121,43 @@ function getRandomString($length = 8){
 
 function sendEmail($eAddress, $eSubject, $eMessage){
     // Send the email message via the sendmail MTA
-    mail($eAddress, $eSubject, $eMessage, "From:noreply@piggybank.de");
+//    mail($eAddress, $eSubject, $eMessage, "From:noreply@piggybank.de");
+    try{
+        // Pear Mail Library
+        require_once "Mail.php";
+
+         $from = "noreply@piggybank.de";
+         $to = $eAddress;
+         $subject = $eSubject;
+         $body = $eMessage;
+
+         $headers = array(
+             'From' => $from,
+             'To' => $to,
+             'Subject' => $subject
+         );
+
+        $smtp = Mail::factory('smtp', array(
+            'host' => 'ssl://smtp.gmail.com',
+            'port' => '465',
+            'auth' => true,
+            'username' => 'piggybankgmbh@gmail.com',
+            'password' => 'optimus_159_prime'
+        ));
+
+        $mail = $smtp->send($to, $headers, $body);
+
+        if (PEAR::isError($mail)) 
+            echo($mail->getMessage());
+        else 
+            echo('SUCCESS');
+           
+    }catch(Exception $e){
+        header("Location: ../error.php?id=404");
+        exit();
+    }
 }
+
 function generateTokens($custID){
     // Generates 100 unique tokens and returns them to the caller
     $customerTokens = array();

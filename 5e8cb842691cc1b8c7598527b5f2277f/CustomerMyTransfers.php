@@ -48,6 +48,13 @@ try{
 <meta name="author" content="Alei , Sara , ePezhman">
 <link rel="icon" href="../images/piggyFav.ico">
 
+<style id="antiClickjack">
+body {
+	display: none !important;
+}
+</style>
+<script src="../js/secure.js"></script>
+
 <!-- To be Changed!! -->
 <title>PiggyBank GmbH - My Transfers and Accounts</title>
 
@@ -77,8 +84,6 @@ try{
 
 						<li class="visible-xs"><a href="CustomerNewTransfer.php">New
 								Transfer</a></li>
-						<li class="visible-xs"><a href="CustomerMyTokens.php">My Tokens</a>
-						</li>
 						<li class="visible-xs active"><a href="CustomerMyTransfers.php">My
 								Transfers and Accounts</a></li>
 						<li><a href="../Help.php">Help</a></li>
@@ -104,7 +109,6 @@ try{
 				<div class="col-sm-3 col-md-2 sidebar">
 					<ul class="nav nav-sidebar">
 						<li><a href="CustomerNewTransfer.php">New Transfer</a></li>
-						<li><a href="CustomerMyTokens.php">My Tokens</a></li>
 						<li class="active"><a href="CustomerMyTransfers.php">My Transfers
 								and Accounts</a>
 						</li>
@@ -164,9 +168,12 @@ try{
 							<thead>
 								<tr>
 									<th>#</th>
+									<th>Sender</th>
+									<th>Sender Account</th>
 									<th>Receiver</th>
+									<th>Receiver Account</th>
 									<th>Amount (€)</th>
-									<th>Sent Date</th>
+									<th>Sent Date-Time</th>
 									<th>Status</th>
 								</tr>
 							</thead>
@@ -175,8 +182,8 @@ try{
 								try{
 									$count = 0;
 
-									$transfers = $dbConnection->prepare("SELECT COUNT(*) FROM Transaction WHERE transactionSender LIKE (?)");
-									$transfers->bind_param("s", mysqli_real_escape_string($dbConnection,$userID));
+									$transfers = $dbConnection->prepare("SELECT COUNT(*) FROM Transaction WHERE transactionSender LIKE (?) OR transactionReceiver LIKE (?)");
+									$transfers->bind_param("ss", mysqli_real_escape_string($dbConnection,$userID), mysqli_real_escape_string($dbConnection,$userID));
 									$transfers->execute();
 									$transfers->bind_result( $total);
 									$transfers->store_result();
@@ -196,10 +203,10 @@ try{
 									}
 									$begin = ($page - 1) *10;
 
-									$transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionAmont, transactionTime, transactionApproved FROM Transaction WHERE transactionSender LIKE (?) ORDER BY transactionTime DESC LIMIT 10 OFFSET $begin ");
-									$transfers->bind_param("s", mysqli_real_escape_string($dbConnection,$userID));
+									$transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionSender, transactionAmont, transactionTime, transactionApproved FROM Transaction WHERE transactionSender LIKE (?) OR transactionReceiver LIKE (?) ORDER BY transactionTime DESC LIMIT 10 OFFSET $begin ");
+									$transfers->bind_param("ss", mysqli_real_escape_string($dbConnection,$userID), mysqli_real_escape_string($dbConnection,$userID));
 									$transfers->execute();
-									$transfers->bind_result( $transactionReceiver, $transactionAmont, $transactionTime, $transactionApproved);
+									$transfers->bind_result( $transactionReceiver, $transactionSender, $transactionAmont, $transactionTime, $transactionApproved);
 									$transfers->store_result();
 									$i = $begin;
 									while($transfers->fetch())
@@ -208,6 +215,37 @@ try{
 										echo "<tr>";
 
 										echo "<td>$i</td>";
+
+										$customerFullName = $dbConnection->prepare("SELECT customerName FROM Customer WHERE customerID LIKE (?)");
+										$customerFullName->bind_param("s", mysqli_real_escape_string($dbConnection,$transactionSender));
+										$customerFullName->execute();
+										$customerFullName->bind_result($name);
+										$customerFullName->store_result();
+											
+											
+										while($customerFullName->fetch())
+										{
+											echo "<td>$name</td>";
+										}
+
+										$customerFullName->free_result();
+										$customerFullName->close();
+										
+										
+										$customerAccount = $dbConnection->prepare("SELECT accountNumber FROM Account WHERE accountOwner LIKE (?) ");
+										$customerAccount->bind_param("s", mysqli_real_escape_string($dbConnection,$transactionSender));
+										$customerAccount->execute();
+										$customerAccount->bind_result($customerAccountNumber );
+										$customerAccount->store_result();
+										
+										while($customerAccount->fetch())
+										{
+											echo "<td>$customerAccountNumber</td>";
+												
+										}
+										
+										$customerAccount->free_result();
+										$customerAccount->close();
 
 										$customerFullName = $dbConnection->prepare("SELECT customerName FROM Customer WHERE customerID LIKE (?)");
 										$customerFullName->bind_param("s", mysqli_real_escape_string($dbConnection,$transactionReceiver));
@@ -223,6 +261,22 @@ try{
 											
 										$customerFullName->free_result();
 										$customerFullName->close();
+										
+										$customerAccount = $dbConnection->prepare("SELECT accountNumber FROM Account WHERE accountOwner LIKE (?) ");
+										$customerAccount->bind_param("s", mysqli_real_escape_string($dbConnection,$transactionReceiver));
+										$customerAccount->execute();
+										$customerAccount->bind_result($customerAccountNumber );
+										$customerAccount->store_result();
+										
+										while($customerAccount->fetch())
+										{
+											echo "<td>$customerAccountNumber</td>";
+										
+										}
+										
+										$customerAccount->free_result();
+										$customerAccount->close();
+										
 
 										echo "<td>$transactionAmont</td>";
 

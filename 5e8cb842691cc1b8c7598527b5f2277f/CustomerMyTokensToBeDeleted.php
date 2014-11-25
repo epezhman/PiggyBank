@@ -10,17 +10,17 @@ if($authenticated == -1){
 if($authenticated == -2){
 	header("Location: ../error.php?id=440");
 	exit();
-}	
-	
+}
+
 if($_SESSION["userrole"] != "customer"){
 	header("Location: ../error.php?id=404");
 	exit();
 }
-     
+
 try{
 	// Connect to the database
 	require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/dbconnect.php");
-		
+
 	$fullName = NULL;
 
 	$userUsername = mysqli_real_escape_string($dbConnection,$_SESSION['username']);
@@ -56,9 +56,15 @@ try{
 <meta name="author" content="Alei , Sara , ePezhman">
 <link rel="icon" href="../images/piggyFav.ico">
 
+<style id="antiClickjack">
+body {
+	display: none !important;
+}
+</style>
+<script src="../js/secure.js"></script>
+
 <!-- To be Changed!! -->
-<title>        PiggyBank GmbH - My Tokens
-</title>
+<title>PiggyBank GmbH - My Tokens</title>
 
 <!-- Bootstrap core CSS -->
 <link href="../css/bootstrap.min.css" rel="stylesheet">
@@ -70,7 +76,7 @@ try{
 
 <body>
 	<div id="wrap">
-		<div class="navbar navbar-inverse navbar-fixed-top" >
+		<div class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container-fluid">
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle collapsed"
@@ -79,16 +85,15 @@ try{
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="CustomerMyTransfer.php"><img src="../images/logo.png"
-						alt="" class="logoStyle" /> Piggy Bank GmbH</a>
+					<a class="navbar-brand" href="CustomerMyTransfer.php"><img
+						src="../images/logo.png" alt="" class="logoStyle" /> Piggy Bank
+						GmbH</a>
 				</div>
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav navbar-right">
 
 						<li class="visible-xs"><a href="CustomerNewTransfer.php">New
 								Transfer</a></li>
-						<li class="visible-xs active"><a href="CustomerMyTokens.php">My
-								Tokens</a></li>
 						<li class="visible-xs"><a href="CustomerMyTransfers.php">My
 								Transfers and Accounts</a></li>
 
@@ -103,7 +108,8 @@ try{
 							header("Location ../error.php");
 						}
 						?>
-						<li><a href="../f8d890ce88bd1791b6eaddf06e58ceb5/logout.php">Log Out</a></li>
+						<li><a href="../f8d890ce88bd1791b6eaddf06e58ceb5/logout.php">Log
+								Out</a></li>
 					</ul>
 				</div>
 			</div>
@@ -114,8 +120,8 @@ try{
 				<div class="col-sm-3 col-md-2 sidebar">
 					<ul class="nav nav-sidebar">
 						<li><a href="CustomerNewTransfer.php">New Transfer</a></li>
-						<li class="active"><a href="CustomerMyTokens.php">My Tokens</a></li>
-						<li><a href="CustomerMyTransfers.php">My Transfers and Accounts</a></li>
+						<li><a href="CustomerMyTransfers.php">My Transfers and Accounts</a>
+						</li>
 					</ul>
 				</div>
 				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -143,11 +149,11 @@ try{
 									$customerID = $dbConnection->prepare("SELECT customerID FROM Customer WHERE customerUsername LIKE (?)");
 									$customerID->bind_param("s", $userUsername);
 									$customerID->execute();
-										
+
 									$customerID->bind_result($ID);
-										
+
 									$customerID->store_result();
-										
+
 									if($customerID->num_rows() == 1)
 									{
 										while($customerID->fetch())
@@ -155,7 +161,7 @@ try{
 											$userID = $ID;
 										}
 										$customerID->free_result();
-										$customerID->close();									
+										$customerID->close();
 									}
 
 									if(!empty($userID))

@@ -38,15 +38,6 @@ try{
         exit();
     }
    session_start();
-/*   if($_SESSION["userrole"] == "customer"){
-		header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerMyTransfers.php");
-		exit();
-	}
-	else if($_SESSION["userrole"] == "admin"){
-		header("Location: ../16fa71ac26d19ce19ed9e28b39009f50/eCustomerManagers.php");
-		exit();
-	}
-  */
   $targetDir = "tmp/";
   $targetDir = $targetDir.sha1($_FILES["transFile"]["name"]).".txt";
   if(move_uploaded_file($_FILES["transFile"]["tmp_name"], $targetDir)){
