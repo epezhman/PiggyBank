@@ -24,6 +24,18 @@ function getRandomString($length = 8){
     return $result;
 }
 
+function getRandomNumber($length = 8){
+    $alphabet = "1234567890";
+    $validCharNumber = strlen($alphabet);
+    $result = "";
+    for ($i = 0; $i < $length; $i++) {
+        $index = mt_rand(0, $validCharNumber - 1);
+        $result .= $alphabet[$index];
+    }
+    return $result;
+}
+
+
 function validateInput($input, $type){
 // Peforms the same input validations carried out on the client-side to double check for errors/malice
     $regExpressions =  array("name"=>"/[A-Za-z ]+/", "address"=>"/[a-zA-Z0-9,'-. ]+/", "username"=>"/[0-9A-Za-z_.]+/", "password"=>"/[a-zA-Z0-9_.@!?]/");
@@ -46,13 +58,13 @@ function registerCustomer(){
             $userUsername = mysqli_real_escape_string($dbConnection, $_POST['username']);
             $userPassword = hash("sha256", mysqli_real_escape_string($dbConnection, $_POST['password']));
             $userRole = 2;
-            $customerID = getRandomString(10);
+            $customerID = "PB".getRandomNumber();
             $customerName = mysqli_real_escape_string($dbConnection, $_POST['fullname']);
             $customerDOB = mysqli_real_escape_string($dbConnection, $_POST['dob']);
             $customerEmail = mysqli_real_escape_string($dbConnection, $_POST['email']);
             $customerAddress = mysqli_real_escape_string($dbConnection, $_POST['address']);
-            $accountID = getRandomString(10);
-            $accountBalance = rand(0,15000);
+            $accountID = "PB".getRandomNumber();
+            $accountBalance = 0;//rand(0,15000); // Initialize the customer account with a zero balance
             // Prepare the SQL statements
             $availableStmt = $dbConnection->prepare("SELECT userUsername FROM User WHERE userUsername LIKE (?)");
             $userStmt = $dbConnection->prepare("INSERT INTO User VALUES (?,?,?,0)");
