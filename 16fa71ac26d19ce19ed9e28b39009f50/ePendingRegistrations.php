@@ -150,7 +150,7 @@ function sendEmail($eAddress, $eSubject, $eMessage){
         if (PEAR::isError($mail)) 
             echo "<script>alert(\"Error Encountered: " . $mail->getMessage() . "\");</script>" ;
         else 
-            echo "<script>alert(\"Successfully approved. Email sent.\");</script>";
+            echo "<script>alert(\"Successful Operation. Email sent.\");</script>";
            
     }catch(Exception $e){
         header("Location: ../error.php?id=404");
@@ -202,8 +202,8 @@ function generateTokens($custID){
 	}
 	
 	if(isset($_POST['remove'])){
-		$var = $_POST['remove'];
-		//$dbConnection->query("delete from User where User.userUsername='$var'")or die(mysql_error());
+		$var = $_POST['remove']; 
+		
 		// Retrieve customer details
 		$customerStmt = $dbConnection->prepare("SELECT customerID, customerName, customerEmail FROM Customer WHERE customerUsername LIKE (?)");
 		$customerStmt->bind_param("s", $var);
@@ -216,21 +216,22 @@ function generateTokens($custID){
 				$customerName = $cName;
 				$customerEmail = $cEmail;
 			}
-			$disapproveStmt = $dbConnection->prepare("UPDATE User SET userApproved=0 userUsername=?") or die(mysql_error());
-			$disapproveStmt->bind_param("s", $var);
-			$disapproveStmt->execute();
-			if($disapproveStmt->affected_rows > 0){
+			
+			$dbConnection->query("delete from User where User.userUsername='$var'")or die(mysql_error());
+			
 				// Disable tokens?!
 				$emailMessage = "Dear Customer,\r\n\r\nWe regret to inform you that your PiggyBank online banking account has been suspended.";
 				sendEmail($cEmail, "PiggyBank Online Banking Account Suspended". $emailMessage);
-			}
+			
 		}
 	}
 
 	if(isset($_POST['approve'])){
-		$var = $_POST['approve'];
+		$var = $_POST['approve']; 
+                $balance_value = $_POST['balance']; 
 			// This is insecure (SQL Injection hazard). Someone might set this "approve" variable to a SQL query string
 			$dbConnection->query("UPDATE User SET userApproved=1 WHERE User.userUsername='$var'")or die(mysql_error());
+
 			// Generate tokens and email customer
 			// 1- Retrieve customer details based on username
 			$customerStmt = $dbConnection->prepare("SELECT customerID, customerName, customerEmail FROM Customer WHERE customerUsername LIKE (?)");
@@ -245,6 +246,9 @@ function generateTokens($custID){
 					$customerEmail = $cEmail;
 				}
 			 }
+
+$dbConnection->query("UPDATE Account SET accountBalance='$balance_value' WHERE accountOwner='$customerID'")or die(mysql_error());
+
 			// Generate TAN's
 			$customerTokens = generateTokens($customerID);
 			$eMessage = "Dear Customer,\r\n\r\nThank you for choosing PiggyBank GmbH.\r\n\r\nYour online banking account is now activated.\r\n\r\nFollowing are your generated TAN's that you can use to transfer money via our online banking system:\r\n\r\n";
@@ -258,13 +262,13 @@ function generateTokens($custID){
 	$result = $dbConnection->query("select User.userUsername,Customer.customerDOB,Customer.customerAddress,Account.accountType,Account.accountBalance,Customer.customerEmail,Customer.customerID  from User,Customer,Account where User.userUsername=Customer.customerUsername and User.userApproved=0 and Account.accountOwner= Customer.customerID") or die(mysql_error());
 	while($row = mysqli_fetch_row($result)){
 	echo '<tr>';
-	echo '<td style="width:25%" >' . $row[0]. '</td>';
-	echo '<td style="width:20%" >' . $row[1]. '</td>';
-	echo '<td style="width:25%" >' . $row[2]. '</td>';
+	echo '<td style="width:23%" >' . $row[0]. '</td>';
+	echo '<td style="width:18%" >' . $row[1]. '</td>';
+	echo '<td style="width:23%" >' . $row[2]. '</td>';
 	//echo '<td style="width:18%" >' . $row[3]. '</td>';
-	echo '<td style="width:20%" >€' . $row[4]. '</td>';
+        echo '<form method="post" action="ePendingRegistrations.php">';	
+	echo '<td  style="width:23%"><input type="text" value="0" name="balance"/></td>';
 	echo '<td>';
-	echo '<form method="post" action="ePendingRegistrations.php">';
 	echo '<button  type="submit" name="remove"  class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' .$row[0]. '>
 				  <span class="glyphicon glyphicon-remove"></span>
 				  </button>
