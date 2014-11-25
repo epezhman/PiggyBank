@@ -119,8 +119,11 @@ if($_SESSION["userrole"] != "admin"){
                             <thead>
                                 <tr>
                                     <th>Sender</th>
+                                    <th>Sender Account</th>
                                     <th>Receiver</th>
+                                    <th>Receiver Account</th>
                                     <th>Amount (€)</th>
+                 
                                     <th>Submit Date</th>
                                     <th>Action</th>
                                 </tr>
@@ -129,15 +132,22 @@ if($_SESSION["userrole"] != "admin"){
 		<?php
 		
 		if(isset($_POST['remove'])){
-		$var = $_POST['remove'];
+		/*$var = $_POST['remove'];
 		$deleteTransactionStmt = $dbConnection->prepare("delete from Transaction where transactionID=?");
 		$deleteTransactionStmt->bind_param("s",$var);
-		$deleteTransactionStmt->execute();
+		$deleteTransactionStmt->execute();*/
+                $var = $_POST['remove'];
+		
+		$updateStmt = $dbConnection->prepare("update Transaction set transactionApproved=2 where transactionID=?");
+		$updateStmt->bind_param("s",$var);
+		$updateStmt->execute();
+		
 		}
 
 		if(isset($_POST['approve'])){
+                 
 		$var = $_POST['approve'];
-		
+		 
 		$updateStmt = $dbConnection->prepare("update Transaction set transactionApproved=1 where transactionID=?");
 		$updateStmt->bind_param("s",$var);
 		$updateStmt->execute();
@@ -162,22 +172,24 @@ if($_SESSION["userrole"] != "admin"){
 		
 		}
 		
-		$result = $dbConnection->query("select C1.customerName,C2.customerName,transactionAmont,transactionTime,C1.customerID,C2.customerID,Transaction.transactionID from Transaction,Customer C1,Customer C2 where transactionSender=C1.customerID and transactionReceiver=C2.customerID and transactionApproved=0 and transactionAmont>10000") or die(mysql_error());
+		$result = $dbConnection->query("select C1.customerName,A1.accountNumber,C2.customerName,A2.accountNumber,transactionAmont,transactionTime,C1.customerID,C2.customerID,Transaction.transactionID from Transaction,Customer C1,Customer C2,Account A1,Account A2 where transactionSender=C1.customerID and transactionReceiver=C2.customerID and C1.customerID=A1.accountOwner and C2.customerID=A2.accountOwner and transactionApproved=0 and transactionAmont>10000") or die(mysql_error());
 		while($row = mysqli_fetch_row($result)){
 		$index= 0;
 		
 		echo '<tr>';
-		echo '<td style="width:25%" >' . $row[0]. '</td>';
-		echo '<td style="width:25%" >' . $row[1]. '</td>';
-		echo '<td style="width:20%" >€' . $row[2]. '</td>';
-		echo '<td style="width:20%" >' . $row[3]. '</td>';
+		echo '<td style="width:15%" >' . $row[0]. '</td>';
+		echo '<td style="width:15%" >' . $row[1]. '</td>';
+		echo '<td style="width:15%" >' . $row[2]. '</td>';
+		echo '<td style="width:15%" >' . $row[3]. '</td>';
+                echo '<td style="width:15%" >€' . $row[4]. '</td>';
+                echo '<td style="width:15%" >' . $row[5]. '</td>';
 		echo '<td>';
 		echo '<form method="post" action="ePendingTransfers.php">';
-		echo '<button  type="submit" name="remove" id="remove" class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' . $row[6]. '>
+		echo '<button  type="submit" name="remove" id="remove" class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' . $row[8]. '>
                       <span class="glyphicon glyphicon-remove"></span>
                       </button>
 
-                      <button type="submit" name="approve" id="approve" class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve" value=' . $row[6]. '>
+                      <button type="submit" name="approve" id="approve" class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve" value=' . $row[8]. '>
                       <span class="glyphicon glyphicon-ok"></span>
                        </button>';
 		$index++;

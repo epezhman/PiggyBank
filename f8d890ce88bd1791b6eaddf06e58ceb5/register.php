@@ -13,6 +13,7 @@
 //        exit();
 //    }
 
+
 function getRandomString($length = 8){
     $alphabet = "abcdefghijklmnopqrstuxyvwzABCDEFGHIJKLMNOPQRSTUXYVWZ._";
     $validCharNumber = strlen($alphabet);
@@ -26,12 +27,15 @@ function getRandomString($length = 8){
 
 function validateInput($input, $type){
 // Peforms the same input validations carried out on the client-side to double check for errors/malice
-    $regExpressions =  array("name"=>"/[A-Za-z ]+/", "address"=>"/[a-zA-Z0-9,'-. ]+/", "username"=>"/[0-9A-Za-z_.]+/", "password"=>"/[a-zA-Z0-9_.@!?]/");
+
+    $regExpressions =  array("name"=>"^[A-Za-z ]+$", "address"=>"^[a-zA-Z0-9,'-. ]+$", "username"=>"^[0-9A-Za-z_.]+$", "password"=>"^[a-zA-Z0-9_.@!?]+$", "dob"=>"^[0-9/]+$");
+
     try{
-        if (preg_match($regExpressions[$type], $input) == 1)
-            return true;
-        else
+        if (ereg($regExpressions[$type], $input)){          
+		return true;
+        }else{
             return false;
+	}
     }catch(Exception $e){
         return false;
     } 
@@ -98,17 +102,19 @@ function registerCustomer(){
 
 try{
     $_SERVER["HTTP_REFERER"] = "PiggyBank/f8d890ce88bd1791b6eaddf06e58ceb5/register.php";
-    // Retrieve and validate posted parameters
+    // Retrieve and validate posted parameter
     $fullnameStatus = validateInput($_POST['fullname'], "name");
     $addressStatus = validateInput($_POST['address'], "address");
+    $dobStatus1 = validateInput($_POST['dob'], "dob");
     list($dd,$mm,$yyyy) = explode("/", $_POST['dob']);
-    $dobStatus = checkdate($mm, $dd, $yyyy);
+    $dobStatus2 = checkdate($mm, $dd, $yyyy);
     $emailStatus = (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) != false) ? true : false;
     $usernameStatus = validateInput($_POST['username'], "username");
     $passwordStatus = (strlen($_POST["password"]) < 8) ? false : validateInput($_POST['password'], "password");
     $confirmStatus = ($_POST["confirm"] != $_POST["password"]) ? false : true;
     // If validation succeeds, add user to database
-    if($fullnameStatus and $addressStatus and $dobStatus and $emailStatus and $usernameStatus and $passwordStatus and $confirmStatus){
+    if($fullnameStatus and $addressStatus and $dobStatus1 and $dobStatus2 and $emailStatus and $usernameStatus and $passwordStatus and $confirmStatus){
+  
         // Register user
         if (registerCustomer())
             header("Location: ../notify.php?mode=success");
@@ -118,13 +124,13 @@ try{
     else{
         // Otherwise, post back to signup.php to inform user of failure
         session_start();
-        $_SESSION["invFullname"] = $fullnameStatus ? NULL : $_POST["fullname"];
-        $_SESSION["invAddress"] = $addressStatus ? NULL : $_POST["address"];
-        $_SESSION["invDOB"] = $dobStatus ? NULL : $_POST["dob"];
-        $_SESSION["invEmail"] = $emailStatus ? NULL : $_POST["email"];
-        $_SESSION["invUsername"] = $usernameStatus ? NULL : $_POST["username"];
-        $_SESSION["invPassword"] = $passwordStatus ? NULL : $_POST["password"];
-        $_SESSION["invConfirm"] = $confirmStatus ? NULL : $_POST["confirm"];
+        $_SESSION["invFullname"] = $fullnameStatus ? $_POST["fullname"] : NULL;
+        $_SESSION["invAddress"] = $addressStatus ?  $_POST["address"] : NULL;
+        $_SESSION["invDOB"] = ($dobStatus1 & $dobStatus2) ? $_POST["dob"] : NULL;
+        $_SESSION["invEmail"] = $emailStatus ?  $_POST["email"] : NULL;
+        $_SESSION["invUsername"] = $usernameStatus ? $_POST["username"] : NULL;
+        $_SESSION["invPassword"] = $passwordStatus ?  $_POST["password"] : NULL;
+        $_SESSION["invConfirm"] = $confirmStatus ?  $_POST["confirm"] : NULL;
         header("Location: ../signup.php");
       
         

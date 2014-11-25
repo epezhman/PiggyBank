@@ -294,7 +294,7 @@
                             
                             if(isset($_SESSION["invFullname"]))
                                 echo "<td style=\"padding: 10px 0px;\"><label for=\"fullname\">Fullname</label></td>
-                                    <td><input class=\"form-control\" style=\"width: 300px\" id=\"fullname\" name=\"fullname\" type=\"text\" onload=\"validateElement(this, 'name')\" onblur=\"validateElement(this, 'name')\" placeholder=\"John Doe\"></td>
+                                    <td><input class=\"form-control\" style=\"width: 300px\" id=\"fullname\" name=\"fullname\" type=\"text\" onload=\"validateElement(this, 'name')\" onblur=\"validateElement(this, 'name')\" placeholder=\"John Doe\" value=\"".htmlspecialchars($_SESSION["invFullname"])."\"></td>
                                    <td><span id=\"fullnamespan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
                             else
 							   echo "<td style=\"padding: 10px 0px;\"><label for=\"fullname\">Fullname</label></td>
@@ -303,7 +303,7 @@
                             echo "</tr><tr>";
                             if(isset($_SESSION["invAddress"]))
                                 echo "<td style=\"padding: 10px 0px;\"><label for=\"address\">Address</label></td>
-                                    <td><input class=\"form-control\" style=\"width:300px\" id=\"address\" name=\"address\" type=\"text\" onload=\"validateElement(this, 'address')\" onblur=\"validateElement(this, 'address')\" placeholder=\"1 Main St.\"></td>
+                                    <td><input class=\"form-control\" style=\"width:300px\" id=\"address\" name=\"address\" type=\"text\" onload=\"validateElement(this, 'address')\" onblur=\"validateElement(this, 'address')\" placeholder=\"1 Main St.\" value=\"".htmlspecialchars($_SESSION["invAddress"])."\"></td>
                                     <td><span id=\"addressspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
                             else
 							    echo "<td style=\"padding: 10px 0px;\"><label for=\"address\">Address</label></td>
@@ -312,7 +312,7 @@
                             echo "</tr><tr>";
                             if(isset($_SESSION["invDOB"]))
                                     echo "<td style=\"padding: 10px 0px;\"><label for=\"DateOfBirth\">Date of birth</label></td>
-                                    <td><input class=\"form-control\" style=\"width:110px\" id=\"dob\" name=\"dob\" placeholder=\"dd/mm/yyyy\" onload=\"validateElement(this, 'date')\" onblur=\"validateElement(this, 'date')\">
+                                    <td><input class=\"form-control\" style=\"width:110px\" id=\"dob\" name=\"dob\" placeholder=\"dd/mm/yyyy\" onload=\"validateElement(this, 'date')\" onblur=\"validateElement(this, 'date')\" value=\"".htmlspecialchars($_SESSION["invDOB"])."\"></td>
                                      </td>
                                     <td><span id=\"dobspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
                             else
@@ -323,7 +323,7 @@
                             echo "</tr><tr>";
                             if(isset($_SESSION["invEmail"]))
                                     echo "<td style=\"padding: 10px 0px;\"><label for=\"email\">Email</label></td>
-                                    <td><input class=\"form-control\" style=\"width:250px\" id=\"email\" name=\"email\" type=\"text\" onload=\"validateElement(this, 'email')\" onblur=\"validateElement(this, 'email')\" placeholder=\"john.doe@piggybank.de\">
+                                    <td><input class=\"form-control\" style=\"width:250px\" id=\"email\" name=\"email\" type=\"text\" onload=\"validateElement(this, 'email')\" onblur=\"validateElement(this, 'email')\" placeholder=\"john.doe@piggybank.de\" value=\"".htmlspecialchars($_SESSION["invEmail"])."\"></td>
                                     </td>
                                     <td><span id=\"emailspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
                             else
@@ -334,7 +334,7 @@
                             echo "</tr><tr>";
                             if(isset($_SESSION["invUsername"]))
                                     echo "<td style=\"padding: 10px 0px;\"><label for=\"username\">Username</label></td>
-                                    <td><input class=\"form-control\" style=\"width:250px\" id=\"username\" name=\"username\" type=\"text\" onload=\"validateElement(this, 'username')\" onblur=\"validateElement(this, 'username')\" placeholder=\"john.doe\">
+                                    <td><input class=\"form-control\" style=\"width:250px\" id=\"username\" name=\"username\" type=\"text\" onload=\"validateElement(this, 'username')\" onblur=\"validateElement(this, 'username')\" placeholder=\"john.doe\" value=\"".htmlspecialchars($_SESSION["invUsername"])."\"></td>
                                     </td>
                                     <td><span id=\"usernamespan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
 							else
@@ -345,7 +345,7 @@
                             echo "</tr><tr>";
                             if(isset($_SESSION["invPassword"]))
                                     echo "<td style=\"padding: 10px 0px;\"><label for=\"password\">Password</label></td>
-                                    <td><input class=\"form-control\" style=\"width:250px;\" id=\"password\" name=\"password\" type=\"password\" onload=\"validateElement(this, 'password')\" onblur=\"validateElement(this, 'password')\" placeholder=\"epiclysecret\"></td>
+                                    <td><input class=\"form-control\" style=\"width:250px;\" id=\"password\" name=\"password\" type=\"password\" onload=\"validateElement(this, 'password')\" onblur=\"validateElement(this, 'password')\" placeholder=\"epiclysecret\" value=\"".htmlspecialchars($_SESSION["invPassword"])."\"></td>
                                     <td><span id=\"passwordspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
 							else
 							        echo "<td style=\"padding: 10px 0px;\"><label for=\"password\">Password</label></td>
@@ -354,7 +354,7 @@
                             echo "</tr><tr>";
                             if(isset($_SESSION["invConfirm"]))
                                     echo "<td style=\"padding: 10px 0px;\"><label for=\"confirm\">Confirm Password</label></td>
-                                    <td><input class=\"form-control\" style=\"width:250px;\" id=\"confirm\" name=\"confirm\" type=\"password\" onload=\"validateElement(this, 'confirm')\" onkeyup=\"validateElement(this, 'confirm')\" placeholder=\"epiclysecret\"></td>
+                                    <td><input class=\"form-control\" style=\"width:250px;\" id=\"confirm\" name=\"confirm\" type=\"password\" onload=\"validateElement(this, 'confirm')\" onkeyup=\"validateElement(this, 'confirm')\" placeholder=\"epiclysecret\" value=\"".htmlspecialchars($_SESSION["invConfirm"])."\"></td>
                                     <td><span id=\"confirmspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
 							else
 							    echo "<td style=\"padding: 10px 0px;\"><label for=\"confirm\">Confirm Password</label></td>

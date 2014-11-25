@@ -117,24 +117,37 @@
                         <table class="table table-striped table-hover ">
                             <thead>
                                 <tr>
-                                    <th>Sender</th>
+                                     <th>Sender</th>
+                                    <th>Sender Account</th>
                                     <th>Receiver</th>
+                                    <th>Receiver Account</th>
                                     <th>Amount (€)</th>
+                 
                                     <th>Submit Date</th>
+                                    <th>Description</th>
                                 </tr>
                             </thead>
 
                            		<?php
 		
-		$result = $dbConnection->query("select C1.customerName,C2.customerName,transactionAmont,transactionTime from Transaction,Customer C1,Customer C2 where transactionSender=C1.customerID and transactionReceiver=C2.customerID and transactionApproved=1") or die(mysql_error());
+		$result = $dbConnection->query("select C1.customerName,A1.accountNumber,C2.customerName,A2.accountNumber,transactionAmont,transactionTime,transactionApproved,C1.customerID,C2.customerID,Transaction.transactionID from Transaction,Customer C1,Customer C2,Account A1,Account A2 where transactionSender=C1.customerID and transactionReceiver=C2.customerID and C1.customerID=A1.accountOwner and C2.customerID=A2.accountOwner and (transactionApproved=1 or transactionApproved=2)") or die(mysql_error());
+ 	
 		while($row = mysqli_fetch_row($result)){
 		echo '<tr>';
-		echo '<td style="width:25%" >' . $row[0]. '</td>';
-		echo '<td style="width:25%" >' . $row[1]. '</td>';
-		echo '<td style="width:20%" >€' . $row[2]. '</td>';
-		echo '<td style="width:20%" >' . $row[3]. '</td>';
+		echo '<td style="width:15%" >' . $row[0]. '</td>';
+		echo '<td style="width:15%" >' . $row[1]. '</td>';
+		echo '<td style="width:15%" >' . $row[2]. '</td>';
+		echo '<td style="width:15%" >' . $row[3]. '</td>';
+		echo '<td style="width:15%" >€' . $row[4]. '</td>';
+		echo '<td style="width:15%" >' . $row[5]. '</td>';
+                if($row[6]==1){
+			echo '<td style="width:15%" >' .Approved. '</td>';
+		}else if($row[6]==2){
+			echo '<td style="width:15%" >' .Rejected. '</td>';
+                }
+                
 		}
-		?>	
+		?>
 		</tbody>
 
                         </table>
