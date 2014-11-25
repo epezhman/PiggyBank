@@ -65,8 +65,10 @@
                             <table><tr><td align="center">
                                 <?php
                                      // Check the referer first to deny nosey requests
-                                     if (strpos($_SERVER["HTTP_REFERER"], "/PiggyBank/") === false)
+                                     if (strpos($_SERVER["HTTP_REFERER"], "/PiggyBank/") === false){
                                          header("Location: error.php?id=404");
+                                         exit();   
+                                     }
                                      else{
                                          if($_GET["mode"] == "success"){
                                              echo "<h2><b>Sign up request sucessfully submitted.</h2>";

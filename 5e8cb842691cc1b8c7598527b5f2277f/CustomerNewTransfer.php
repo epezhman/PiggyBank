@@ -436,7 +436,7 @@ body {
 							<div class="row">
 								<div class="col-md-12">
 									<form class="form-horizontal"
-										action="../f8d890ce88bd1791b6eaddf06e58ceb5/uploadfile.php"
+										action="../f8d890ce88bd1791b6eaddf06e58ceb5/batchTransfer.php"
 										method="post" enctype="multipart/form-data">
 										<div class="form-group">
 											<label for="InputFile" class="col-sm-2 control-label">File

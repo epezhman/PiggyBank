@@ -41,9 +41,13 @@ try{
   $targetDir = "tmp/";
   $targetDir = $targetDir.sha1($_FILES["transFile"]["name"]).".txt";
   if(move_uploaded_file($_FILES["transFile"]["tmp_name"], $targetDir)){
-	$parsedTransaction = exec("./parseTransaction ".$targetDir);
+	$parsedTransactions = exec("./parseTransaction ".$targetDir);
 	if(!empty($parsedTransaction)){
-		list($transactionReciver, $transactionToken, $transactionAmount) = explode(":", $parsedTransaction);
+                // Carry out the transfers
+                $allTransactions = json_decode($parsedTransactions);
+                // Iterate over transactions and send them to "Transfer.php"
+                echo $parsedTransactions;
+                exit();
 		// Return parameters to transfer
 		header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php?receiver=".$transactionReciver."&token=".$transactionToken."&amount=".$transactionAmount);
 		exit();

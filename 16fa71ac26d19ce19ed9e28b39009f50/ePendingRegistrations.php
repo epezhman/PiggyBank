@@ -148,9 +148,9 @@ function sendEmail($eAddress, $eSubject, $eMessage){
         $mail = $smtp->send($to, $headers, $body);
 
         if (PEAR::isError($mail)) 
-            echo($mail->getMessage());
+            echo "<script>alert(\"Error Encountered: " . $mail->getMessage() . "\");</script>" ;
         else 
-            echo('SUCCESS');
+            echo "<script>alert(\"Successfully approved. Email sent.\");</script>";
            
     }catch(Exception $e){
         header("Location: ../error.php?id=404");
