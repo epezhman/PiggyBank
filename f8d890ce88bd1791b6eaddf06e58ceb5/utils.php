@@ -1,5 +1,14 @@
 <?php
 
+    // Some basic access control checks
+    ob_start();
+    require("accesscontrol.php");
+    if(ob_get_clean() == -1){
+        header("Location: ../error.php?id=404");
+        exit();
+    }
+    require_once("dbconnect.php");
+
 function getRandomString($length = 8){
 	$alphabet = "abcdefghijklmnopqrstuxyvwzABCDEFGHIJKLMNOPQRSTUXYVWZ._";
 	$validCharNumber = strlen($alphabet);

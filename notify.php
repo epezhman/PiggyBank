@@ -62,7 +62,7 @@
                 <br/><br/><br/>
                 <div class="col-sm-12">
                         <div class="form-signout">
-                            <table><tr><td align="center">
+                            <table align="center"><tr><td align="center">
                                 <?php
                                      // Check the referer first to deny nosey requests
                                      if (strpos($_SERVER["HTTP_REFERER"], "/PiggyBank/") === false){
