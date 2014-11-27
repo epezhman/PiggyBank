@@ -282,15 +282,20 @@ body {
 
 										echo "<td>$transactionTime</td>";
 
-										if($transactionApproved)
+										if($transactionApproved == "1")
 										{
 											echo "<td><span class=\"label label-success\"><span
 											class=\"glyphicon glyphicon-ok\"></span> Sent</span></td>";
 										}
-										else
+										else if($transactionApproved == "0")
 										{
 											echo "<td><span class=\"label label-warning\"><span
 											class=\"glyphicon glyphicon-time\"></span> Pending</span></td>";
+										}
+										else if($transactionApproved == "2")
+										{
+											echo "<td><span class=\"label label-danger\"><span
+											class=\"glyphicon glyphicon-remove\"></span> Rejected</span></td>";
 										}
 
 										echo "</tr>";
