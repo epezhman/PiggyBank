@@ -31,12 +31,18 @@ public class OTPGenerator {
 			md.reset();
 			byte byteData[] = md.digest((toBeHashed + salt).getBytes("UTF-8"));
 
+			StringBuffer sb = new StringBuffer();
 			for (int i = 0; i < interval; i++) {
+				sb = new StringBuffer();
+				for (int j = 0; j < byteData.length; j++) {
+					sb.append(Integer.toString((byteData[j] & 0xff) + 0x100, 16)
+							.substring(1));
+				}
 				md.reset();
-				byteData = md.digest(byteData);
+				byteData = md.digest(sb.toString().getBytes("UTF-8"));
 			}
 
-			StringBuffer sb = new StringBuffer();
+			sb = new StringBuffer();
 			for (int i = 0; i < byteData.length; i++) {
 				sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16)
 						.substring(1));

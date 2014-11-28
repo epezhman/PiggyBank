@@ -140,9 +140,9 @@ public class SCSMain {
 			accountField = new JTextField();
 			OTPText = new JTextField("");
 			
-//			PINField.setText("123456");
-//			amountField.setText("1234.4");
-//			accountField.setText("kn_LKMSWdO");
+//			PINField.setText("653705");
+//			amountField.setText("100");
+//			accountField.setText("PB37083707");
 
 			PINField.setMaximumSize(new Dimension(470, 30));
 			amountField.setMaximumSize(new Dimension(470, 30));
