@@ -13,7 +13,7 @@ body {
 	display: none !important;
 }
 </style>
-<script src="../js/secure.js"></script>
+<script src="./js/secure.js"></script>
 
     <!-- To be Changed!! -->
     <title>
