@@ -58,7 +58,7 @@ function registerEmployee(){
             $userUsername = mysqli_real_escape_string($dbConnection, $_POST['username']);
             $userPassword = hash("sha256", mysqli_real_escape_string($dbConnection, $_POST['password']));
             $userRole = 1;
-            $employeeID = "E"getRandomNumber(9);
+            $employeeID = "E".getRandomNumber(9);
             $employeeName = mysqli_real_escape_string($dbConnection, $_POST['fullname']);
             $employeeDOB = mysqli_real_escape_string($dbConnection, $_POST['dob']);
             $employeeEmail = mysqli_real_escape_string($dbConnection, $_POST['email']);

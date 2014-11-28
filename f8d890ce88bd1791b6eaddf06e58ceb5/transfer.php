@@ -202,9 +202,25 @@ try{
 		$accountExistQuery->free_result();
 		$accountExistQuery->close();
 
+		$customerInfo = $dbConnection->prepare("SELECT customerPIN, customerTransferSecurityMethod FROM Customer WHERE customerUsername LIKE (?)");
+		$customerInfo->bind_param("s", mysqli_real_escape_string($dbConnection,$_SESSION['username']));
+		$customerInfo->execute();
+		$customerInfo->bind_result($pin, $cMethod);
+		$customerInfo->store_result();
+		if($customerInfo->num_rows() == 1)
+		{
+			while($customerInfo->fetch())
+			{
+				$customerPIN = $pin;
+				$customerMethod = $cMethod;
+			}
+		}
+		$customerInfo->free_result();
+		$customerInfo->close();
+		
 		// All checks done? Carry out the transaction
 		if($transferFlag)
-			if (doTransfer($senderAccount, $receiverAccount, $amount, $transferToken)){
+			if (doTransfer($senderAccount, $receiverAccount, $amount, $transferToken, $cMethod, $pin)){
 				$_SESSION["invSuccessPaid"] = true;
 			}
 			else{

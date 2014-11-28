@@ -125,7 +125,7 @@ body {
             		$('#'+e.id+'Span').addClass("alert-danger");
                 	$('#'+e.id+'Span').removeClass("alert-success");
                 	$('#'+e.id+'Span').text("Receiver ID must be 10 char length ");
-                	validated["ReceiverId"] = false;
+                	customerTransferSecurityMethodvalidated["ReceiverId"] = false;
             	}
                 else{
                 	$('#'+e.id+'Span').addClass("alert-success");
@@ -233,7 +233,7 @@ body {
     
 	</script>
 </head>
-
+customerTransferSecurityMethod
 <body onload="prepareForm()">
 	<div id="wrap">
 		<div class="navbar navbar-inverse navbar-fixed-top">
