@@ -59,6 +59,23 @@ function registerCustomer(){
             // Connect to the database
             require_once("dbconnect.php");
             // Prepare the parameters
+            
+            $secMethod = 1;
+            $PIN = 0;
+            if($_POST["secMethod"] == "1")
+            {
+            	$secMethod = 1;
+            }
+            else if($_POST["secMethod"] == "2")
+            {
+            	$secMethod = 2;
+            }
+            
+            if($secMethod == 2)
+            {
+            	$PIN = getRandomNumber(6);
+            }
+            
             $userUsername = mysqli_real_escape_string($dbConnection, $_POST['username']);
             $userPassword = hash("sha256", mysqli_real_escape_string($dbConnection, $_POST['password']));
             $userRole = 2;
@@ -72,12 +89,12 @@ function registerCustomer(){
             // Prepare the SQL statements
             $availableStmt = $dbConnection->prepare("SELECT userUsername FROM User WHERE userUsername LIKE (?)");
             $userStmt = $dbConnection->prepare("INSERT INTO User VALUES (?,?,?,0)");
-            $customerStmt = $dbConnection->prepare("INSERT INTO Customer VALUES (?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?)");
+            $customerStmt = $dbConnection->prepare("INSERT INTO Customer VALUES (?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?)");
             $accountStmt = $dbConnection->prepare("INSERT INTO Account VALUES (?,?,0,?)");
             // Bind parameters
             $availableStmt->bind_param("s", $userUsername);
             $userStmt->bind_param("sss", $userUsername, $userPassword, $userRole);
-            $customerStmt->bind_param("ssssss",$customerID, $customerName, $customerDOB, $customerEmail, $customerAddress, $userUsername);
+            $customerStmt->bind_param("sssssssi",$customerID, $customerName, $customerDOB, $customerEmail, $customerAddress, $userUsername, $PIN, $secMethod);
             $accountStmt->bind_param("ssi", $accountID, $customerID, $accountBalance);
             // Execute the statements
             // 1- Check if username is already taken

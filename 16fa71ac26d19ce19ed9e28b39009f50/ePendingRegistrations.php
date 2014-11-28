@@ -234,21 +234,24 @@ function generateTokens($custID){
 
 			// Generate tokens and email customer
 			// 1- Retrieve customer details based on username
-			$customerStmt = $dbConnection->prepare("SELECT customerID, customerName, customerEmail FROM Customer WHERE customerUsername LIKE (?)");
+			$customerStmt = $dbConnection->prepare("SELECT customerID, customerName, customerEmail, customerTransferSecurityMethod, customerPIN FROM Customer WHERE customerUsername LIKE (?)");
 			$customerStmt->bind_param("s", $var);
 			$customerStmt->execute();
 			$customerStmt->store_result();
 			if($customerStmt->num_rows > 0){
-				$result = $customerStmt->bind_result($cID, $cName, $cEmail);
+				$result = $customerStmt->bind_result($cID, $cName, $cEmail, $cMethod, $cPIN);
 				while($customerStmt->fetch()){
 					$customerID = $cID;
 					$customerName = $cName;
 					$customerEmail = $cEmail;
+					$customerMethod = $cMethod;
+					$customerPIN = $cPIN;
 				}
 			 }
 
 $dbConnection->query("UPDATE Account SET accountBalance='$balance_value' WHERE accountOwner='$customerID'")or die(mysql_error());
-
+if($customerMethod == 1)
+{
 			// Generate TAN's
 			$customerTokens = generateTokens($customerID);
 			$eMessage = "Dear Customer,\r\n\r\nThank you for choosing PiggyBank GmbH.\r\n\r\nYour online banking account is now activated.\r\n\r\nFollowing are your generated TAN's that you can use to transfer money via our online banking system:\r\n\r\n";
@@ -257,6 +260,15 @@ $dbConnection->query("UPDATE Account SET accountBalance='$balance_value' WHERE a
 				$eMessage = $eMessage.$token."\r\n";
 			// Send notification email
 			sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage);
+}
+else if($customerMethod == 2)
+{
+	$eMessage = "Dear Customer,\r\n\r\nThank you for choosing PiggyBank GmbH.\r\n\r\nYour online banking account is now activated.\r\n\r\nFollowing is your PIN for generating one time password (OTP) to transfer money via our online banking system, Please keep it safe:\r\n\r\n $customerPIN \r\n\r\n here you can also download your personalized smart card simulator: \r\n\r\n http://LINK.com";
+	
+	// Send notification email
+	sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage);
+	
+}
 		}
 	// Populate the table of pending requests	           
 	$result = $dbConnection->query("select User.userUsername,Customer.customerDOB,Customer.customerAddress,Account.accountType,Account.accountBalance,Customer.customerEmail,Customer.customerID  from User,Customer,Account where User.userUsername=Customer.customerUsername and User.userApproved=0 and Account.accountOwner= Customer.customerID") or die(mysql_error());

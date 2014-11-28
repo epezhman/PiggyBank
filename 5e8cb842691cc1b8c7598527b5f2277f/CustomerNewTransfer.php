@@ -25,11 +25,11 @@ try{
 
 	$userName = NULL;
 	$userUsername = mysqli_real_escape_string($dbConnection,$_SESSION['username']);
-	$customerFullName = $dbConnection->prepare("SELECT customerName FROM Customer WHERE customerUsername LIKE (?)");
+	$customerFullName = $dbConnection->prepare("SELECT customerName, customerTransferSecurityMethod FROM Customer WHERE customerUsername LIKE (?)");
 	$customerFullName->bind_param("s", $userUsername);
 	$customerFullName->execute();
 
-	$customerFullName->bind_result($name);
+	$customerFullName->bind_result($name, $cMethod);
 
 	$customerFullName->store_result();
 
@@ -38,6 +38,7 @@ try{
 		while($customerFullName->fetch())
 		{
 			$fullName = $name;
+			$customerMethod = $cMethod;
 		}
 	}
 	$customerFullName->free_result();
@@ -138,22 +139,49 @@ body {
             if(e.value == ""){
             	$('#'+e.id+'Span').addClass("alert-danger");
                 $('#'+e.id+'Span').removeClass("alert-success");
-                $('#'+e.id+'Span').text("Transfer Token is required");
+                <?php
+					if($customerMethod == 1)
+					{
+						echo "$('#'+e.id+'Span').text(\"Transfer Token is required\");\n";
+						
+					}
+					else if($customerMethod == 2)
+					{
+						echo "$('#'+e.id+'Span').text(\"OTP is required\");\n";
+					}
+                ?>
                 validated["TransferToken"] = false;
             }
             else
                 if(!e.value.match("^[a-zA-Z0-9]+$")){
                 	$('#'+e.id+'Span').addClass("alert-danger");
                     $('#'+e.id+'Span').removeClass("alert-success");
-                    $('#'+e.id+'Span').text("Invalid Token");
+                    <?php
+                    if($customerMethod == 1)
+					{
+						echo "$('#'+e.id+'Span').text(\"Invalid Token\");\n";
+						
+					}
+					else if($customerMethod == 2)
+					{
+						echo "$('#'+e.id+'Span').text(\"Invalid OTP\");\n";
+					}
+					?>
                     validated["TransferToken"] = false;
                 }
-                else if(e.value.length != 15){
-            		$('#'+e.id+'Span').addClass("alert-danger");
-                	$('#'+e.id+'Span').removeClass("alert-success");
-                	$('#'+e.id+'Span').text("Token must be 15 char length ");
-                	validated["TransferToken"] = false;
-            	}
+                
+                	 <?php
+                             if($customerMethod == 1)
+         					{
+         						echo "else if(e.value.length != 15){";
+         						echo "$('#'+e.id+'Span').addClass(\"alert-danger\");\n";
+         						echo "$('#'+e.id+'Span').removeClass(\"alert-success\");\n";
+         						echo "$('#'+e.id+'Span').text(\"Token must be 15 char length \");\n";
+         						echo "validated[\"TransferToken\"] = false;\n";
+         						echo "}";
+         					}
+         			?>
+            	
                 else{
                 	$('#'+e.id+'Span').addClass("alert-success");
                     $('#'+e.id+'Span').removeClass("alert-danger");
@@ -264,6 +292,18 @@ body {
 					<noscript>Javascript is switched off. Some features will not work
 						properly. Please enable Javascript.</noscript>
 
+					<?php
+					if($customerMethod == 1)
+					{
+						echo "<h4>Please use one of your valid TAN Token to commmit the transaction</h4>";
+
+					}
+					else if($customerMethod == 2)
+					{
+						echo "<h4>Please generate one OTP with yout SCS to commmit the transaction</h4>";
+					}
+					?>
+					
 					<ul class="nav nav-tabs">
 						<?php 
 						if(isset($_SESSION["invUploadingFile"]))
@@ -310,18 +350,37 @@ body {
 
 										</div>
 										<div class="form-group">
-											<label for="TransferToken" class="col-sm-2 control-label">Transfer
-												Token</label>
-											<div class="col-sm-6">
-												<?php
+											<label for="TransferToken" class="col-sm-2 control-label"> <?php
+											if($customerMethod == 1)
+											{
+												echo "Transfer Token";
 
+											}
+											else if($customerMethod == 2)
+											{
+												echo "OTP";
+											}
+											?>
+											</label>
+											<div class="col-sm-6">
+
+												<?php
+												if($customerMethod == 1)
+												{
+													$placeHolder =  "Transfer Token";
+
+												}
+												else if($customerMethod == 2)
+												{
+													$placeHolder =  "OTP";
+												}
 												if (isset($_GET['token'])) {
 													$token = htmlspecialchars($_GET['token'], ENT_QUOTES);
-													echo "<input type='text' class='form-control' id='TransferToken' placeholder='Transfer Token' name='TransferToken' value='$token' onload='validateElement(this, \"TransferToken\")' onblur='validateElement(this, \"TransferToken\")'  onkeyup='validateElement(this, \"TransferToken\")' >";
+													echo "<input type='text' class='form-control' id='TransferToken' placeholder='$placeHolder' name='TransferToken' value='$token' onload='validateElement(this, \"TransferToken\")' onblur='validateElement(this, \"TransferToken\")'  onkeyup='validateElement(this, \"TransferToken\")' >";
 												}
 												else
 												{
-													echo "<input type='text' class='form-control' id='TransferToken' placeholder='Transfer Token' name='TransferToken' onload='validateElement(this, \"TransferToken\")' onblur='validateElement(this, \"TransferToken\")' onkeyup='validateElement(this, \"TransferToken\")'>";
+													echo "<input type='text' class='form-control' id='TransferToken' placeholder='$placeHolder' name='TransferToken' onload='validateElement(this, \"TransferToken\")' onblur='validateElement(this, \"TransferToken\")' onkeyup='validateElement(this, \"TransferToken\")'>";
 												}
 												?>
 											</div>
@@ -365,7 +424,7 @@ body {
 										<?php
 										if(isset($_SESSION["invReceiverId"]) or isset($_SESSION["invTransferToken"]) or isset($_SESSION["invAmount"])
 												or isset($_SESSION["invNotFoundToken"]) or isset($_SESSION["invUsedToken"]) or isset($_SESSION["invNotFoundReceiver"])
-												or isset($_SESSION["invNotYourself"]) or isset($_SESSION["invNotEnoughMoney"]) or isset($_SESSION["invNotFoundAccount"]))
+												or isset($_SESSION["invNotYourself"]) or isset($_SESSION["invNotEnoughMoney"]) or isset($_SESSION["invNotFoundAccount"]) or isset($_SESSION["invInvalidOTP"]))
 										{
 											echo "<span class='alert alert-danger' >";
 											if(isset($_SESSION["invReceiverId"]))
@@ -404,6 +463,10 @@ body {
 											{
 												echo "Receiver account not found.  ";
 											}
+											if(isset($_SESSION["invInvalidOTP"]))
+											{
+												echo "Provided OTP is not valid.  ";
+											}
 											echo "</span>";
 
 											$_SESSION["invReceiverId"] = null;
@@ -415,6 +478,8 @@ body {
 											$_SESSION["invNotYourself"] = null;
 											$_SESSION["invNotEnoughMoney"] = null;
 											$_SESSION["invNotFoundAccount"] = null;
+											$_SESSION["invInvalidOTP"] = null;
+
 
 										}
 										if(isset($_SESSION["invSuccessPaid"]))
