@@ -62,7 +62,7 @@ function registerCustomer(){
             $userUsername = mysqli_real_escape_string($dbConnection, $_POST['username']);
             $userPassword = hash("sha256", mysqli_real_escape_string($dbConnection, $_POST['password']));
             $userRole = 2;
-            $customerID = "PB".getRandomNumber();
+            $customerID = getRandomNumber(10);
             $customerName = mysqli_real_escape_string($dbConnection, $_POST['fullname']);
             $customerDOB = mysqli_real_escape_string($dbConnection, $_POST['dob']);
             $customerEmail = mysqli_real_escape_string($dbConnection, $_POST['email']);
