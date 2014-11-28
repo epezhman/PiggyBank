@@ -34,6 +34,9 @@ CREATE TABLE `Account` (
   CONSTRAINT `Account_ibfk_1` FOREIGN KEY (`accountOwner`) REFERENCES `Customer` (`customerID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
+INSERT INTO `Account` (`accountNumber`, `accountOwner`, `accountType`, `accountBalance`) VALUES
+('PB50180339',	'9422989251',	0,	11500),
+('PB99536131',	'2747599883',	0,	1000);
 
 DROP TABLE IF EXISTS `Customer`;
 CREATE TABLE `Customer` (
@@ -44,12 +47,15 @@ CREATE TABLE `Customer` (
   `customerAddress` varchar(256) COLLATE latin1_bin DEFAULT NULL,
   `customerUsername` varchar(50) COLLATE latin1_bin NOT NULL,
   `customerPIN` varchar(64) COLLATE latin1_bin DEFAULT NULL,
-  `customerTransferSecurity` int(11) NOT NULL DEFAULT '1',
+  `customerTransferSecurityMethod` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`customerID`),
   KEY `customerUsername` (`customerUsername`),
   CONSTRAINT `Customer_ibfk_1` FOREIGN KEY (`customerUsername`) REFERENCES `User` (`userUsername`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
+INSERT INTO `Customer` (`customerID`, `customerName`, `customerDOB`, `customerEmail`, `customerAddress`, `customerUsername`, `customerPIN`, `customerTransferSecurityMethod`) VALUES
+('2747599883',	'Madison Elizabeth Frank',	'1982-12-25',	'aleieldin.salem@gmail.com',	'12 Massachusetts Avenue',	'mef',	NULL,	1),
+('9422989251',	'John Doe',	'1974-05-12',	'aleieldin.salem@gmail.com',	'1 Main St.',	'john',	NULL,	1);
 
 DROP TABLE IF EXISTS `Employee`;
 CREATE TABLE `Employee` (
@@ -74,6 +80,9 @@ CREATE TABLE `Role` (
   PRIMARY KEY (`roleID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+INSERT INTO `Role` (`roleID`, `roleDesc`) VALUES
+(1,	'admin'),
+(2,	'customer');
 
 DROP TABLE IF EXISTS `Token`;
 CREATE TABLE `Token` (
@@ -85,6 +94,207 @@ CREATE TABLE `Token` (
   CONSTRAINT `Token_ibfk_1` FOREIGN KEY (`tokenCustomer`) REFERENCES `Customer` (`customerID`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
+INSERT INTO `Token` (`tokenID`, `tokenCustomer`, `tokenUsed`) VALUES
+('0070f76aa14c6aa',	'9422989251',	CONV('0', 2, 10) + 0),
+('00c5f0e88066111',	'2747599883',	CONV('0', 2, 10) + 0),
+('01c018ff3326d2e',	'9422989251',	CONV('0', 2, 10) + 0),
+('0347d11c3b5ad37',	'2747599883',	CONV('0', 2, 10) + 0),
+('03736334fe9c5dd',	'2747599883',	CONV('0', 2, 10) + 0),
+('0384283cdfc3ae0',	'9422989251',	CONV('0', 2, 10) + 0),
+('045d61e3eb337d9',	'9422989251',	CONV('0', 2, 10) + 0),
+('049f724a83ce743',	'9422989251',	CONV('0', 2, 10) + 0),
+('050343345b95589',	'9422989251',	CONV('0', 2, 10) + 0),
+('06c27e1df993870',	'2747599883',	CONV('0', 2, 10) + 0),
+('0895dbdc65b161e',	'9422989251',	CONV('0', 2, 10) + 0),
+('097baa9f9a946fd',	'2747599883',	CONV('0', 2, 10) + 0),
+('09cf2fcd6142635',	'9422989251',	CONV('0', 2, 10) + 0),
+('0a43996924cca35',	'2747599883',	CONV('0', 2, 10) + 0),
+('0ef46a5feb4cc14',	'9422989251',	CONV('0', 2, 10) + 0),
+('0f55b74c0d2d017',	'9422989251',	CONV('0', 2, 10) + 0),
+('104f5ed60ef0c22',	'9422989251',	CONV('0', 2, 10) + 0),
+('107a11b818eb06e',	'9422989251',	CONV('0', 2, 10) + 0),
+('13686c13db8d81e',	'2747599883',	CONV('0', 2, 10) + 0),
+('148f4654f1fc9a4',	'2747599883',	CONV('0', 2, 10) + 0),
+('1494683c9cc68f3',	'9422989251',	CONV('0', 2, 10) + 0),
+('149556b4421d52c',	'2747599883',	CONV('0', 2, 10) + 0),
+('1699cfe5739e2d6',	'9422989251',	CONV('0', 2, 10) + 0),
+('16e62d3256c4907',	'2747599883',	CONV('0', 2, 10) + 0),
+('191d3e25f282b83',	'2747599883',	CONV('0', 2, 10) + 0),
+('1b2c0d0e01f2ad0',	'2747599883',	CONV('0', 2, 10) + 0),
+('1c002da3aef5400',	'9422989251',	CONV('0', 2, 10) + 0),
+('20ca8c5c38d2aa0',	'2747599883',	CONV('0', 2, 10) + 0),
+('2151d37da93bc07',	'2747599883',	CONV('0', 2, 10) + 0),
+('22187c4f91120c9',	'9422989251',	CONV('0', 2, 10) + 0),
+('24ddfe387eb8d89',	'2747599883',	CONV('0', 2, 10) + 0),
+('254d87a002583ef',	'9422989251',	CONV('0', 2, 10) + 0),
+('2708426b4ec3852',	'9422989251',	CONV('0', 2, 10) + 0),
+('27d56acd49448a1',	'9422989251',	CONV('0', 2, 10) + 0),
+('2b139dec6535917',	'9422989251',	CONV('0', 2, 10) + 0),
+('2bbda9a7a0b563a',	'9422989251',	CONV('0', 2, 10) + 0),
+('2d29f7fbb92b260',	'9422989251',	CONV('0', 2, 10) + 0),
+('306fb14e12829ac',	'2747599883',	CONV('0', 2, 10) + 0),
+('338bce23b1978d0',	'2747599883',	CONV('0', 2, 10) + 0),
+('358387bdbbc86c8',	'2747599883',	CONV('0', 2, 10) + 0),
+('36ae9fb21a98ff9',	'9422989251',	CONV('0', 2, 10) + 0),
+('3808accd5a9943a',	'2747599883',	CONV('0', 2, 10) + 0),
+('39ab71ded2a46d0',	'2747599883',	CONV('0', 2, 10) + 0),
+('3a3d8d9dee1f4ed',	'9422989251',	CONV('0', 2, 10) + 0),
+('3a6bf2f360559a2',	'9422989251',	CONV('0', 2, 10) + 0),
+('3abe84250fad63d',	'9422989251',	CONV('1', 2, 10) + 0),
+('3c040a4f1d93148',	'9422989251',	CONV('0', 2, 10) + 0),
+('3ce0224df48c9e5',	'9422989251',	CONV('0', 2, 10) + 0),
+('4128debad0b7208',	'2747599883',	CONV('0', 2, 10) + 0),
+('429b460beaf94f6',	'2747599883',	CONV('0', 2, 10) + 0),
+('4368f308790020f',	'9422989251',	CONV('0', 2, 10) + 0),
+('44ad75e121f36f4',	'2747599883',	CONV('0', 2, 10) + 0),
+('4802b5d25631de6',	'2747599883',	CONV('0', 2, 10) + 0),
+('48166adfe073ca8',	'2747599883',	CONV('0', 2, 10) + 0),
+('4c30a2fed581516',	'2747599883',	CONV('0', 2, 10) + 0),
+('4c444fbdb5a1e6f',	'9422989251',	CONV('0', 2, 10) + 0),
+('4e12c49eeb788de',	'2747599883',	CONV('0', 2, 10) + 0),
+('4ea99fcb6351228',	'2747599883',	CONV('0', 2, 10) + 0),
+('4f0571dc2ec7a20',	'2747599883',	CONV('0', 2, 10) + 0),
+('4f075f3c22d7b7e',	'9422989251',	CONV('0', 2, 10) + 0),
+('505ed1acd9029ae',	'9422989251',	CONV('0', 2, 10) + 0),
+('51463701e765d24',	'9422989251',	CONV('0', 2, 10) + 0),
+('51b4db0792fd431',	'9422989251',	CONV('0', 2, 10) + 0),
+('53adc26eadc54ff',	'9422989251',	CONV('0', 2, 10) + 0),
+('548f934455b3ab3',	'2747599883',	CONV('0', 2, 10) + 0),
+('56ab865b8f5ad44',	'2747599883',	CONV('0', 2, 10) + 0),
+('597e391ff9a0e09',	'9422989251',	CONV('0', 2, 10) + 0),
+('5af0ea361e062cb',	'9422989251',	CONV('0', 2, 10) + 0),
+('5fd2a40a440f203',	'2747599883',	CONV('0', 2, 10) + 0),
+('5fd3791f9869954',	'9422989251',	CONV('0', 2, 10) + 0),
+('6267531677be71c',	'2747599883',	CONV('0', 2, 10) + 0),
+('62d449d27cf4f48',	'2747599883',	CONV('0', 2, 10) + 0),
+('63662785bee661f',	'2747599883',	CONV('0', 2, 10) + 0),
+('63e420df51e2e19',	'9422989251',	CONV('0', 2, 10) + 0),
+('6529424de8b335f',	'9422989251',	CONV('1', 2, 10) + 0),
+('662bb1f9c8aacc7',	'9422989251',	CONV('0', 2, 10) + 0),
+('66c02143724dbbf',	'2747599883',	CONV('0', 2, 10) + 0),
+('68538ca3f1150b0',	'2747599883',	CONV('0', 2, 10) + 0),
+('68dec372b0c2f83',	'9422989251',	CONV('0', 2, 10) + 0),
+('68f6b0a2a21e06e',	'2747599883',	CONV('0', 2, 10) + 0),
+('6986e6e95671b0d',	'9422989251',	CONV('0', 2, 10) + 0),
+('6bc6b27cb455d40',	'9422989251',	CONV('0', 2, 10) + 0),
+('6d36fa6f166e2ee',	'2747599883',	CONV('0', 2, 10) + 0),
+('6f421261d35b64f',	'2747599883',	CONV('0', 2, 10) + 0),
+('6f9f0b0f32842f6',	'9422989251',	CONV('0', 2, 10) + 0),
+('75ec4f00ccad68e',	'2747599883',	CONV('0', 2, 10) + 0),
+('76abffda12d87dd',	'2747599883',	CONV('0', 2, 10) + 0),
+('76ba15c9e5980cc',	'2747599883',	CONV('0', 2, 10) + 0),
+('770b58a55dc70a4',	'9422989251',	CONV('0', 2, 10) + 0),
+('7736a45db015344',	'2747599883',	CONV('0', 2, 10) + 0),
+('78ad3c8d8fcd5e6',	'9422989251',	CONV('0', 2, 10) + 0),
+('78db838f6ef4284',	'9422989251',	CONV('0', 2, 10) + 0),
+('790f2b0f0253eb7',	'9422989251',	CONV('0', 2, 10) + 0),
+('7954141b56e6342',	'2747599883',	CONV('0', 2, 10) + 0),
+('798630e12584c9a',	'2747599883',	CONV('0', 2, 10) + 0),
+('7986d7c52ae9f81',	'2747599883',	CONV('0', 2, 10) + 0),
+('7b0d44e1680fc14',	'9422989251',	CONV('0', 2, 10) + 0),
+('7b55adb6cf4ae38',	'2747599883',	CONV('0', 2, 10) + 0),
+('7baaef4e33daef4',	'2747599883',	CONV('0', 2, 10) + 0),
+('7bd558a35121b79',	'9422989251',	CONV('0', 2, 10) + 0),
+('7cb2ba490b8187b',	'2747599883',	CONV('0', 2, 10) + 0),
+('7ea186e5491e03f',	'9422989251',	CONV('0', 2, 10) + 0),
+('825f13854037b83',	'9422989251',	CONV('0', 2, 10) + 0),
+('84c2069c6a1f326',	'9422989251',	CONV('0', 2, 10) + 0),
+('84f50dcefc7450f',	'9422989251',	CONV('0', 2, 10) + 0),
+('85da9879390011f',	'9422989251',	CONV('0', 2, 10) + 0),
+('874e8ec6f6674c8',	'9422989251',	CONV('0', 2, 10) + 0),
+('8bb694d3d11c58a',	'2747599883',	CONV('0', 2, 10) + 0),
+('8ca32d7587351cd',	'9422989251',	CONV('0', 2, 10) + 0),
+('90d1f0a7a6f0a05',	'9422989251',	CONV('0', 2, 10) + 0),
+('92db5af46acaf67',	'2747599883',	CONV('0', 2, 10) + 0),
+('93bbf42d1c950e7',	'9422989251',	CONV('0', 2, 10) + 0),
+('93d8551dcc6f0d9',	'2747599883',	CONV('0', 2, 10) + 0),
+('94b2898ca9301f4',	'2747599883',	CONV('0', 2, 10) + 0),
+('94b4044793c6fa9',	'2747599883',	CONV('0', 2, 10) + 0),
+('96fc1bb062bf4f4',	'9422989251',	CONV('0', 2, 10) + 0),
+('9865f6777cf3e02',	'9422989251',	CONV('0', 2, 10) + 0),
+('9b7f14aaaf72050',	'2747599883',	CONV('0', 2, 10) + 0),
+('9c3e050cf4febd0',	'9422989251',	CONV('0', 2, 10) + 0),
+('9d7db73e99d210e',	'9422989251',	CONV('0', 2, 10) + 0),
+('a11ed1d5d91e035',	'9422989251',	CONV('0', 2, 10) + 0),
+('a1285892380b92f',	'9422989251',	CONV('0', 2, 10) + 0),
+('a144c768f66e452',	'2747599883',	CONV('0', 2, 10) + 0),
+('a1b622ebb3f049e',	'2747599883',	CONV('0', 2, 10) + 0),
+('a2f9063c9ad2384',	'9422989251',	CONV('0', 2, 10) + 0),
+('a30c5754dfa6ad3',	'2747599883',	CONV('0', 2, 10) + 0),
+('a4a7ccced6b1625',	'2747599883',	CONV('0', 2, 10) + 0),
+('a5a41950dd812a1',	'2747599883',	CONV('0', 2, 10) + 0),
+('a7435284c8fa7a9',	'2747599883',	CONV('0', 2, 10) + 0),
+('aa2727c1d5fcf66',	'9422989251',	CONV('0', 2, 10) + 0),
+('ac4cbb78e5dd0b4',	'2747599883',	CONV('0', 2, 10) + 0),
+('ac761c64a24e0ba',	'2747599883',	CONV('0', 2, 10) + 0),
+('adf5e878e0386d8',	'2747599883',	CONV('0', 2, 10) + 0),
+('ae6b15443038ceb',	'9422989251',	CONV('0', 2, 10) + 0),
+('b01050ab6c464eb',	'2747599883',	CONV('0', 2, 10) + 0),
+('b12a153ebb45021',	'2747599883',	CONV('0', 2, 10) + 0),
+('b215a87b7b9a84c',	'2747599883',	CONV('0', 2, 10) + 0),
+('b49244fc74b3533',	'2747599883',	CONV('0', 2, 10) + 0),
+('b4aabb00f215956',	'2747599883',	CONV('0', 2, 10) + 0),
+('b4f313899e9d33e',	'9422989251',	CONV('0', 2, 10) + 0),
+('b66cfa2b056b00b',	'9422989251',	CONV('0', 2, 10) + 0),
+('b840b7aa0913ce9',	'9422989251',	CONV('0', 2, 10) + 0),
+('bb3475c90ded27d',	'2747599883',	CONV('0', 2, 10) + 0),
+('bbb2945ce432262',	'9422989251',	CONV('0', 2, 10) + 0),
+('bbda0a050d28360',	'9422989251',	CONV('0', 2, 10) + 0),
+('bcff5d0d926398e',	'9422989251',	CONV('0', 2, 10) + 0),
+('bd497b450f290b3',	'2747599883',	CONV('0', 2, 10) + 0),
+('be3d4650beed6a1',	'2747599883',	CONV('0', 2, 10) + 0),
+('bf1c3454e6dbfc5',	'2747599883',	CONV('0', 2, 10) + 0),
+('c0182f592379a7e',	'2747599883',	CONV('0', 2, 10) + 0),
+('c10430f58ac31b0',	'9422989251',	CONV('0', 2, 10) + 0),
+('c2f1ce99cf4f599',	'9422989251',	CONV('0', 2, 10) + 0),
+('c35c31ed4986ed1',	'2747599883',	CONV('0', 2, 10) + 0),
+('c37882e8bb5a101',	'9422989251',	CONV('0', 2, 10) + 0),
+('c3949c71b647850',	'2747599883',	CONV('0', 2, 10) + 0),
+('c4f358bb323fbc3',	'9422989251',	CONV('0', 2, 10) + 0),
+('c50f48712952e07',	'2747599883',	CONV('0', 2, 10) + 0),
+('c5fc965590518a5',	'9422989251',	CONV('0', 2, 10) + 0),
+('c631a7cd20918e7',	'2747599883',	CONV('0', 2, 10) + 0),
+('c660912a7124ffa',	'2747599883',	CONV('0', 2, 10) + 0),
+('c79ada67c099a55',	'9422989251',	CONV('0', 2, 10) + 0),
+('cd05224a9df0030',	'9422989251',	CONV('1', 2, 10) + 0),
+('ce16580bc9e71bc',	'2747599883',	CONV('0', 2, 10) + 0),
+('ce2ed9aac7b3394',	'9422989251',	CONV('0', 2, 10) + 0),
+('ce6e8c9d72b9049',	'9422989251',	CONV('0', 2, 10) + 0),
+('d2bbe0227b6eda7',	'2747599883',	CONV('0', 2, 10) + 0),
+('d420a5ee06ff8c8',	'2747599883',	CONV('0', 2, 10) + 0),
+('d44d562a613a04e',	'2747599883',	CONV('0', 2, 10) + 0),
+('d793d734da52bf4',	'2747599883',	CONV('0', 2, 10) + 0),
+('d8a9572fb6edaf8',	'9422989251',	CONV('1', 2, 10) + 0),
+('dceeda840b68173',	'9422989251',	CONV('0', 2, 10) + 0),
+('ddad51323265b34',	'2747599883',	CONV('0', 2, 10) + 0),
+('ddda40beb3c1be8',	'2747599883',	CONV('0', 2, 10) + 0),
+('df73830b85751ae',	'2747599883',	CONV('0', 2, 10) + 0),
+('dfd95e0d0a91759',	'9422989251',	CONV('0', 2, 10) + 0),
+('e02001275b79c1d',	'2747599883',	CONV('0', 2, 10) + 0),
+('e113e5f0bb5a0cc',	'9422989251',	CONV('0', 2, 10) + 0),
+('e30bc4461aea238',	'2747599883',	CONV('0', 2, 10) + 0),
+('e33dc5351a46f4f',	'2747599883',	CONV('0', 2, 10) + 0),
+('e39270684ba16c9',	'9422989251',	CONV('0', 2, 10) + 0),
+('e574c85f6adcfaa',	'9422989251',	CONV('0', 2, 10) + 0),
+('e9fbe01c0f2eccf',	'2747599883',	CONV('0', 2, 10) + 0),
+('ea77ae3fa9a27c5',	'9422989251',	CONV('1', 2, 10) + 0),
+('ead73fe9f11bdc5',	'2747599883',	CONV('0', 2, 10) + 0),
+('eb736bd01f926a8',	'9422989251',	CONV('1', 2, 10) + 0),
+('ec34664b319b076',	'9422989251',	CONV('0', 2, 10) + 0),
+('ec3f625d56acb3f',	'9422989251',	CONV('0', 2, 10) + 0),
+('edb8c69276fe133',	'2747599883',	CONV('0', 2, 10) + 0),
+('efc319ed693802f',	'2747599883',	CONV('0', 2, 10) + 0),
+('f165941fe3ccb96',	'9422989251',	CONV('0', 2, 10) + 0),
+('f2276dea4616cab',	'2747599883',	CONV('0', 2, 10) + 0),
+('f248708e392065b',	'2747599883',	CONV('0', 2, 10) + 0),
+('f5e92e5c37ce82b',	'9422989251',	CONV('0', 2, 10) + 0),
+('f7efa8b1a53d865',	'9422989251',	CONV('0', 2, 10) + 0),
+('f9601a9fcd11006',	'2747599883',	CONV('0', 2, 10) + 0),
+('fbd106310d6dbdc',	'9422989251',	CONV('0', 2, 10) + 0),
+('fcfb2a21466e645',	'2747599883',	CONV('0', 2, 10) + 0),
+('fe9c159c2ee03a8',	'2747599883',	CONV('0', 2, 10) + 0),
+('ff9093269232d16',	'9422989251',	CONV('0', 2, 10) + 0),
+('ffef3ac0a068101',	'9422989251',	CONV('0', 2, 10) + 0);
 
 DROP TABLE IF EXISTS `Transaction`;
 CREATE TABLE `Transaction` (
@@ -104,6 +314,8 @@ CREATE TABLE `Transaction` (
   CONSTRAINT `Transaction_ibfk_5` FOREIGN KEY (`transactionReceiver`) REFERENCES `Account` (`accountNumber`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
+INSERT INTO `Transaction` (`transactionID`, `transactionSender`, `transactionReceiver`, `transactionAmount`, `transactionTime`, `transactionApproved`, `transactionToken`) VALUES
+('XwJTxfiRCRDuHqPsfcWj',	'PB50180339',	'PB99536131',	100,	'2014-11-28 03:18:23',	1,	'ea77ae3fa9a27c5');
 
 DROP TABLE IF EXISTS `User`;
 CREATE TABLE `User` (
@@ -116,5 +328,9 @@ CREATE TABLE `User` (
   CONSTRAINT `User_ibfk_1` FOREIGN KEY (`userRole`) REFERENCES `Role` (`roleID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
+INSERT INTO `User` (`userUsername`, `userPassword`, `userRole`, `userApproved`) VALUES
+('john',	'd8a928b2043db77e340b523547bf16cb4aa483f0645fe0a290ed1f20aab76257',	2,	CONV('1', 2, 10) + 0),
+('luke',	'743edcf941b967222a1b21a084ced8f7493e0a2701d3bef99eb1d5f5a0455f14',	1,	CONV('1', 2, 10) + 0),
+('mef',	'd8a928b2043db77e340b523547bf16cb4aa483f0645fe0a290ed1f20aab76257',	2,	CONV('1', 2, 10) + 0);
 
--- 2014-11-28 02:21:15
+-- 2014-11-28 02:28:07
