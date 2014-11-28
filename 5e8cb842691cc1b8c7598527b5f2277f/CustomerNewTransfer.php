@@ -65,7 +65,7 @@ body {
 <script src="../js/secure.js"></script>
 
 <!-- To be Changed!! -->
-<title>PiggyBank GmbH - New Transfer</title>
+<title>PiggyBankGmbH - New Transfer</title>
 
 <!-- Bootstrap core CSS -->
 <link href="../css/bootstrap.min.css" rel="stylesheet">
@@ -245,8 +245,8 @@ body {
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="CustomerMyTransfer.php"><img
-						src="../images/logo.png" alt="" class="logoStyle" /> Piggy Bank
+					<a class="navbar-brand" href="CustomerMyTransfers.php"><img
+						src="../images/logo.png" alt="" class="logoStyle" /> PiggyBank
 						GmbH</a>
 				</div>
 				<div class="navbar-collapse collapse">
@@ -510,9 +510,7 @@ body {
 												<input type="file" id="transFile"
 													onchange="$('#submitFile').removeAttr('disabled');"
 													name="transFile">
-												<p class="help-block">Kindly upload a file containing the
-													account number, one of your TANs and the amount (in Euros)
-													you wish to transfer, each on a separate line.</p>
+												<p class="help-block">Kindly upload a file containing the account number you wish to transfer funds to, one of your TANs and the amount (in Euros) you wish to transfer, each on a separate line.</p><p class="help-block"><b>New</b>: Now you can include multiple transactions in the same file. Please use the same format as before leaving an empty line between each transaction.</p>
 											</div>
 										</div>
 										<div class="form-group">

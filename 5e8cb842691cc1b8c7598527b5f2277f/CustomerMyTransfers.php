@@ -76,8 +76,8 @@ body {
 							class="icon-bar"></span> <span class="icon-bar"></span> <span
 							class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand"><img src="../images/logo.png" alt=""
-						class="logoStyle" /> Piggy Bank GmbH</a>
+					<a class="navbar-brand" href="CustomerMyTransfers.php"><img src="../images/logo.png" alt=""
+						class="logoStyle" /> PiggyBank GmbH</a>
 				</div>
 				<div class="navbar-collapse collapse">
 					<ul class="nav navbar-nav navbar-right">
