@@ -324,7 +324,7 @@ public class SCSMain {
 					flag = false;
 					errors.add("Account must be 10 chars long");
 				}
-				if (!account.matches("[a-zA-Z_]+")) {
+				if (!account.matches("[a-zA-Z0-9]+")) {
 					flag = false;
 					errors.add("Account has wrong format");
 				}
