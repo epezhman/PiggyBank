@@ -20,13 +20,12 @@
 	require_once("utils.php");
 	require_once("dbconnect.php");
 
-function doTransfer($transactionSender, $transactionReceiver, $transactionAmount, $transactionToken){
+function doTransfer($transactionSender, $transactionReceiver, $transactionAmount){
 	try{
 		global $dbConnection;
 		$transactionSender = mysqli_real_escape_string($dbConnection, $transactionSender);
 		$transactionReceiver = mysqli_real_escape_string($dbConnection, $transactionReceiver);
 		$transcationAmount = mysqli_real_escape_string($dbConnection, $transactionAmount);
-		$transactionToken = mysqli_real_escape_string($dbConnection, $transactionToken);
 		$approved = false;
 		if($transactionAmount <= 10000 )
 			$approved = true;
@@ -48,14 +47,10 @@ function doTransfer($transactionSender, $transactionReceiver, $transactionAmount
 		}
 		// Store the transaction details
 		$transferDB = $dbConnection->prepare("INSERT INTO Transaction VALUES (?,?,?,?,?,?,?)");
-		$transferDB->bind_param("sssssss", mysqli_real_escape_string($dbConnection,$transactionID), $transactionSender, $transactionReceiver, $transcationAmount, mysqli_real_escape_string($dbConnection,date('Y-m-d H:i:s')), $approved, $transactionToken);
+		$transferDB->bind_param("ssssss", mysqli_real_escape_string($dbConnection,$transactionID), $transactionSender, $transactionReceiver, $transcationAmount, mysqli_real_escape_string($dbConnection,date('Y-m-d H:i:s')), $approved);
 		$transferDB->execute();
 		if($transferDB->affected_rows >= 1){
-			// Invalidate the used token
-			$updateToken = $dbConnection->prepare("UPDATE Token SET tokenUsed=1 WHERE tokenID LIKE (?)");
-			$updateToken->bind_param("s",$transactionToken);
-			$updateToken->execute();
-			$updateToken->close();
+			
 
 			if($approved){
 				// Update the sender's account
@@ -168,22 +163,11 @@ try{
 
 	if($receiverAccount and $transferToken and $amount){
 		$tokenStatus = 0;
-		$tokenValidQuery = $dbConnection->prepare("SELECT tokenID, tokenUsed FROM Token INNER JOIN Customer WHERE Token.tokenCustomer = Customer.customerID AND Customer.customerID LIKE (?) AND Token.tokenID=?");
-		$tokenValidQuery->bind_param("ss", $customerID, mysqli_real_escape_string($dbConnection, $transferToken));
-		$tokenValidQuery->execute();
-		$tokenValidQuery->bind_result($tokenID, $tokenUsed);
-		$tokenValidQuery->store_result();
-		while($tokenValidQuery->fetch()){
-			$tokenID = $tokenID;
-			$tokenStatus = $tokenUsed;
-		}
-		// Check if that particular token is valid
+		
 		if($tokenStatus == 1){
-			$_SESSION["invUsedToken"] = true;
+			$_SESSION["invInvalidOTP"] = true;
 			$transferFlag = false;
 		}
-		$tokenValidQuery->free_result();
-		$tokenValidQuery->close();
 
 		// Retrieve the accountNumber of the receiver, if they exist.
 		$accountExistQuery = $dbConnection->prepare("SELECT accountBalance FROM Account WHERE accountNumber LIKE (?) ");
@@ -204,7 +188,7 @@ try{
 
 		// All checks done? Carry out the transaction
 		if($transferFlag)
-			if (doTransfer($senderAccount, $receiverAccount, $amount, $transferToken)){
+			if (doTransfer($senderAccount, $receiverAccount, $amount)){
 				$_SESSION["invSuccessPaid"] = true;
 			}
 			else{

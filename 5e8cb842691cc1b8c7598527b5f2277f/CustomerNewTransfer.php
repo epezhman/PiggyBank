@@ -125,7 +125,7 @@ body {
             		$('#'+e.id+'Span').addClass("alert-danger");
                 	$('#'+e.id+'Span').removeClass("alert-success");
                 	$('#'+e.id+'Span').text("Receiver ID must be 10 char length ");
-                	customerTransferSecurityMethodvalidated["ReceiverId"] = false;
+                	validated["ReceiverId"] = false;
             	}
                 else{
                 	$('#'+e.id+'Span').addClass("alert-success");
@@ -160,7 +160,6 @@ body {
                     if($customerMethod == 1)
 					{
 						echo "$('#'+e.id+'Span').text(\"Invalid Token\");\n";
-						
 					}
 					else if($customerMethod == 2)
 					{
@@ -233,7 +232,7 @@ body {
     
 	</script>
 </head>
-customerTransferSecurityMethod
+
 <body onload="prepareForm()">
 	<div id="wrap">
 		<div class="navbar navbar-inverse navbar-fixed-top">
@@ -303,7 +302,7 @@ customerTransferSecurityMethod
 						echo "<h4>Please generate one OTP with yout SCS to commmit the transaction</h4>";
 					}
 					?>
-					
+
 					<ul class="nav nav-tabs">
 						<?php 
 						if(isset($_SESSION["invUploadingFile"]))
@@ -329,92 +328,99 @@ customerTransferSecurityMethod
 
 							<div class="row">
 								<div class="col-md-12">
-									<form class="form-horizontal"
-										action="../f8d890ce88bd1791b6eaddf06e58ceb5/transfer.php"
-										method="POST">
-										<div class="form-group">
-											<label for="ReceiverId" class="col-sm-2 control-label">Receiver</label>
-											<div class="col-sm-6">
-												<?php
-												if(isset($_GET['receiver']))
-													echo "<input type=\"text\" class=\"form-control\" id=\"ReceiverId\" placeholder=\"Receiver\" name=\"ReceiverId\" onload=\"validateElement(this, 'ReceiverId')\"
-													onblur=\"validateElement(this, 'ReceiverId')\" onkeyup=\"validateElement(this, 'ReceiverId')\" value=\"".htmlspecialchars($_GET['receiver'], ENT_QUOTES)."\">";
-												else
-													echo "<input type=\"text\" class=\"form-control\" id=\"ReceiverId\" placeholder=\"Receiver\" name=\"ReceiverId\" onload=\"validateElement(this, 'ReceiverId')\"
-													onblur=\"validateElement(this, 'ReceiverId')\" onkeyup=\"validateElement(this, 'ReceiverId')\">";
-												?>
-											</div>
-											<div class="col-sm-4">
-												<span class="alert" id="ReceiverIdSpan"> </span>
-											</div>
-
+									<?php
+									if($customerMethod == 1)
+									{
+										echo "<form class=\"form-horizontal\" action=\"../f8d890ce88bd1791b6eaddf06e58ceb5/transfer.php\" method=\"POST\">";
+									}
+									else if($customerMethod == 2)
+									{
+										echo "<form class=\"form-horizontal\" action=\"../f8d890ce88bd1791b6eaddf06e58ceb5/trasnferByOTP.php\" method=\"POST\">";
+									}
+									?>
+									<div class="form-group">
+										<label for="ReceiverId" class="col-sm-2 control-label">Receiver</label>
+										<div class="col-sm-6">
+											<?php
+											if(isset($_GET['receiver']))
+												echo "<input type=\"text\" class=\"form-control\" id=\"ReceiverId\" placeholder=\"Receiver\" name=\"ReceiverId\" onload=\"validateElement(this, 'ReceiverId')\"
+												onblur=\"validateElement(this, 'ReceiverId')\" onkeyup=\"validateElement(this, 'ReceiverId')\" value=\"".htmlspecialchars($_GET['receiver'], ENT_QUOTES)."\">";
+											else
+												echo "<input type=\"text\" class=\"form-control\" id=\"ReceiverId\" placeholder=\"Receiver\" name=\"ReceiverId\" onload=\"validateElement(this, 'ReceiverId')\"
+												onblur=\"validateElement(this, 'ReceiverId')\" onkeyup=\"validateElement(this, 'ReceiverId')\">";
+											?>
 										</div>
-										<div class="form-group">
-											<label for="TransferToken" class="col-sm-2 control-label"> <?php
+										<div class="col-sm-4">
+											<span class="alert" id="ReceiverIdSpan"> </span>
+										</div>
+
+									</div>
+									<div class="form-group">
+										<label for="TransferToken" class="col-sm-2 control-label"> <?php
+										if($customerMethod == 1)
+										{
+											echo "Transfer Token";
+
+										}
+										else if($customerMethod == 2)
+										{
+											echo "OTP";
+										}
+										?>
+										</label>
+										<div class="col-sm-6">
+
+											<?php
 											if($customerMethod == 1)
 											{
-												echo "Transfer Token";
+												$placeHolder =  "Transfer Token";
 
 											}
 											else if($customerMethod == 2)
 											{
-												echo "OTP";
+												$placeHolder =  "OTP";
+											}
+											if (isset($_GET['token'])) {
+												$token = htmlspecialchars($_GET['token'], ENT_QUOTES);
+												echo "<input type='text' class='form-control' id='TransferToken' placeholder='$placeHolder' name='TransferToken' value='$token' onload='validateElement(this, \"TransferToken\")' onblur='validateElement(this, \"TransferToken\")'  onkeyup='validateElement(this, \"TransferToken\")' >";
+											}
+											else
+											{
+												echo "<input type='text' class='form-control' id='TransferToken' placeholder='$placeHolder' name='TransferToken' onload='validateElement(this, \"TransferToken\")' onblur='validateElement(this, \"TransferToken\")' onkeyup='validateElement(this, \"TransferToken\")'>";
 											}
 											?>
-											</label>
-											<div class="col-sm-6">
-
+										</div>
+										<div class="col-sm-4">
+											<span class="alert" id="TransferTokenSpan"> </span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="Amount" class="col-sm-2 control-label">Amount</label>
+										<div class="col-sm-6">
+											<div class="input-group">
 												<?php
-												if($customerMethod == 1)
-												{
-													$placeHolder =  "Transfer Token";
-
-												}
-												else if($customerMethod == 2)
-												{
-													$placeHolder =  "OTP";
-												}
-												if (isset($_GET['token'])) {
-													$token = htmlspecialchars($_GET['token'], ENT_QUOTES);
-													echo "<input type='text' class='form-control' id='TransferToken' placeholder='$placeHolder' name='TransferToken' value='$token' onload='validateElement(this, \"TransferToken\")' onblur='validateElement(this, \"TransferToken\")'  onkeyup='validateElement(this, \"TransferToken\")' >";
-												}
+												if(isset($_GET['amount']))
+													echo "<input type=\"number\" class=\"form-control\" id=\"Amount\" placeholder=\"Amount in Euro\" name=\"Amount\" onload=\"validateElement(this, 'Amount')\"
+													onblur=\"validateElement(this, 'Amount')\" onkeyup=\"validateElement(this, 'Amount')\" value=\"".htmlspecialchars($_GET["amount"], ENT_QUOTES)."\"> <span class=\"input-group-addon\">€</span>";
 												else
-												{
-													echo "<input type='text' class='form-control' id='TransferToken' placeholder='$placeHolder' name='TransferToken' onload='validateElement(this, \"TransferToken\")' onblur='validateElement(this, \"TransferToken\")' onkeyup='validateElement(this, \"TransferToken\")'>";
-												}
+													echo "<input type=\"number\" class=\"form-control\" id=\"Amount\" placeholder=\"Amount in Euro\" name=\"Amount\" onload=\"validateElement(this, 'Amount')\"
+													onblur=\"validateElement(this, 'Amount')\" onkeyup=\"validateElement(this, 'Amount')\"> <span class=\"input-group-addon\">€</span>";
 												?>
-											</div>
-											<div class="col-sm-4">
-												<span class="alert" id="TransferTokenSpan"> </span>
-											</div>
-										</div>
-										<div class="form-group">
-											<label for="Amount" class="col-sm-2 control-label">Amount</label>
-											<div class="col-sm-6">
-												<div class="input-group">
-													<?php
-													if(isset($_GET['amount']))
-														echo "<input type=\"number\" class=\"form-control\" id=\"Amount\" placeholder=\"Amount in Euro\" name=\"Amount\" onload=\"validateElement(this, 'Amount')\"
-														onblur=\"validateElement(this, 'Amount')\" onkeyup=\"validateElement(this, 'Amount')\" value=\"".htmlspecialchars($_GET["amount"], ENT_QUOTES)."\"> <span class=\"input-group-addon\">€</span>";
-													else
-														echo "<input type=\"number\" class=\"form-control\" id=\"Amount\" placeholder=\"Amount in Euro\" name=\"Amount\" onload=\"validateElement(this, 'Amount')\"
-														onblur=\"validateElement(this, 'Amount')\" onkeyup=\"validateElement(this, 'Amount')\"> <span class=\"input-group-addon\">€</span>";
-													?>
 
-												</div>
-											</div>
-											<div class="col-sm-4">
-												<span class="alert" id="AmountSpan"> </span>
 											</div>
 										</div>
+										<div class="col-sm-4">
+											<span class="alert" id="AmountSpan"> </span>
+										</div>
+									</div>
 
-										<div class="form-group">
-											<div class="col-sm-offset-2 col-sm-10">
-												<input type="submit" value="Submit" id="submit"
-													style="width: 80px; heigh: 30px;" class="btn btn-primary"
-													disabled />
-											</div>
+									<div class="form-group">
+										<div class="col-sm-offset-2 col-sm-10">
+											<input type="submit" value="Submit" id="submit"
+												style="width: 80px; heigh: 30px;" class="btn btn-primary"
+												disabled />
 										</div>
+									</div>
 									</form>
 								</div>
 							</div>
@@ -510,7 +516,15 @@ customerTransferSecurityMethod
 												<input type="file" id="transFile"
 													onchange="$('#submitFile').removeAttr('disabled');"
 													name="transFile">
-												<p class="help-block">Kindly upload a file containing the account number you wish to transfer funds to, one of your TANs and the amount (in Euros) you wish to transfer, each on a separate line.</p><p class="help-block"><b>New</b>: Now you can include multiple transactions in the same file. Please use the same format as before leaving an empty line between each transaction.</p>
+												<p class="help-block">Kindly upload a file containing the
+													account number you wish to transfer funds to, one of your
+													TANs and the amount (in Euros) you wish to transfer, each
+													on a separate line.</p>
+												<p class="help-block">
+													<b>New</b>: Now you can include multiple transactions in
+													the same file. Please use the same format as before leaving
+													an empty line between each transaction.
+												</p>
 											</div>
 										</div>
 										<div class="form-group">
