@@ -40,7 +40,7 @@ function getRandomNumber($length = 8){
 function validateInput($input, $type){
 // Peforms the same input validations carried out on the client-side to double check for errors/malice
 
-    $regExpressions =  array("name"=>"^[A-Za-z ]+$", "address"=>"^[a-zA-Z0-9,'-. ]+$", "username"=>"^[0-9A-Za-z_.]+$", "password"=>"^[a-zA-Z0-9_.@!?]+$", "dob"=>"^[0-9/]+$");
+    $regExpressions =  array("name"=>"^[A-Za-z ]+$", "address"=>"^[a-zA-Z0-9,'-. ]+$", "username"=>"^[0-9A-Za-z_.]+$", "password"=>"^[a-zA-Z0-9_.@!?]+$", "dob"=>"^[0-9/]+$", "hashedpassword"=>"^[a-f0-9]{64}$");
 
     try{
         if (ereg($regExpressions[$type], $input)){          
@@ -77,7 +77,7 @@ function registerCustomer(){
             }
             
             $userUsername = mysqli_real_escape_string($dbConnection, $_POST['username']);
-            $userPassword = hash("sha256", mysqli_real_escape_string($dbConnection, $_POST['password']));
+            $userPassword = mysqli_real_escape_string($dbConnection, $_POST['hashedPassword']);
             $userRole = 2;
             $customerID = getRandomNumber(10);
             $customerName = mysqli_real_escape_string($dbConnection, $_POST['fullname']);
@@ -139,8 +139,12 @@ try{
     $dobStatus2 = checkdate($mm, $dd, $yyyy);
     $emailStatus = (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) != false) ? true : false;
     $usernameStatus = validateInput($_POST['username'], "username");
-    $passwordStatus = (strlen($_POST["password"]) < 8) ? false : validateInput($_POST['password'], "password");
-    $confirmStatus = ($_POST["confirm"] != $_POST["password"]) ? false : true;
+    if(preg_match("/[0-9a-f]{64}/", $_POST["hashedPassword"]) == 1 )
+        $passwordStatus = true;
+    else
+        $passwordStatus = false;
+//    $passwordStatus = (strlen($_POST["password"]) <  ? false : validateInput($_POST['password'], "password");
+    $confirmStatus = ($_POST["hashedConfirm"] != $_POST["hashedPassword"]) ? false : true;
     // If validation succeeds, add user to database
     if($fullnameStatus and $addressStatus and $dobStatus1 and $dobStatus2 and $emailStatus and $usernameStatus and $passwordStatus and $confirmStatus){
   

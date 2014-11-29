@@ -26,6 +26,7 @@ body {
     <link href="./css/framework.css" rel="stylesheet">
     <script src="./js/jquery-1.11.1.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/sha256.js"></script>
     <script type="text/javascript">
     var validated = new Array();
     var flag = true;
@@ -225,6 +226,12 @@ body {
             flag = true;
         }
     }
+    function handleSecrets(f){
+        f.hashedPassword.value = SHA256(f.password.value);
+        f.password.value = "";
+        f.hashedConfirm.value = SHA256(f.confirm.value);
+	f.confirm.value = "";
+    }
    </script>
 </head>
 
@@ -273,7 +280,7 @@ body {
         -->
                 <div class="col-sm-12">
                     <div style="padding-top:40px;">
-                        <form class="form-signup" role="form" action="f8d890ce88bd1791b6eaddf06e58ceb5/register.php" method="POST">
+                        <form class="form-signup" role="form" action="f8d890ce88bd1791b6eaddf06e58ceb5/register.php" method="POST" onsubmit="handleSecrets(this)">
                             <table width=700px>
                             <tr><td>
                             <h2>Thank you for choosing PiggyBank GmbH</h2>
@@ -372,16 +379,17 @@ body {
                             <td></td>";
                             echo "</tr><tr>";
                             echo "<td colspan=\"3\" align=\"right\" style=\"padding: 30px 0px;\">
-                                    <input type=\"submit\" value=\"Sign up\" id=\"submit\" style=\"width:80px; heigh:30px;\" class=\"btn btn-primary\" disabled/>
+                                    <input type=\"submit\" value=\"Sign up\" id=\"submit\" style=\"width:80px; height:30px;\" class=\"btn btn-primary\" disabled/>
                                 </td>
                         </tr>";
-                             session_destory();
 					}catch(Exception $e){
 					//	echo $e;
                                                 session_destroy();
 						header("Location: error.php");
 					}
                         ?>
+                            <tr><td colspan="3"><input id="hashedPassword" type="hidden" name="hashedPassword" value=""></td></tr>
+                            <tr><td colspan="3"><input id="hashedConfirm" type="hidden" name="hashedConfirm" value=""></td></tr>
                         </table>
                         </form>
                     </div>

@@ -38,9 +38,9 @@ function getRandomNumber($length = 8){
 
 function validateInput($input, $type){
 // Peforms the same input validations carried out on the client-side to double check for errors/malice
-    $regExpressions =  array("name"=>"/[A-Za-z ]+/", "address"=>"/[a-zA-Z0-9,'-. ]+/", "username"=>"/[0-9A-Za-z_.]+/", "password"=>"/[a-zA-Z0-9_.@!?]/");
+    $regExpressions =  array("name"=>"^[A-Za-z ]+$", "address"=>"^[a-zA-Z0-9,'-. ]+$", "username"=>"^[0-9A-Za-z_.]+$", "password"=>"^[a-zA-Z0-9_.@!?]$", "hashedpassword"=>"^[a-f0-9]{64}$");
     try{
-        if (preg_match($regExpressions[$type], $input) == 1)
+        if (ereg($regExpressions[$type], $input) == 1)
             return true;
         else
             return false;
@@ -56,7 +56,7 @@ function registerEmployee(){
             require_once("dbconnect.php");
             // Prepare the parameters
             $userUsername = mysqli_real_escape_string($dbConnection, $_POST['username']);
-            $userPassword = hash("sha256", mysqli_real_escape_string($dbConnection, $_POST['password']));
+            $userPassword = mysqli_real_escape_string($dbConnection, $_POST['hashedPassword']);
             $userRole = 1;
             $employeeID = "E".getRandomNumber(9);
             $employeeName = mysqli_real_escape_string($dbConnection, $_POST['fullname']);
@@ -115,8 +115,12 @@ try{
 	$deptStatus = preg_match($_POST['department'], "/[0-9]+/") ?  true : false;
 	$branchStatus = preg_match($_POST['branch'], "/[0-9]+/") ?  true : false;
     $usernameStatus = validateInput($_POST['username'], "username");
-    $passwordStatus = (strlen($_POST["password"]) < 8) ? false : validateInput($_POST['password'], "password");
-    $confirmStatus = ($_POST["confirm"] != $_POST["password"]) ? false : true;
+    if(preg_match("/[0-9a-f]{64}/", $_POST["hashedPassword"]) == 1)
+        $passwordStatus = true;
+    else
+        $passwordStatus = false;
+//    $passwordStatus = (strlen($_POST["password"]) < 8) ? false : validateInput($_POST['password'], "password");
+    $confirmStatus = ($_POST["hashedConfirm"] != $_POST["hashedPassword"]) ? false : true;
     // If validation succeeds, add user to database
     if($fullnameStatus and $addressStatus and $dobStatus and $emailStatus and $usernameStatus and $passwordStatus and $confirmStatus){
         // Register user
