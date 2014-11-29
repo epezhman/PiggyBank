@@ -58,6 +58,8 @@ function registerEmployee(){
             $userUsername = mysqli_real_escape_string($dbConnection, $_POST['username']);
             $userPassword = mysqli_real_escape_string($dbConnection, $_POST['hashedPassword']);
             $userRole = 1;
+            $userSecurityQuestion = $_POST["secquestion"];
+            $userSecurityAnswer = mysqli_real_escape_string($dbConnection, $_POST['hashedAnswer']);
             $employeeID = "E".getRandomNumber(9);
             $employeeName = mysqli_real_escape_string($dbConnection, $_POST['fullname']);
             $employeeDOB = mysqli_real_escape_string($dbConnection, $_POST['dob']);
@@ -67,11 +69,11 @@ function registerEmployee(){
             $employeeAddress = mysqli_real_escape_string($dbConnection, $_POST['address']);
             // Prepare the SQL statements
             $availableStmt = $dbConnection->prepare("SELECT userUsername FROM User WHERE userUsername LIKE (?)");
-            $userStmt = $dbConnection->prepare("INSERT INTO User VALUES (?,?,?,0)");
+            $userStmt = $dbConnection->prepare("INSERT INTO User VALUES (?,?,?,0,?,?)");
             $employeeStmt = $dbConnection->prepare("INSERT INTO Employee VALUES (?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?)");
             // Bind parameters
             $availableStmt->bind_param("s", $userUsername);
-            $userStmt->bind_param("sss", $userUsername, $userPassword, $userRole);
+            $userStmt->bind_param("sssss", $userUsername, $userPassword, $userRole, $userSecurityQuestion, $userSecurityAnswer);
             $employeeStmt->bind_param("sssssiis",$employeeID, $employeeName, $employeeDOB, $employeeAddress, $employeeEmail, $employeeDept, $employeeBranch, $userUsername);
             // Execute the statements
             // 1- Check if username is already taken
@@ -121,8 +123,12 @@ try{
         $passwordStatus = false;
 //    $passwordStatus = (strlen($_POST["password"]) < 8) ? false : validateInput($_POST['password'], "password");
     $confirmStatus = ($_POST["hashedConfirm"] != $_POST["hashedPassword"]) ? false : true;
+    if(preg_match("/[0-9a-f]{64}/", $_POST["hashedPassword"]) == 1)
+        $secQuestionStatus = true;
+    else
+        $secQuestionStatus = false;
     // If validation succeeds, add user to database
-    if($fullnameStatus and $addressStatus and $dobStatus and $emailStatus and $usernameStatus and $passwordStatus and $confirmStatus){
+    if($fullnameStatus and $addressStatus and $dobStatus and $emailStatus and $usernameStatus and $passwordStatus and $confirmStatus and $secQuestionStatus){
         // Register user
         if (registerEmployee())
             header("Location: ../notify.php?mode=success");

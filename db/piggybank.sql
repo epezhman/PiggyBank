@@ -6,7 +6,7 @@ SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
 DROP DATABASE IF EXISTS `piggybank`;
-CREATE DATABASE `piggybank` /*!40100 DEFAULT CHARACTER SET latin1 */;
+CREATE DATABASE `piggybank` /*!40100 DEFAULT CHARACTER SET latin1 COLLATE latin1_bin */;
 USE `piggybank`;
 
 DELIMITER ;;
@@ -35,8 +35,10 @@ CREATE TABLE `Account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 INSERT INTO `Account` (`accountNumber`, `accountOwner`, `accountType`, `accountBalance`) VALUES
-('PB50180339',	'9422989251',	0,	11500),
-('PB99536131',	'2747599883',	0,	1000);
+('PB19988878',	'6217117301',	0,	0),
+('PB32018682',	'1403734041',	0,	0),
+('PB50180339',	'9422989251',	0,	11425),
+('PB99536131',	'2747599883',	0,	1075);
 
 DROP TABLE IF EXISTS `Customer`;
 CREATE TABLE `Customer` (
@@ -54,7 +56,9 @@ CREATE TABLE `Customer` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 INSERT INTO `Customer` (`customerID`, `customerName`, `customerDOB`, `customerEmail`, `customerAddress`, `customerUsername`, `customerPIN`, `customerTransferSecurityMethod`) VALUES
+('1403734041',	'hashy',	'1984-12-12',	'aleieldin.salem@gmail.com',	'1 Hashy Hash',	'hashy',	'0',	1),
 ('2747599883',	'Madison Elizabeth Frank',	'1982-12-25',	'aleieldin.salem@gmail.com',	'12 Massachusetts Avenue',	'mef',	NULL,	1),
+('6217117301',	'Ezio Auditore',	'1985-10-12',	'aleieldin.salem@gmail.com',	'15 Via Tartaruga',	'ezio',	'0',	1),
 ('9422989251',	'John Doe',	'1974-05-12',	'aleieldin.salem@gmail.com',	'1 Main St.',	'john',	NULL,	1);
 
 DROP TABLE IF EXISTS `Employee`;
@@ -72,17 +76,35 @@ CREATE TABLE `Employee` (
   CONSTRAINT `Employee_ibfk_1` FOREIGN KEY (`employeeUsername`) REFERENCES `User` (`userUsername`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
+INSERT INTO `Employee` (`employeeID`, `employeeName`, `employeeDOB`, `employeeAddress`, `employeeEmail`, `employeeDepartment`, `employeeBranch`, `employeeUsername`) VALUES
+('E297024158',	'Dame Helen Mirren',	'1952-08-15',	'15 Tottehnham Court Rd.',	'hellen@piggy.de',	1,	2,	'helen'),
+('E310679167',	'Jack Sparrow',	'1970-05-26',	'1 Black Pearl',	'aleieldin.salem@gmail.com',	0,	0,	'jacksparrow');
 
 DROP TABLE IF EXISTS `Role`;
 CREATE TABLE `Role` (
   `roleID` int(11) NOT NULL AUTO_INCREMENT,
-  `roleDesc` varchar(50) NOT NULL,
+  `roleDesc` varchar(50) CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`roleID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 INSERT INTO `Role` (`roleID`, `roleDesc`) VALUES
 (1,	'admin'),
 (2,	'customer');
+
+DROP TABLE IF EXISTS `SecurityQuestion`;
+CREATE TABLE `SecurityQuestion` (
+  `securityQuestionID` int(11) NOT NULL AUTO_INCREMENT,
+  `securityQuestionDesc` varchar(500) COLLATE latin1_bin NOT NULL,
+  PRIMARY KEY (`securityQuestionID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
+
+INSERT INTO `SecurityQuestion` (`securityQuestionID`, `securityQuestionDesc`) VALUES
+(1,	'What was the make and model of your first car?'),
+(2,	'What was the name of your elementary / primary school?'),
+(3,	'In what city or town did you meet your spouse/partner?'),
+(4,	'What is the name of your favorite school teacher?'),
+(5,	'Who was your childhood hero?'),
+(6,	'Where were you New Year\'s 2000?');
 
 DROP TABLE IF EXISTS `Token`;
 CREATE TABLE `Token` (
@@ -162,7 +184,7 @@ INSERT INTO `Token` (`tokenID`, `tokenCustomer`, `tokenUsed`) VALUES
 ('548f934455b3ab3',	'2747599883',	CONV('0', 2, 10) + 0),
 ('56ab865b8f5ad44',	'2747599883',	CONV('0', 2, 10) + 0),
 ('597e391ff9a0e09',	'9422989251',	CONV('0', 2, 10) + 0),
-('5af0ea361e062cb',	'9422989251',	CONV('0', 2, 10) + 0),
+('5af0ea361e062cb',	'9422989251',	CONV('1', 2, 10) + 0),
 ('5fd2a40a440f203',	'2747599883',	CONV('0', 2, 10) + 0),
 ('5fd3791f9869954',	'9422989251',	CONV('0', 2, 10) + 0),
 ('6267531677be71c',	'2747599883',	CONV('0', 2, 10) + 0),
@@ -213,7 +235,7 @@ INSERT INTO `Token` (`tokenID`, `tokenCustomer`, `tokenUsed`) VALUES
 ('96fc1bb062bf4f4',	'9422989251',	CONV('0', 2, 10) + 0),
 ('9865f6777cf3e02',	'9422989251',	CONV('0', 2, 10) + 0),
 ('9b7f14aaaf72050',	'2747599883',	CONV('0', 2, 10) + 0),
-('9c3e050cf4febd0',	'9422989251',	CONV('0', 2, 10) + 0),
+('9c3e050cf4febd0',	'9422989251',	CONV('1', 2, 10) + 0),
 ('9d7db73e99d210e',	'9422989251',	CONV('0', 2, 10) + 0),
 ('a11ed1d5d91e035',	'9422989251',	CONV('0', 2, 10) + 0),
 ('a1285892380b92f',	'9422989251',	CONV('0', 2, 10) + 0),
@@ -315,7 +337,9 @@ CREATE TABLE `Transaction` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
 INSERT INTO `Transaction` (`transactionID`, `transactionSender`, `transactionReceiver`, `transactionAmount`, `transactionTime`, `transactionApproved`, `transactionToken`) VALUES
-('XwJTxfiRCRDuHqPsfcWj',	'PB50180339',	'PB99536131',	100,	'2014-11-28 03:18:23',	1,	'ea77ae3fa9a27c5');
+('XwJTxfiRCRDuHqPsfcWj',	'PB50180339',	'PB99536131',	100,	'2014-11-28 03:18:23',	1,	'ea77ae3fa9a27c5'),
+('kHDiYmEuAYALADhvuHgs',	'PB50180339',	'PB99536131',	75,	'2014-11-28 03:32:46',	1,	'9c3e050cf4febd0'),
+('qMfHMtLIVlWhhsMTEeeE',	'PB50180339',	'PB99536131',	10001,	'2014-11-28 03:33:23',	0,	'5af0ea361e062cb');
 
 DROP TABLE IF EXISTS `User`;
 CREATE TABLE `User` (
@@ -323,14 +347,22 @@ CREATE TABLE `User` (
   `userPassword` varchar(64) COLLATE latin1_bin NOT NULL,
   `userRole` int(11) NOT NULL,
   `userApproved` bit(1) NOT NULL DEFAULT b'0',
+  `userSecurityQuestion` int(11) NOT NULL,
+  `userSecurityAnswer` varchar(64) COLLATE latin1_bin DEFAULT NULL,
   PRIMARY KEY (`userUsername`),
   KEY `userRole` (`userRole`),
-  CONSTRAINT `User_ibfk_1` FOREIGN KEY (`userRole`) REFERENCES `Role` (`roleID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `userSecurityQuestion` (`userSecurityQuestion`),
+  CONSTRAINT `User_ibfk_1` FOREIGN KEY (`userRole`) REFERENCES `Role` (`roleID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `User_ibfk_2` FOREIGN KEY (`userSecurityQuestion`) REFERENCES `SecurityQuestion` (`securityQuestionID`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;
 
-INSERT INTO `User` (`userUsername`, `userPassword`, `userRole`, `userApproved`) VALUES
-('john',	'd8a928b2043db77e340b523547bf16cb4aa483f0645fe0a290ed1f20aab76257',	2,	CONV('1', 2, 10) + 0),
-('luke',	'743edcf941b967222a1b21a084ced8f7493e0a2701d3bef99eb1d5f5a0455f14',	1,	CONV('1', 2, 10) + 0),
-('mef',	'd8a928b2043db77e340b523547bf16cb4aa483f0645fe0a290ed1f20aab76257',	2,	CONV('1', 2, 10) + 0);
+INSERT INTO `User` (`userUsername`, `userPassword`, `userRole`, `userApproved`, `userSecurityQuestion`, `userSecurityAnswer`) VALUES
+('ezio',	'd8a928b2043db77e340b523547bf16cb4aa483f0645fe0a290ed1f20aab76257',	2,	CONV('0', 2, 10) + 0,	5,	'84d5d0f994db379717afe99d1c707fca564821e757087093b0e390d3b710af24'),
+('hashy',	'd8a928b2043db77e340b523547bf16cb4aa483f0645fe0a290ed1f20aab76257',	2,	CONV('0', 2, 10) + 0,	1,	NULL),
+('helen',	'd8a928b2043db77e340b523547bf16cb4aa483f0645fe0a290ed1f20aab76257',	1,	CONV('0', 2, 10) + 0,	1,	NULL),
+('jacksparrow',	'd8a928b2043db77e340b523547bf16cb4aa483f0645fe0a290ed1f20aab76257',	1,	CONV('0', 2, 10) + 0,	6,	'e84b5614f9012ef0a276a5dc8919208d6dc44f8cc17e1fd1e87e5afc4ecb1bb6'),
+('john',	'd8a928b2043db77e340b523547bf16cb4aa483f0645fe0a290ed1f20aab76257',	2,	CONV('1', 2, 10) + 0,	1,	'd8a928b2043db77e340b523547bf16cb4aa483f0645fe0a290ed1f20aab76257'),
+('luke',	'743edcf941b967222a1b21a084ced8f7493e0a2701d3bef99eb1d5f5a0455f14',	1,	CONV('1', 2, 10) + 0,	1,	NULL),
+('mef',	'd8a928b2043db77e340b523547bf16cb4aa483f0645fe0a290ed1f20aab76257',	2,	CONV('1', 2, 10) + 0,	1,	NULL);
 
--- 2014-11-28 02:28:07
+-- 2014-11-29 18:01:18

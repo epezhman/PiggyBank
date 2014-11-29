@@ -79,6 +79,8 @@ function registerCustomer(){
             $userUsername = mysqli_real_escape_string($dbConnection, $_POST['username']);
             $userPassword = mysqli_real_escape_string($dbConnection, $_POST['hashedPassword']);
             $userRole = 2;
+            $userSecurityQuestion = $_POST["secquestion"];
+            $userSecurityAnswer = mysqli_real_escape_string($dbConnection, $_POST['hashedAnswer']);
             $customerID = getRandomNumber(10);
             $customerName = mysqli_real_escape_string($dbConnection, $_POST['fullname']);
             $customerDOB = mysqli_real_escape_string($dbConnection, $_POST['dob']);
@@ -88,12 +90,12 @@ function registerCustomer(){
             $accountBalance = 0;//rand(0,15000); // Initialize the customer account with a zero balance
             // Prepare the SQL statements
             $availableStmt = $dbConnection->prepare("SELECT userUsername FROM User WHERE userUsername LIKE (?)");
-            $userStmt = $dbConnection->prepare("INSERT INTO User VALUES (?,?,?,0)");
+            $userStmt = $dbConnection->prepare("INSERT INTO User VALUES (?,?,?,0,?,?)");
             $customerStmt = $dbConnection->prepare("INSERT INTO Customer VALUES (?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?)");
             $accountStmt = $dbConnection->prepare("INSERT INTO Account VALUES (?,?,0,?)");
             // Bind parameters
             $availableStmt->bind_param("s", $userUsername);
-            $userStmt->bind_param("sss", $userUsername, $userPassword, $userRole);
+            $userStmt->bind_param("sssss", $userUsername, $userPassword, $userRole, $userSecurityQuestion, $userSecurityAnswer);
             $customerStmt->bind_param("sssssssi",$customerID, $customerName, $customerDOB, $customerEmail, $customerAddress, $userUsername, $PIN, $secMethod);
             $accountStmt->bind_param("ssi", $accountID, $customerID, $accountBalance);
             // Execute the statements
@@ -143,11 +145,14 @@ try{
         $passwordStatus = true;
     else
         $passwordStatus = false;
-//    $passwordStatus = (strlen($_POST["password"]) <  ? false : validateInput($_POST['password'], "password");
     $confirmStatus = ($_POST["hashedConfirm"] != $_POST["hashedPassword"]) ? false : true;
+    if(preg_match("/[0-9a-f]{64}/", $_POST["hashedAnswer"]) == 1)
+        $secQuestionStatus = true;
+    else
+        $secQuestionsStatus = false;
+
     // If validation succeeds, add user to database
-    if($fullnameStatus and $addressStatus and $dobStatus1 and $dobStatus2 and $emailStatus and $usernameStatus and $passwordStatus and $confirmStatus){
-  
+    if($fullnameStatus and $addressStatus and $dobStatus1 and $dobStatus2 and $emailStatus and $usernameStatus and $passwordStatus and $confirmStatus and $secQuestionStatus){
         // Register user
         if (registerCustomer())
             header("Location: ../notify.php?mode=success");
