@@ -213,7 +213,7 @@ try{
 			}
 		
 		else{
-			$_SESSION["invReceiverId"] = $receiverId ? NULL : $_POST["ReceiverId"];
+			$_SESSION["invReceiverId"] = $receiverAccount ? NULL : $_POST["ReceiverId"];
 			$_SESSION["invTransferToken"] = $transferToken ? NULL : $_POST["TransferToken"];
 			$_SESSION["invAmount"] = $amount ? NULL : $_POST["Amount"];
 		}
