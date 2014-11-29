@@ -217,7 +217,6 @@ body {
 										echo "<tr>";
 
 										echo "<td>$i</td>";
-
 										$customerFullName = $dbConnection->prepare("SELECT customerName FROM Customer INNER JOIN Account WHERE Account.accountOwner = Customer.customerID AND Account.accountNumber LIKE (?)");
 										$customerFullName->bind_param("s", mysqli_real_escape_string($dbConnection, $transactionSender));
 										$customerFullName->execute();

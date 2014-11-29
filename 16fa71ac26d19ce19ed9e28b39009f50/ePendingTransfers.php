@@ -135,7 +135,7 @@ if($_SESSION["userrole"] != "admin"){
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                           
+                      <tbody>     
 		<?php
 		
 		if(isset($_POST['remove'])){
@@ -164,22 +164,22 @@ if($_SESSION["userrole"] != "admin"){
 		//$transactionStmt->execute();
 		//$transactionStmt->store_results();
 		//if($transactionStmt->num_rows > 0) echo "<h1>>heyho</h1>";
-		$result = $dbConnection->query("select transactionSender,transactionReceiver,transactionAmont from Transaction where transactionID='".$var."'");
+		$result = $dbConnection->query("select transactionSender,transactionReceiver,transactionAmount from Transaction where transactionID='".$var."'");
 		$row1 =  mysqli_fetch_row($result);
 		//$row1 = mysqli_fetch_row($result1);
 		
 		
-		$updateReceiverStmt = $dbConnection->prepare("update Account set accountBalance=accountBalance+? where accountOwner=?");//or die(mysql_error());
+		$updateReceiverStmt = $dbConnection->prepare("update Account set accountBalance=accountBalance+? where accountNumber=?");//or die(mysql_error());
 		$updateReceiverStmt->bind_param("ds",$row1[2], $row1[1]);
 		$updateReceiverStmt->execute();
 
-		$updateSenderStmt = $dbConnection->prepare("update Account set accountBalance=accountBalance-? where accountOwner=?");
+		$updateSenderStmt = $dbConnection->prepare("update Account set accountBalance=accountBalance-? where accountNumber=?");
 		$updateSenderStmt->bind_param("ds", $row1[2], $row1[0]);
 		$updateSenderStmt->execute();
 		
 		}
 		
-		$result = $dbConnection->query("select C1.customerName,A1.accountNumber,C2.customerName,A2.accountNumber,transactionAmont,transactionTime,C1.customerID,C2.customerID,Transaction.transactionID from Transaction,Customer C1,Customer C2,Account A1,Account A2 where transactionSender=C1.customerID and transactionReceiver=C2.customerID and C1.customerID=A1.accountOwner and C2.customerID=A2.accountOwner and transactionApproved=0 and transactionAmont>10000") or die(mysql_error());
+		/*$result = $dbConnection->query("select C1.customerName,A1.accountNumber,C2.customerName,A2.accountNumber,transactionAmont,transactionTime,C1.customerID,C2.customerID,Transaction.transactionID from Transaction,Customer C1,Customer C2,Account A1,Account A2 where transactionSender=A1.accountNumber and transactionReceiver=A2.accountNumber and C1.customerID=A1.accountOwner and C2.customerID=A2.accountOwner and transactionApproved=0 and transactionAmount>10000") or die(mysql_error());
 		while($row = mysqli_fetch_row($result)){
 		$index= 0;
 		
@@ -202,8 +202,86 @@ if($_SESSION["userrole"] != "admin"){
 		$index++;
 		echo '</form>';
 		echo '</td>';
-		}
+		}*/
 
+                try{
+                                                                
+                       $transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionSender, transactionAmount, transactionTime, transactionApproved,A1.accountNumber,A2.accountNumber,A1.accountOwner,A2.accountOwner,transactionID  FROM Transaction, Account A1, Account A2 WHERE transactionSender=A1.accountNumber AND transactionReceiver=A2.accountNumber AND (transactionApproved=0) AND transactionAmount>10000 ");
+                       $transfers->execute();
+                       $transfers->bind_result( $transactionReceiver, $transactionSender, $transactionAmont, $transactionTime, $transactionApproved, $accountNrSender, $accountNrReceiver,$accountOwnerSender,$accountOwnerReceiver,$transID);
+                       $transfers->store_result();
+                                
+                        while($transfers->fetch())
+                        {
+                                                                                
+                        echo "<tr>";
+                        $customerFullName = $dbConnection->prepare("SELECT customerName FROM Customer WHERE customerID=?");
+                        $customerFullName->bind_param("s", mysqli_real_escape_string($dbConnection, $accountOwnerSender));
+                        $customerFullName->execute();
+                        $customerFullName->bind_result($nameSender);
+                        $customerFullName->store_result();
+                                                                                        
+                                                                                        
+                        while($customerFullName->fetch())
+                        {
+                                echo "<td>$nameSender</td>";
+                        }
+
+                        $customerFullName->free_result();
+                        $customerFullName->close();
+                                                                                
+                                                                                
+                        echo "<td>$transactionSender</td>";
+
+                        
+
+                        $customerFullName = $dbConnection->prepare("SELECT customerName FROM Customer WHERE customerID=?");
+                        $customerFullName->bind_param("s", mysqli_real_escape_string($dbConnection, $accountOwnerReceiver));
+                        $customerFullName->execute();
+                        $customerFullName->bind_result($nameReceiver);
+                        $customerFullName->store_result();
+                                                                                        
+                                                                                        
+                        while($customerFullName->fetch())
+                        {
+                                echo "<td>$nameReceiver</td>";
+                        }
+                                                                                        
+                        $customerFullName->free_result();
+                        $customerFullName->close();
+                                                                                
+                                                                                
+                        echo "<td>$transactionReceiver</td>";
+
+                        echo "<td>$transactionAmont</td>";
+
+                        echo "<td>$transactionTime</td>";
+
+                        echo '<td>';
+                        echo '<form method="post" action="ePendingTransfers.php">';
+                        echo '<button  type="submit" name="remove" id="remove" class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' . $transID. '>
+                        <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+
+                        <button type="submit" name="approve" id="approve" class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve" value=' . $transID. '>
+                        <span class="glyphicon glyphicon-ok"></span>
+                        </button>';
+                        $index++;
+                        echo '</form>';
+                        echo '</td>';
+
+                        echo "</tr>";
+                        }
+
+                         $transfers->free_result();
+                          $transfers->close();
+
+                        }catch(Exception $e){
+                                header("Location ../error.php");
+                        }		
+		
+		
+		
 		
 
 		?>	

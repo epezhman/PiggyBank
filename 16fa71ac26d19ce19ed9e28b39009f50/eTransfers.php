@@ -135,27 +135,88 @@ body {
                                 </tr>
                             </thead>
 
-                           		<?php
+ 
 		
-		$result = $dbConnection->query("select C1.customerName,A1.accountNumber,C2.customerName,A2.accountNumber,transactionAmont,transactionTime,transactionApproved,C1.customerID,C2.customerID,Transaction.transactionID from Transaction,Customer C1,Customer C2,Account A1,Account A2 where transactionSender=C1.customerID and transactionReceiver=C2.customerID and C1.customerID=A1.accountOwner and C2.customerID=A2.accountOwner and (transactionApproved=1 or transactionApproved=2)") or die(mysql_error());
- 	
-		while($row = mysqli_fetch_row($result)){
-		echo '<tr>';
-		echo '<td style="width:15%" >' . $row[0]. '</td>';
-		echo '<td style="width:15%" >' . $row[1]. '</td>';
-		echo '<td style="width:15%" >' . $row[2]. '</td>';
-		echo '<td style="width:15%" >' . $row[3]. '</td>';
-		echo '<td style="width:15%" >€' . $row[4]. '</td>';
-		echo '<td style="width:15%" >' . $row[5]. '</td>';
-                if($row[6]==1){
-			echo '<td style="width:15%" >' .Approved. '</td>';
-		}else if($row[6]==2){
-			echo '<td style="width:15%" >' .Rejected. '</td>';
-                }
-                
-		}
+	<tbody>
+	 <?php							
+                  try{
+                                                                
+                       $transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionSender, transactionAmount, transactionTime, transactionApproved,A1.accountNumber,A2.accountNumber,A1.accountOwner,A2.accountOwner  FROM Transaction, Account A1, Account A2 WHERE transactionSender=A1.accountNumber AND transactionReceiver=A2.accountNumber AND (transactionApproved=1 OR transactionApproved=2) ");
+                       $transfers->execute();
+                       $transfers->bind_result( $transactionReceiver, $transactionSender, $transactionAmont, $transactionTime, $transactionApproved, $accountNrSender, $accountNrReceiver,$accountOwnerSender,$accountOwnerReceiver);
+                       $transfers->store_result();
+                      		
+			while($transfers->fetch())
+			{
+										
+			echo "<tr>";
+                        $customerFullName = $dbConnection->prepare("SELECT customerName FROM Customer WHERE customerID=?");
+			$customerFullName->bind_param("s", mysqli_real_escape_string($dbConnection, $accountOwnerSender));
+			$customerFullName->execute();
+			$customerFullName->bind_result($nameSender);
+			$customerFullName->store_result();
+											
+											
+			while($customerFullName->fetch())
+			{
+				echo "<td>$nameSender</td>";
+			}
+
+			$customerFullName->free_result();
+			$customerFullName->close();
+										
+										
+			echo "<td>$transactionSender</td>";
+
+			
+
+                        $customerFullName = $dbConnection->prepare("SELECT customerName FROM Customer WHERE customerID=?");
+                        $customerFullName->bind_param("s", mysqli_real_escape_string($dbConnection, $accountOwnerReceiver));
+                        $customerFullName->execute();
+                        $customerFullName->bind_result($nameReceiver);
+                        $customerFullName->store_result();
+											
+											
+			while($customerFullName->fetch())
+			{
+				echo "<td>$nameReceiver</td>";
+			}
+											
+			$customerFullName->free_result();
+			$customerFullName->close();
+										
+										
+                        echo "<td>$transactionReceiver</td>";
+
+			echo "<td>$transactionAmont</td>";
+
+			echo "<td>$transactionTime</td>";
+
+			if($transactionApproved == "1")
+			{
+				echo "<td><span class=\"label label-success\"><span
+				class=\"glyphicon glyphicon-ok\"></span> Sent</span></td>";
+			}
+										
+			else if($transactionApproved == "2")
+			{
+				echo "<td><span class=\"label label-danger\"><span
+				class=\"glyphicon glyphicon-remove\"></span> Rejected</span></td>";
+			}
+
+				echo "</tr>";
+			}
+
+				$transfers->free_result();
+				$transfers->close();
+
+			}catch(Exception $e){
+				header("Location ../error.php");
+			}
 		?>
-		</tbody>
+	</tbody>
+                
+		
 
                         </table>
                     </div>

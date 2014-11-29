@@ -26,6 +26,7 @@ body {
     <link href="./css/framework.css" rel="stylesheet">
     <script src="./js/jquery-1.11.1.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/sha256.js"></script>
     <script type="text/javascript">
     var validated = new Array();
     var flag = true;
@@ -38,6 +39,7 @@ body {
         $("#passwordspan").hide();
         $("#confirmspan").hide();
         $("#emailspan").hide();
+        $("#secanswerspan").hide();
         validated["fullname"] = false;
         validated["address"] = false;
         validated["dob"] = false;
@@ -45,6 +47,7 @@ body {
         validated["username"] = false;
         validated["confirm"] = false;
         validated["password"] = false;
+        validated["secanswer"] = false;
         
     }
     function validateElement(e, type){
@@ -84,6 +87,25 @@ body {
                     $('#'+e.id+'span').css("background","#00CC00");
                     $('#'+e.id+'span').html("Check");
                     validated["address"] = true;
+                }
+            $('#'+e.id+'span').fadeIn('slow');
+        }
+        else if(type == "secanswer"){
+            if(e.value == ""){
+                $('#'+e.id+'span').css("background","#CC0000");
+                $('#'+e.id+'span').html("Security Answer is required");
+                validated["secanswer"] = false;
+            }
+            else
+                if(!e.value.match("^[a-zA-Z0-9,'-. ]+$")){
+                    $('#'+e.id+'span').css("background","#CC0000");
+                    $('#'+e.id+'span').html("Invalid Answer");
+                    validated["secanswer"] = false;
+                }
+                else{
+                    $('#'+e.id+'span').css("background","#00CC00");
+                    $('#'+e.id+'span').html("Check");
+                    validated["secanswer"] = true;
                 }
             $('#'+e.id+'span').fadeIn('slow');
         }
@@ -209,7 +231,7 @@ body {
 }
     function validateForm(){
         // As the name implies, this function is used to validate form
-        if (validated["fullname"] && validated["address"] && validated["dob"] &&  validated["email"] && validated["username"] && validated["password"] && validated["confirm"]){ 
+        if (validated["fullname"] && validated["address"] && validated["dob"] &&  validated["email"] && validated["username"] && validated["password"] && validated["confirm"] && validated["secanswer"]){ 
             $('#submit').prop("disabled", false);
             if(flag){
                 $('#submit').animate({opacity: "0.5"}, 300);
@@ -224,6 +246,14 @@ body {
             $('#submit').prop("disabled", true);
             flag = true;
         }
+    }
+    function handleSecrets(f){
+        f.hashedPassword.value = SHA256(f.password.value);
+        f.password.value = "";
+        f.hashedConfirm.value = SHA256(f.confirm.value);
+	f.confirm.value = "";
+        f.hashedAnswer.value = SHA256(f.secanswer.value);
+        f.secanswer.value = "";
     }
    </script>
 </head>
@@ -273,7 +303,7 @@ body {
         -->
                 <div class="col-sm-12">
                     <div style="padding-top:40px;">
-                        <form class="form-signup" role="form" action="f8d890ce88bd1791b6eaddf06e58ceb5/register.php" method="POST">
+                        <form class="form-signup" role="form" action="f8d890ce88bd1791b6eaddf06e58ceb5/register.php" method="POST" onsubmit="handleSecrets(this)">
                             <table width=700px>
                             <tr><td>
                             <h2>Thank you for choosing PiggyBank GmbH</h2>
@@ -288,6 +318,8 @@ body {
                             <col width="150"><col width="350"><col width="200">
 			<?php
                             session_start();
+                            require_once("./f8d890ce88bd1791b6eaddf06e58ceb5/dbconnect.php");
+                            global $dbConnection;
 			    try{
                             echo "<tr>
                             <td style=\"padding: 10px 0px;\"><label for=\"title\">Title</label></td>
@@ -367,21 +399,44 @@ body {
                                     <td><input class=\"form-control\" style=\"width:250px;\" id=\"confirm\" name=\"confirm\" type=\"password\" onkeyup=\"validateElement(this, 'confirm')\" placeholder=\"epiclysecret\"></td>
                                     <td><span id=\"confirmspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
                             echo "</tr><tr>";
+                            echo "<td style=\"padding: 10px 0px;\"><label for=\"secquestion\">Security Question</label></td>
+                                    <td colspan=\"2\"><select class=\"form-control\" style=\"width:350px\" id=\"secquestion\" name=\"secquestion\" onblur=\"validateElement(this, 'secquestion')\">";
+                            // Retrieve security questions and populate drop down list
+                            $securityQuestionsQuery = $dbConnection->prepare("SELECT securityQuestionID, securityQuestionDesc FROM SecurityQuestion");
+	                    $securityQuestionsQuery->execute();
+	                    $securityQuestionsQuery->bind_result($secQID, $secQDesc);
+	                    $securityQuestionsQuery->store_result();
+                            if($securityQuestionsQuery->num_rows() > 0){
+		                while($securityQuestionsQuery->fetch()){
+                                    echo "<option value=\"".$secQID."\">".$secQDesc."</option>";
+		                }
+	                    } 
+                           $securityQuestionsQuery->free_result();
+	                   $securityQuestionsQuery->close();
+                           echo "</select></td></tr>";
+                           echo "<tr><td style=\"padding: 10px 0px;\"><label for=\"secanswer\">Answer</label></td>";
+                            if(isset($_SESSION["invSecAnswer"]))
+                                echo"<td><input class=\"form-control\" style=\"width:250px;\" id=\"secanswer\" name=\"secanswer\" type=\"text\" onload=\"validateElement(this, 'secanswer')\" onkeyup=\"validateElement(this, 'secanswer')\" placeholder=\"Porsche Carrera 911\" value=\"".htmlspecialchars($_SESSION["invSecAnswer"])."\"></td> <td><span id=\"secanswerspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            else
+                                echo"<td><input class=\"form-control\" style=\"width:250px;\" id=\"secanswer\" name=\"secanswer\" type=\"text\" onkeyup=\"validateElement(this, 'secanswer')\" placeholder=\"Porsche Carrera 911\"></td> <td><span id=\"secanswerspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
+                            echo "</tr>";
                             echo "<td style=\"padding: 10px 0px;\"><label for=\"confirm\">Transfer Security</label></td>
                             <td><input type=\"radio\" name=\"secMethod\" value=\"1\" checked=\"checked\"> 100 TAN<br><input type=\"radio\" name=\"secMethod\" value=\"2\"> SCS</td>
                             <td></td>";
                             echo "</tr><tr>";
                             echo "<td colspan=\"3\" align=\"right\" style=\"padding: 30px 0px;\">
-                                    <input type=\"submit\" value=\"Sign up\" id=\"submit\" style=\"width:80px; heigh:30px;\" class=\"btn btn-primary\" disabled/>
+                                    <input type=\"submit\" value=\"Sign up\" id=\"submit\" style=\"width:80px; height:30px;\" class=\"btn btn-primary\" disabled/>
                                 </td>
                         </tr>";
-                             session_destory();
 					}catch(Exception $e){
 					//	echo $e;
                                                 session_destroy();
 						header("Location: error.php");
 					}
                         ?>
+                            <tr><td colspan="3"><input id="hashedPassword" type="hidden" name="hashedPassword" value=""></td></tr>
+                            <tr><td colspan="3"><input id="hashedConfirm" type="hidden" name="hashedConfirm" value=""></td></tr>
+                            <tr><td colspan="3"><input id="hashedAnswer" type="hidden" name="hashedAnswer" value=""></td></tr>
                         </table>
                         </form>
                     </div>
