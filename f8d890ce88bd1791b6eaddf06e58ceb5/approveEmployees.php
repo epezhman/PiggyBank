@@ -42,7 +42,7 @@ body {
                     <ul class="nav navbar-nav navbar-right">
 			<li class="visible-xs"><a href="approveEmployees.php">Pending Employee </a></li>
 
-                        <li><a href="#">Help</a></li>-->
+                        <li><a href="#">Help</a></li>
                         <li><a href="logout.php">Log Out</a></li>
 
                     </ul>

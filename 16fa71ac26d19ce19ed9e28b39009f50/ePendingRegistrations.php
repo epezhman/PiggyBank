@@ -149,8 +149,8 @@ function createPdf($eMessage,$password){
         //$pdfdoc =  $pdf->Output("", "S"); 
         //$attachment = chunk_split(base64_encode($pdfdoc));
         
-        $pdf->Output("doc.pdf","F");
-        $content = "doc.pdf";
+        $pdf->Output("../f8d890ce88bd1791b6eaddf06e58ceb5/tmp/doc.pdf","F");
+        $content = "../f8d890ce88bd1791b6eaddf06e58ceb5/tmp/doc.pdf";
         
     }catch(Exception $e){
         header("Location: ../error.php?id=404");
@@ -222,6 +222,7 @@ function sendEmail($eAddress, $eSubject,$eMessage,$eAttachments){
         if ($eAttachments!=null){ 
                 $crlf = "\n";
                 $mime = new Mail_mime($crlf);
+                $mime->setTXTBody($eMessage);
                 $mime->addAttachment($eAttachments, 'application/pdf');
                 $body = $mime->get();
                 $headers = $mime->headers($headers);
@@ -314,8 +315,8 @@ function generateTokens($custID){
 			$dbConnection->query("delete from User where User.userUsername='$var'")or die(mysql_error());
 			
 				// Disable tokens?!
-				$emailMessage = "Dear Customer,\r\n\r\nWe regret to inform you that your PiggyBank online banking account has been suspended.";
-				sendEmail($cEmail, "PiggyBank Online Banking Account Suspended". $emailMessage);
+				$emailMessage = "Dear Customer,\r\n\r\nWe regret to inform you that your PiggyBank online banking account has been suspended.\n\nSincerely,\nYour PiggyBank GmbH";
+				sendEmail($cEmail, "PiggyBank Online Banking Account Suspended", $emailMessage);
 			
 		}
 	}
@@ -348,11 +349,24 @@ if($customerMethod == 1)
 {
 			// Generate TAN's
 			$customerTokens = generateTokens($customerID);
-			$eMessage = "Dear Customer,\r\n\r\nThank you for choosing PiggyBank GmbH.\r\n\r\nYour online banking account is now activated.\r\n\r\nFollowing are your generated TAN's that you can use to transfer money via our online banking system:\r\n\r\n";
+			$eMessage = "Dear Customer,\n\nThank you for choosing PiggyBank GmbH.\n\nYour online banking account is now activated.\n\nAttached are your generated TAN's that you can use to transfer money via our online banking system.\n\n Please use your account number and date of birth [YYYY-MM-DD] to unlock the attached file.\n\nSincerely,\nYour PiggyBank GmbH";
+			// Retrieve user secret answer
+			$passphraseStmt = $dbConnection->prepare("SELECT customerDOB, accountNumber FROM Customer,Account WHERE Customer.customerID = Account.accountOwner AND Customer.customerID LIKE (?)");
+			$passphraseStmt->bind_param("s", $customerID);
+			$passphraseStmt->execute();
+			$passphraseStmt->bind_result($cDOB, $aNumber);
+			$passphraseStmt->store_result();
+			if($passphraseStmt->num_rows > 0){
+				while($passphraseStmt->fetch()){
+				   $customerDOB = $cDOB;
+				   $accountNumber = $aNumber;
+				}
+			}
+            $passphrase = $accountNumber.$customerDOB;
 			// Build email message
 			foreach($customerTokens as $token)
 				$eMessage = $eMessage.$token."\r\n";
-				 $pdfFile=createPdf($eMessage,$password);
+				$pdfFile=createPdf($eMessage,$passphrase);
 
                         sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage,$pdfFile);
 			// Send notification email
