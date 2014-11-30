@@ -355,6 +355,7 @@ else if($customerMethod == 2)
 	echo '<td style="width:23%" >' . $row[0]. '</td>';
 	echo '<td style="width:18%" >' . $row[1]. '</td>';
 	echo '<td style="width:23%" >' . $row[2]. '</td>';
+	echo '<td  style="width:23%"><input type="text"  name="balance"/></td>';
 	echo '<td>';
 	echo '<button  type="submit" name="remove"  class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' .$row[0]. '>
 				  <span class="glyphicon glyphicon-remove"></span>
