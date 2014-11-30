@@ -46,9 +46,10 @@ try{
 			header("Content-Type: application/java-archive");
 			header("Content-Transfer-Encoding: Binary");
 			header("Content-Length:".filesize($attachment_location));
-			header("Content-Disposition: attachment; filename=SCS.jar");
+			header("Content-Disposition: attachment; filename=\"SCS.jar\"");
 			readfile($attachment_location);
-			die();
+				
+			exit;
 		} else {
 			header("Location ../error.php");
 		}
