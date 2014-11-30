@@ -1,3 +1,4 @@
+
 <html>
 <head>
     <meta charset="utf-8">
@@ -70,11 +71,10 @@ body {
 		exit();
 	}
 	session_start();
-	if($_SESSION["userrole"] != "admin"){
+	if($_SESSION["userrole"] != "employee"){
 		header("Location: ../error.php?id=404");
 		exit();
 	}
-	
 
 ?>
 	<div class="container-fluid">
@@ -127,8 +127,6 @@ function getRandomString($length = 8){
     return $result;
 }
 
-
-
 function createPdf($eMessage,$password){
      try{
         //require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/fpdf.php");
@@ -136,7 +134,7 @@ function createPdf($eMessage,$password){
 
        // $pdf = new FPDF();
         $pdf= new FPDF_Protection();
-	
+        
         $pdf->SetProtection(array('print'),$password);
         $pdf->AddPage();
         
@@ -148,9 +146,9 @@ function createPdf($eMessage,$password){
                 // Line break
         $pdf->Ln(30);
         $pdf->Write(5,$eMessage);
-	//$pdfdoc =  $pdf->Output("", "S"); 
-	//$attachment = chunk_split(base64_encode($pdfdoc));
-	
+        //$pdfdoc =  $pdf->Output("", "S"); 
+        //$attachment = chunk_split(base64_encode($pdfdoc));
+        
         $pdf->Output("doc.pdf","F");
         $content = "doc.pdf";
         
@@ -342,7 +340,6 @@ function generateTokens($custID){
 					$customerEmail = $cEmail;
 					$customerMethod = $cMethod;
 					$customerPIN = $cPIN;
-					$password = $var;
 				}
 			 }
 
@@ -352,21 +349,19 @@ if($customerMethod == 1)
 			// Generate TAN's
 			$customerTokens = generateTokens($customerID);
 			$eMessage = "Dear Customer,\r\n\r\nThank you for choosing PiggyBank GmbH.\r\n\r\nYour online banking account is now activated.\r\n\r\nFollowing are your generated TAN's that you can use to transfer money via our online banking system:\r\n\r\n";
-	 
 			// Build email message
 			foreach($customerTokens as $token)
 				$eMessage = $eMessage.$token."\r\n";
-			// Send notification email
-                          
-			 $pdfFile=createPdf($eMessage,$password);
+				 $pdfFile=createPdf($eMessage,$password);
 
                         sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage,$pdfFile);
+			// Send notification email
 			//sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage);
-			unlink("doc.pdf");
 }
 else if($customerMethod == 2)
 {
-	$eMessage = "Dear Customer,\r\n\r\nThank you for choosing PiggyBank GmbH.\r\n\r\nYour online banking account is now activated.\r\n\r\nFollowing is your PIN for generating one time password (OTP) to transfer money via our online banking system, Please keep it safe:\r\n\r\n $customerPIN \r\n\r\n here you can also download your personalized smart card simulator: \r\n\r\n http://LINK.com";
+	$realPin = openssl_decrypt($customerPIN, "AES-128-CBC", "SomeVeryCrappyPassword?!!!WithNum2014");
+	$eMessage = "Dear Customer,\r\n\r\nThank you for choosing PiggyBank GmbH.\r\n\r\nYour online banking account is now activated.\r\n\r\nFollowing is your PIN for generating one time password (OTP) to transfer money via our online banking system, Please keep it safe:\r\n\r\n $realPin \r\n\r\n To Download your SCS please sign in to your account and go to \"My Transfers and Accounts\", you can find download link there. \r\n\r\n ";
 	
 	// Send notification email
 	sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage);
@@ -391,6 +386,7 @@ else if($customerMethod == 2)
 				  <button type="submit"  name="approve"  class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve" value=' .$row[0]. '>
 				  <span class="glyphicon glyphicon-ok"></span>
 				   </button>';
+        echo '<input id="csrfToken" type="hidden" name="csrfToken" value="'.$_SESSION["csrfToken"].'">';
 	echo '</form>';
 	echo '</td>';
 	}

@@ -19,6 +19,11 @@
 	require_once("accesscontrol.php");
 	require_once("utils.php");
 	require_once("dbconnect.php");
+        // Check for the CSRF token
+        if(!isset($_POST["csrfToken"]) or ($_POST["csrfToken"] != $_SESSION["csrfToken"])){
+           header("Location: ../error.php?id=403");
+           exit();
+        }
 
 function doTransfer($transactionSender, $transactionReceiver, $transactionAmount, $transactionToken){
 	try{
@@ -213,7 +218,7 @@ try{
 			}
 		
 		else{
-			$_SESSION["invReceiverId"] = $receiverId ? NULL : $_POST["ReceiverId"];
+			$_SESSION["invReceiverId"] = $receiverAccount ? NULL : $_POST["ReceiverId"];
 			$_SESSION["invTransferToken"] = $transferToken ? NULL : $_POST["TransferToken"];
 			$_SESSION["invAmount"] = $amount ? NULL : $_POST["Amount"];
 		}

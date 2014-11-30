@@ -39,7 +39,14 @@ if($authenticated == -2){
 }
 
 session_start();
-if($_SESSION["userrole"] != "admin"){
+// Check for the CSRF token
+
+//if(!isset($_POST["csrfToken"]) or ($_POST["csrfToken"] != $_SESSION["csrfToken"])){
+//    header("Location: ../error.php?id=403");
+//    exit();
+//}
+
+if($_SESSION["userrole"] != "employee"){
 	header("Location: ../error.php?id=404");
 	exit();
 }
@@ -267,6 +274,7 @@ if($_SESSION["userrole"] != "admin"){
                         <span class="glyphicon glyphicon-ok"></span>
                         </button>';
                         $index++;
+                        echo '<input id="csrfToken" type="hidden" name="csrfToken" value="'.$_SESSION["csrfToken"].'">';
                         echo '</form>';
                         echo '</td>';
 

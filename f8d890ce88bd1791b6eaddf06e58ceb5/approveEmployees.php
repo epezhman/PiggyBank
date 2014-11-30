@@ -40,17 +40,10 @@ body {
                 </div>
                 <div class="navbar-collapse collapse">
                     <ul class="nav navbar-nav navbar-right">
-              
-<li class="visible-xs"><a href="ePendingRegistrations.php">Pending Registrations</a></li>
-			<li class="visible-xs"><a href="ePendingEmployees.php">Pending Employee </a></li>
-                        <li class="visible-xs active"><a href="eCustomerManagers.php">Registered Customers</a></li>
-                        <li class="visible-xs"><a href="ePendingTransfers.php">Pending Transfers</a></li>
-                        <li class="visible-xs"><a href="eTransfers.php">All Transfers</a></li>
+			<li class="visible-xs"><a href="approveEmployees.php">Pending Employee </a></li>
 
-
-                      <!--  <li><a href="#">Profile</a></li>
                         <li><a href="#">Help</a></li>-->
-                        <li><a href="../f8d890ce88bd1791b6eaddf06e58ceb5/logout.php">Log Out</a></li>
+                        <li><a href="logout.php">Log Out</a></li>
 
                     </ul>
                     
@@ -59,7 +52,7 @@ body {
         </div>
 <?php
 	ob_start();
-	require "../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php";
+	require "accesscontrol.php";
 	$authenticated =  ob_get_clean();
 	if($authenticated == -1){
 		header("Location: ../error.php?id=404");
@@ -80,10 +73,7 @@ body {
             <div class="row">
                 <div class="col-sm-3 col-md-2 sidebar">
                     <ul class="nav nav-sidebar">                      
-                        <li class="active"><a href="ePendingRegistrations.php">Pending Registrations</a></li>
-			<li><a href="eCustomerManagers.php">Registered Customers</a></li>
-			<li><a href="ePendingTransfers.php">Pending Transfers</a></li>                       
-			<li><a href="eTransfers.php">All Transfers</a></li>
+                        <li class="active"><a href="approveEmployees.php">Pending Registrations</a></li>
                     </ul>
                 </div>
                 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -128,46 +118,44 @@ function getRandomString($length = 8){
 
 function sendEmail($eAddress, $eSubject, $eMessage){
     // Send the email message via the sendmail MTA
-    mail($eAddress, $eSubject, $eMessage, "From:noreply@piggybank.de");
-}
-function generateTokens($custID){
-    // Generates 100 unique tokens and returns them to the caller
-    $customerTokens = array();
-    $counter = 0;
-    // There is a problem with using "require_once" here. For some reason, the function does not see the "$dbConnection"
-    // .. variable unless it is redefined as below.
-	$dbHost= "localhost";
-	$dbUser= "piggy";
-	$dbPassword= "8aa259f4c7";
-	$dbName= "piggybank";
-    $dbConnection = new mysqli($dbHost, $dbUser, $dbPassword, $dbName);
+//    mail($eAddress, $eSubject, $eMessage, "From:noreply@piggybank.de");
     try{
-        while($counter < 100){
-            $tempToken =  substr(sha1($custID.$counter+1 .microtime(true).getRandomString()), 0, 15);
-            // Now check whether token is already in the Token's table
-            $tokenAvailableStmt = $dbConnection->prepare("SELECT * FROM Token WHERE tokenID=? AND tokenUsed=0");
-            $tokenAvailableStmt->bind_param("s", $tempToken);
-            $tokenAvailableStmt->execute();
-            $tokenAvailableStmt->store_result();
-            while($tokenAvailableStmt->num_rows > 0){
-                $tempToken =  substr(sha1($custID.$counter+1 .microtime(true).getRandomString()), 0, 15);
-                $tokenAvailableStmt = $dbConnection->prepare("SELECT * FROM Token WHERE tokenID=? AND tokenUsed=0");
-                $tokenAvailableStmt->bind_param("s", $tempToken);
-                $tokenAvailableStmt->execute();
-                $tokenAvailableStmt->store_results();
-            }
-            // Add token to the user tokens
-            array_push($customerTokens, $tempToken);
-            $addTokenStmt = $dbConnection->prepare("INSERT INTO Token VALUES (?,?,0)");
-            $addTokenStmt->bind_param("ss", $tempToken, $custID);
-            $addTokenStmt->execute();
-            $counter += 1;
-        }
-    }catch(exception $e){echo $e;}
-    return $customerTokens;
+        // Pear Mail Library
+        require_once "Mail.php";
+
+         $from = "noreply@piggybank.de";
+         $to = $eAddress;
+         $subject = $eSubject;
+         $body = $eMessage;
+
+         $headers = array(
+             'From' => $from,
+             'To' => $to,
+             'Subject' => $subject
+         );
+
+        $smtp = Mail::factory('smtp', array(
+            'host' => 'ssl://smtp.gmail.com',
+            'port' => '465',
+            'auth' => true,
+            'username' => 'piggybankgmbh@gmail.com',
+            'password' => 'optimus_159_prime'
+        ));
+
+        $mail = $smtp->send($to, $headers, $body);
+
+        if (PEAR::isError($mail)) 
+            echo "<script>alert(\"Error Encountered: " . $mail->getMessage() . "\");</script>" ;
+        else 
+            echo "<script>alert(\"Successful Operation. Email sent.\");</script>";
+           
+    }catch(Exception $e){
+        header("Location: ../error.php?id=404");
+        exit();
+    }
 }
 	// Code Starts here
-	require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/dbconnect.php");
+	require_once("dbconnect.php");
 	if(mysqli_connect_errno()){
 		header("Location: ../error.php");
 		exit();
@@ -175,26 +163,24 @@ function generateTokens($custID){
 	
 	if(isset($_POST['remove'])){
 		$var = $_POST['remove'];
-		//$dbConnection->query("delete from User where User.userUsername='$var'")or die(mysql_error());
-		// Retrieve customer details
-		$customerStmt = $dbConnection->prepare("SELECT employeeID, employeeName, employeeEmail FROM Employee WHERE employeeUsername LIKE (?)");
-		$customerStmt->bind_param("s", $var);
-		$customerStmt->execute();
-		$customerStmt->store_result();
-		if($customerStmt->num_rows > 0){
-			$result = $customerStmt->bind_result($cID, $cName, $cEmail);
-			while($customerStmt->fetch()){
-				$customerID = $cID;
-				$customerName = $cName;
-				$customerEmail = $cEmail;
-			}
-			$disapproveStmt = $dbConnection->prepare("UPDATE User SET userApproved=0 userUsername=?") or die(mysql_error());
-			$disapproveStmt->bind_param("s", $var);
-			$disapproveStmt->execute();
-			if($disapproveStmt->affected_rows > 0){
+			$employeeStmt = $dbConnection->prepare("SELECT employeeID, employeeName, employeeEmail FROM Employee WHERE employeeUsername LIKE (?)");
+			$employeeStmt->bind_param("s", $var);
+			$employeeStmt->execute();
+			$employeeStmt->store_result();
+			if($employeeStmt->num_rows > 0){
+				$result = $employeeStmt->bind_result($eID, $eName, $eEmail);
+				while($employeeStmt->fetch()){
+					$employeeID = $eID;
+					$employeeName = $eName;
+					$employeeEmail = $eEmail;
+				}
+			$deleteStmt = $dbConnection->prepare("DELETE FROM User WHERE userUsername=?") or die(mysql_error());
+			$deleteStmt->bind_param("s", $var);
+			$deleteStmt->execute();
+			if($deleteStmt->affected_rows > 0){
 				// Disable tokens?!
-				$emailMessage = "Dear Staff Member,\r\n\r\nWe regret to inform you that your PiggyBank online banking account has been suspended.";
-				sendEmail($cEmail, "PiggyBank Online Banking Account Suspended". $emailMessage);
+				$emailMessage = "Dear Staff Member,\n\nWe regret to inform you that your PiggyBank online banking account has been suspended.\n\nSincerely,\nYour PiggyBank GmbH";
+				sendEmail($customerEmail, "PiggyBank Online Banking Account Suspended", $emailMessage);
 			}
 		}
 	}
@@ -205,21 +191,33 @@ function generateTokens($custID){
 			$dbConnection->query("UPDATE User SET userApproved=1 WHERE User.userUsername='$var'")or die(mysql_error());
 			// Generate tokens and email customer
 			// 1- Retrieve customer details based on username
-			$eMessage = "Dear Staff,\r\n\r\nThank you for choosing PiggyBank GmbH.\r\n\r\nYour online banking account is now activated.\r\n\r\nWelcome Aboard\r\n\r\n";
+			$employeeStmt = $dbConnection->prepare("SELECT employeeID, employeeName, employeeEmail FROM Employee WHERE employeeUsername LIKE (?)");
+			$employeeStmt->bind_param("s", $var);
+			$employeeStmt->execute();
+			$employeeStmt->store_result();
+			if($employeeStmt->num_rows > 0){
+				$result = $employeeStmt->bind_result($eID, $eName, $eEmail);
+				while($employeeStmt->fetch()){
+					$employeeID = $eID;
+					$employeeName = $eName;
+					$employeeEmail = $eEmail;
+				}
+			$eMessage = "Dear Staff,\n\nThank you for choosing PiggyBank GmbH.\n\nYour online banking account is now activated.\n\nWelcome Aboard.\n\nSincerely,\nYour PiggyBank GmbH";
 			// Send notification email
-			sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage);
+			sendEmail($employeeEmail, "Welcome Aboard PiggyBank GmbH", $eMessage);
 		}
+	}
 	// Populate the table of pending requests	           
-	$result = $dbConnection->query("select User.userUsername,employeeDOB,employeeAddress,employeeEmail,employeeID  from User,Employee where User.userUsername=Employee.employeeUsername and User.userApproved=0") or die(mysql_error());
+	$result = $dbConnection->query("SELECT employeeUsername, employeeDOB, employeeAddress,employeeEmail from User,Employee where User.userUsername=Employee.employeeUsername and User.userApproved=0") or die(mysql_error());
 	while($row = mysqli_fetch_row($result)){
 	echo '<tr>';
 	echo '<td style="width:25%" >' . $row[0]. '</td>';
 	echo '<td style="width:20%" >' . $row[1]. '</td>';
 	echo '<td style="width:25%" >' . $row[2]. '</td>';
 	//echo '<td style="width:18%" >' . $row[3]. '</td>';
-	echo '<td style="width:20%" >€' . $row[4]. '</td>';
+	echo '<td style="width:20%" >' . $row[3]. '</td>';
 	echo '<td>';
-	echo '<form method="post" action="ePendingEmployees.php">';
+	echo '<form method="post" action="approveEmployees.php">';
 	echo '<button  type="submit" name="remove"  class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' .$row[0]. '>
 				  <span class="glyphicon glyphicon-remove"></span>
 				  </button>

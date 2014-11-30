@@ -115,10 +115,10 @@ body {
                     $('#'+e.id+'Span').text("Invalid fullname");
                     validated["ReceiverId"] = false;
                 }*/
-            if(!e.value.match("^[a-zA-Z0-9_]+$")){
+            if(!e.value.match("^[a-zA-Z0-9]+$")){
             	$('#'+e.id+'Span').addClass("alert-danger");
                 $('#'+e.id+'Span').removeClass("alert-success");
-                $('#'+e.id+'Span').text("Invalid fullname");
+                $('#'+e.id+'Span').text("Invalid Receiver ID");
                 validated["ReceiverId"] = false;
             }
                 else if(e.value.length != 10){
@@ -335,7 +335,7 @@ body {
 									}
 									else if($customerMethod == 2)
 									{
-										echo "<form class=\"form-horizontal\" action=\"../f8d890ce88bd1791b6eaddf06e58ceb5/trasnferByOTP.php\" method=\"POST\">";
+										echo "<form class=\"form-horizontal\" action=\"../f8d890ce88bd1791b6eaddf06e58ceb5/transferByOTP.php\" method=\"POST\">";
 									}
 									?>
 									<div class="form-group">
@@ -421,6 +421,11 @@ body {
 												disabled />
 										</div>
 									</div>
+                                                                        <?php
+                                                                            // Finally, add the CSRF token hidden field
+                                                                            echo "<input id=\"csrfToken\" type=\"hidden\" name=\"csrfToken\" value=\"".$_SESSION["csrfToken"]."\">";
+
+                                                                        ?>
 									</form>
 								</div>
 							</div>
@@ -428,9 +433,9 @@ body {
 								<div class="col-md-12">
 									<div style="text-align: center;">
 										<?php
-										if(isset($_SESSION["invReceiverId"]) or isset($_SESSION["invTransferToken"]) or isset($_SESSION["invAmount"])
+										if(isset($_SESSION["invReceiverId"]) or isset($_SESSION["invTransferToken"]) or isset($_SESSION["invInvalidOTPass"]) or isset($_SESSION["invAmount"])
 												or isset($_SESSION["invNotFoundToken"]) or isset($_SESSION["invUsedToken"]) or isset($_SESSION["invNotFoundReceiver"])
-												or isset($_SESSION["invNotYourself"]) or isset($_SESSION["invNotEnoughMoney"]) or isset($_SESSION["invNotFoundAccount"]) or isset($_SESSION["invInvalidOTP"]))
+												or isset($_SESSION["invNotYourself"]) or isset($_SESSION["invNotEnoughMoney"]) or isset($_SESSION["invNotFoundAccount"]))
 										{
 											echo "<span class='alert alert-danger' >";
 											if(isset($_SESSION["invReceiverId"]))
@@ -469,7 +474,7 @@ body {
 											{
 												echo "Receiver account not found.  ";
 											}
-											if(isset($_SESSION["invInvalidOTP"]))
+											if(isset($_SESSION["invInvalidOTPass"]))
 											{
 												echo "Provided OTP is not valid.  ";
 											}
@@ -484,7 +489,7 @@ body {
 											$_SESSION["invNotYourself"] = null;
 											$_SESSION["invNotEnoughMoney"] = null;
 											$_SESSION["invNotFoundAccount"] = null;
-											$_SESSION["invInvalidOTP"] = null;
+											$_SESSION["invInvalidOTPass"] = null;
 
 
 										}
@@ -506,15 +511,24 @@ body {
 							id="TransferByFile">
 							<div class="row">
 								<div class="col-md-12">
-									<form class="form-horizontal"
-										action="../f8d890ce88bd1791b6eaddf06e58ceb5/batchTransfer.php"
-										method="post" enctype="multipart/form-data">
+								<?php
+									if($customerMethod == 1)
+									{
+										echo "<form class=\"form-horizontal\" action=\"../f8d890ce88bd1791b6eaddf06e58ceb5/batchTransfer.php\" method=\"POST\" enctype=\"multipart/form-data\">";
+									}
+									else if($customerMethod == 2)
+									{
+										echo "<form class=\"form-horizontal\" action=\"../f8d890ce88bd1791b6eaddf06e58ceb5/batchTransferOTP.php\" method=\"POST\" enctype=\"multipart/form-data\">";
+									}
+									?>
+								
+									
 										<div class="form-group">
 											<label for="InputFile" class="col-sm-2 control-label">File
 												input</label>
 											<div class="col-sm-8">
 												<input type="file" id="transFile"
-													onchange="$('#submitFile').removeAttr('disabled');"
+													onchange="$('#submitFile').removeAttr('disabled')"
 													name="transFile">
 												<p class="help-block">Kindly upload a file containing the
 													account number you wish to transfer funds to, one of your
@@ -533,6 +547,11 @@ body {
 													class="btn btn-primary" disabled="disabled">Submit</button>
 											</div>
 										</div>
+                                                                        <?php
+                                                                            // Finally, add the CSRF token hidden field
+                                                                            echo "<input id=\"csrfToken\" type=\"hidden\" name=\"csrfToken\" value=\"".$_SESSION["csrfToken"]."\">";
+
+                                                                        ?>
 									</form>
 								</div>
 							</div>
