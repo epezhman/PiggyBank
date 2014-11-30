@@ -74,6 +74,7 @@ body {
 		header("Location: ../error.php?id=404");
 		exit();
 	}
+	
 
 ?>
 	<div class="container-fluid">
@@ -126,12 +127,49 @@ function getRandomString($length = 8){
     return $result;
 }
 
-function sendEmail($eAddress, $eSubject, $eMessage){
+
+
+function createPdf($eMessage,$password){
+     try{
+        //require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/fpdf.php");
+        require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/pdfProtection.php");
+
+       // $pdf = new FPDF();
+        $pdf= new FPDF_Protection();
+	
+        $pdf->SetProtection(array('print'),$password);
+        $pdf->AddPage();
+        
+        $pdf->SetFont('Arial','B',15);
+                // Move to the right
+                // Title
+        $pdf->Cell(0,15,'Piggy Bank GmbH  --  Secret Tokens',1);
+
+                // Line break
+        $pdf->Ln(30);
+        $pdf->Write(5,$eMessage);
+	//$pdfdoc =  $pdf->Output("", "S"); 
+	//$attachment = chunk_split(base64_encode($pdfdoc));
+	
+        $pdf->Output("doc.pdf","F");
+        $content = "doc.pdf";
+        
+    }catch(Exception $e){
+        header("Location: ../error.php?id=404");
+        exit();
+    }
+      
+      return $content;  
+}
+
+
+
+function sendEmail($eAddress, $eSubject,$eMessage,$eAttachments){
     // Send the email message via the sendmail MTA
 //    mail($eAddress, $eSubject, $eMessage, "From:noreply@piggybank.de");
-    try{
+   // try{
         // Pear Mail Library
-        require_once "Mail.php";
+       /* require_once "Mail.php";
 
          $from = "noreply@piggybank.de";
          $to = $eAddress;
@@ -162,7 +200,58 @@ function sendEmail($eAddress, $eSubject, $eMessage){
     }catch(Exception $e){
         header("Location: ../error.php?id=404");
         exit();
+    }*/
+    
+     try{
+
+        // Pear Mail Library
+        require_once "Mail.php";
+        require_once  ('Mail/mime.php') ;
+        
+       
+         $from = "noreply@piggybank.de";
+         $to = $eAddress;
+         $subject = $eSubject;
+         $body = $eMessage;
+
+         $headers = array(
+             'From' => $from,
+             'To' => $to,
+             'Subject' => $subject
+         );
+
+       
+        if ($eAttachments!=null){ 
+                $crlf = "\n";
+                $mime = new Mail_mime($crlf);
+                $mime->addAttachment($eAttachments, 'application/pdf');
+                $body = $mime->get();
+                $headers = $mime->headers($headers);
+
+        }
+ 
+        $smtp = Mail::factory('smtp', array(
+            'host' => 'ssl://smtp.gmail.com',
+            'port' => '465',
+            'auth' => true,
+            'username' => 'piggybankgmbh@gmail.com',
+            'password' => 'optimus_159_prime'
+        ));
+
+        $mail = $smtp->send($to, $headers, $body);
+
+        if (PEAR::isError($mail)) 
+            echo "<script>alert(\"Error Encountered: " . $mail->getMessage() . "\");</script>" ;
+        else 
+            echo "<script>alert(\"Successful Operation. Email sent.\");</script>";
+           
+    }catch(Exception $e){
+        header("Location: ../error.php?id=404");
+        exit();
     }
+    
+    
+    
 }
 
 function generateTokens($custID){
@@ -253,6 +342,7 @@ function generateTokens($custID){
 					$customerEmail = $cEmail;
 					$customerMethod = $cMethod;
 					$customerPIN = $cPIN;
+					$password = $var;
 				}
 			 }
 
@@ -262,11 +352,17 @@ if($customerMethod == 1)
 			// Generate TAN's
 			$customerTokens = generateTokens($customerID);
 			$eMessage = "Dear Customer,\r\n\r\nThank you for choosing PiggyBank GmbH.\r\n\r\nYour online banking account is now activated.\r\n\r\nFollowing are your generated TAN's that you can use to transfer money via our online banking system:\r\n\r\n";
+	 
 			// Build email message
 			foreach($customerTokens as $token)
 				$eMessage = $eMessage.$token."\r\n";
 			// Send notification email
-			sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage);
+                          
+			 $pdfFile=createPdf($eMessage,$password);
+
+                        sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage,$pdfFile);
+			//sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage);
+			unlink("doc.pdf");
 }
 else if($customerMethod == 2)
 {
