@@ -146,8 +146,14 @@ try{
         header("Location: ../error.php?id=404");
         exit();
     }
-	require_once("dbconnect.php");
 	session_start();
+        // Check for the CSRF token
+        if(!isset($_POST["csrfToken"]) or ($_POST["csrfToken"] != $_SESSION["csrfToken"])){
+           header("Location: ../error.php?id=403");
+           exit();
+        }
+
+	require_once("dbconnect.php");
 	$targetDir = "tmp/";
 	$targetDir = $targetDir.sha1($_FILES["transFile"]["name"]).".txt";
 	if(move_uploaded_file($_FILES["transFile"]["tmp_name"], $targetDir)){

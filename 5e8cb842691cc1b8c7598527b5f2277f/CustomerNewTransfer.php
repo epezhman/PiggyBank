@@ -421,6 +421,11 @@ body {
 												disabled />
 										</div>
 									</div>
+                                                                        <?php
+                                                                            // Finally, add the CSRF token hidden field
+                                                                            echo "<input id=\"csrfToken\" type=\"hidden\" name=\"csrfToken\" value=\"".$_SESSION["csrfToken"]."\">";
+
+                                                                        ?>
 									</form>
 								</div>
 							</div>
@@ -542,6 +547,11 @@ body {
 													class="btn btn-primary" disabled="disabled">Submit</button>
 											</div>
 										</div>
+                                                                        <?php
+                                                                            // Finally, add the CSRF token hidden field
+                                                                            echo "<input id=\"csrfToken\" type=\"hidden\" name=\"csrfToken\" value=\"".$_SESSION["csrfToken"]."\">";
+
+                                                                        ?>
 									</form>
 								</div>
 							</div>

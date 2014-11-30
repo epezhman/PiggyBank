@@ -52,7 +52,7 @@ body {
                         }
 
                         session_start();
-                        if($_SESSION['userrole'] != 'admin'){
+                        if($_SESSION['userrole'] != 'employee'){
                             header("Location: ../error.php?id=404");
                             exit();
 						}

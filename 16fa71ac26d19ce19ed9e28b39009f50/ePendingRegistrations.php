@@ -70,7 +70,7 @@ body {
 		exit();
 	}
 	session_start();
-	if($_SESSION["userrole"] != "admin"){
+	if($_SESSION["userrole"] != "employee"){
 		header("Location: ../error.php?id=404");
 		exit();
 	}
@@ -296,6 +296,7 @@ else if($customerMethod == 2)
 				  <button type="submit"  name="approve"  class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve" value=' .$row[0]. '>
 				  <span class="glyphicon glyphicon-ok"></span>
 				   </button>';
+        echo '<input id="csrfToken" type="hidden" name="csrfToken" value="'.$_SESSION["csrfToken"].'">';
 	echo '</form>';
 	echo '</td>';
 	}

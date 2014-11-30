@@ -80,13 +80,21 @@ try{
                 $_SESSION['username'] = $_POST['username'];
                 $_SESSION['userrole'] = $role;
                 $_SESSION['userloggedin'] = time();
+                $length = 256;
+                $cryptostrong = true;
+                $tokenRandom = bin2hex(openssl_random_pseudo_bytes($length, $cryptostrong));
+                $_SESSION['csrfToken'] = hash("sha1", $_POST["hashedPassword"]."|".hash("sha1", $_POST["hashedPassword"]."|".$_POST["username"].time().$tokenRandom));
             // Determine role and redirect accordingly
             if($role == "customer"){
                 header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerMyTransfers.php");
                 exit();
             }
-            else if($role == "admin"){
+            else if($role == "employee"){
                 header("Location: ../16fa71ac26d19ce19ed9e28b39009f50/eCustomerManagers.php");
+                exit();
+            }
+            else if($role == "admin"){
+                header("Location: ./approveEmployees.php");
                 exit();
             }
         }
@@ -96,6 +104,7 @@ try{
         exit();
     }
 }catch(Exception $e){
+  //echo $e;
   header("Location ../error.php");
   exit();
 }
