@@ -50,7 +50,8 @@ body {
         validated["secanswer"] = false;
         
     }
-    function validateElement(e, type){
+    
+   function validateElement(e, type){
         // This function is used to validate individual
         if(type == "name"){
             if(e.value == ""){
@@ -173,20 +174,20 @@ body {
                 validated["password"] = false;
             }
             else{ // Non-empty password field
-                    if(e.value.length<8){
+                    if(e.value.length<10){
                         $('#'+e.id+'span').css("background","#CC0000");
-                        $('#'+e.id+'span').html("Can't be less than 8 characters");
+                        $('#'+e.id+'span').html("Can't be less than 10 characters");
                         validated["password"] = false;
                     } 
-                    else if(e.value.length >= 8 && e.value.match("^[a-zA-Z0-9]+$")){
+                    else if(e.value.length >= 10 && e.value.match("^[a-zA-Z0-9]+$")){
                         $('#'+e.id+'span').css("background","#CC0000");
                         $('#'+e.id+'span').html("Weak Password");
-                        validated["password"] = true;
+                        validated["password"] = false;
                     }
-                    else if(e.value.length >= 8 && e.value.length < 10 && e.value.match("^[a-zA-Z0-9_.@!?]+$")){
+                    else if(e.value.length >= 10 && e.value.match("^[a-zA-Z0-9_.@!?]+$")){
                        $('#'+e.id+'span').css("background","#FE9A2E");
                        $('#'+e.id+'span').html("Plausible Password");
-                       validated["password"] = true;
+                       validated["password"] = false;
                     }
                     else if(e.value.length >= 10 && e.value.match("^[a-zA-Z0-9_.@!?]+$")){
                         $('#'+e.id+'span').css("background","#00CC00");

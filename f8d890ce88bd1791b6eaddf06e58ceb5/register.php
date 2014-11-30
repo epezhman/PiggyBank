@@ -37,9 +37,10 @@ function getRandomNumber($length = 8){
 }
 
 
+
 function validateInput($input, $type){
 // Peforms the same input validations carried out on the client-side to double check for errors/malice
-
+                                                                                                                                    
     $regExpressions =  array("name"=>"^[A-Za-z ]+$", "address"=>"^[a-zA-Z0-9,'-. ]+$", "username"=>"^[0-9A-Za-z_.]+$", "password"=>"^[a-zA-Z0-9_.@!?]+$", "dob"=>"^[0-9/]+$", "hashedpassword"=>"^[a-f0-9]{64}$");
 
     try{
@@ -141,16 +142,22 @@ try{
     $dobStatus2 = checkdate($mm, $dd, $yyyy);
     $emailStatus = (filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) != false) ? true : false;
     $usernameStatus = validateInput($_POST['username'], "username");
+    
     if(preg_match("/[0-9a-f]{64}/", $_POST["hashedPassword"]) == 1 )
         $passwordStatus = true;
     else
         $passwordStatus = false;
+        
+                  
     $confirmStatus = ($_POST["hashedConfirm"] != $_POST["hashedPassword"]) ? false : true;
+   
+   
     if(preg_match("/[0-9a-f]{64}/", $_POST["hashedAnswer"]) == 1)
         $secQuestionStatus = true;
     else
         $secQuestionsStatus = false;
-
+          
+  
     // If validation succeeds, add user to database
     if($fullnameStatus and $addressStatus and $dobStatus1 and $dobStatus2 and $emailStatus and $usernameStatus and $passwordStatus and $confirmStatus and $secQuestionStatus){
         // Register user

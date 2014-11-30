@@ -163,42 +163,7 @@ function createPdf($eMessage,$password){
 
 
 function sendEmail($eAddress, $eSubject,$eMessage,$eAttachments){
-    // Send the email message via the sendmail MTA
-//    mail($eAddress, $eSubject, $eMessage, "From:noreply@piggybank.de");
-   // try{
-        // Pear Mail Library
-       /* require_once "Mail.php";
 
-         $from = "noreply@piggybank.de";
-         $to = $eAddress;
-         $subject = $eSubject;
-         $body = $eMessage;
-
-         $headers = array(
-             'From' => $from,
-             'To' => $to,
-             'Subject' => $subject
-         );
-
-        $smtp = Mail::factory('smtp', array(
-            'host' => 'ssl://smtp.gmail.com',
-            'port' => '465',
-            'auth' => true,
-            'username' => 'piggybankgmbh@gmail.com',
-            'password' => 'optimus_159_prime'
-        ));
-
-        $mail = $smtp->send($to, $headers, $body);
-
-        if (PEAR::isError($mail)) 
-            echo "<script>alert(\"Error Encountered: " . $mail->getMessage() . "\");</script>" ;
-        else 
-            echo "<script>alert(\"Successful Operation. Email sent.\");</script>";
-           
-    }catch(Exception $e){
-        header("Location: ../error.php?id=404");
-        exit();
-    }*/
     
      try{
 
@@ -365,10 +330,11 @@ if($customerMethod == 1)
             $passphrase = $accountNumber.$customerDOB;
 			// Build email message
 			foreach($customerTokens as $token)
+                                $bodyText = $eMessage;
 				$eMessage = $eMessage.$token."\r\n";
 				$pdfFile=createPdf($eMessage,$passphrase);
 
-                        sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage,$pdfFile);
+                        sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $bodyText,$pdfFile);
 			// Send notification email
 			//sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage);
 }
@@ -389,7 +355,6 @@ else if($customerMethod == 2)
 	echo '<td style="width:23%" >' . $row[0]. '</td>';
 	echo '<td style="width:18%" >' . $row[1]. '</td>';
 	echo '<td style="width:23%" >' . $row[2]. '</td>';
-	echo '<td  style="width:23%"><input type="text" value="0" name="balance"/></td>';
 	echo '<td>';
 	echo '<button  type="submit" name="remove"  class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' .$row[0]. '>
 				  <span class="glyphicon glyphicon-remove"></span>

@@ -94,7 +94,7 @@ function validatePasswords(e, type){
                         $('#'+e.id+'span').html("Can't be less than 10 characters");
                         validated["password"] = false;
                     } 
-                    else if(e.value.length >= 8 && e.value.match("^[a-zA-Z0-9]+$")){
+                    else if(e.value.length >= 10 && e.value.match("^[a-zA-Z0-9]+$")){
                         $('#'+e.id+'span').css("background","#CC0000");
                         $('#'+e.id+'span').html("Weak Password");
                         validated["password"] = false;
