@@ -308,8 +308,10 @@ function generateTokens($custID){
 					$customerPIN = $cPIN;
 				}
 			 }
-
-$dbConnection->query("UPDATE Account SET accountBalance='$balance_value' WHERE accountOwner='$customerID'")or die(mysql_error());
+			$updateBalanceStmt = $dbConnection->prepare("UPDATE Account SET accountBalance=? WHERE accountOwner LIKE (?)");
+            $updateBalanceStmt->bind_param("ss", mysqli_real_escape_string($dbConnection, $balance_value), mysqli_real_escape_string($dbConnection, $customerID));
+            $updateBalanceStmt->execute();
+			
 if($customerMethod == 1)
 {
 			// Generate TAN's
@@ -328,21 +330,20 @@ if($customerMethod == 1)
 				}
 			}
             $passphrase = $accountNumber.$customerDOB;
+            $bodyText = $eMessage;
+            $pdfContent = $eMessage;
 			// Build email message
-			foreach($customerTokens as $token)
-                                $bodyText = $eMessage;
-				$eMessage = $eMessage.$token."\r\n";
-				$pdfFile=createPdf($eMessage,$passphrase);
-
-                        sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $bodyText,$pdfFile);
+			foreach($customerTokens as $token){
+				$pdfContent = $pdfContent."\n\n".$token."\n";
+				$pdfFile=createPdf($pdfContent ,$passphrase);
+			}
 			// Send notification email
-			//sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage);
+			sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $bodyText,$pdfFile);
 }
 else if($customerMethod == 2)
 {
 	$realPin = openssl_decrypt($customerPIN, "AES-128-CBC", "SomeVeryCrappyPassword?!!!WithNum2014");
 	$eMessage = "Dear Customer,\r\n\r\nThank you for choosing PiggyBank GmbH.\r\n\r\nYour online banking account is now activated.\r\n\r\nFollowing is your PIN for generating one time password (OTP) to transfer money via our online banking system, Please keep it safe:\r\n\r\n $realPin \r\n\r\n To Download your SCS please sign in to your account and go to \"My Transfers and Accounts\", you can find download link there. \r\n\r\n ";
-	
 	// Send notification email
 	sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage);
 	
