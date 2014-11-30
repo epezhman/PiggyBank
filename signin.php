@@ -183,6 +183,7 @@ body {
 								else
 									echo "<td align=\"right\" colspan=\"3\"><input type=\"submit\" value=\"Sign in\" id=\"submit\" class=\"btn btn-primary\" disabled/></td>";
 								echo "</tr><tr><td colspan=\"3\"><h5 >New User? <a href=\"signup.php\">Sign up here!</a></h5></td></tr>";
+                                                                echo "<tr><td colspan=\"3\"><h5>Forgot your password? <a href=\"reset.php\">Reset</a> it here!</h5></td></tr>";
                             ?>
                             </table>
                                 </div>
