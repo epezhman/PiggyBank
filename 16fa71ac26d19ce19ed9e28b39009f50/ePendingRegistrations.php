@@ -75,6 +75,15 @@ body {
 		header("Location: ../error.php?id=404");
 		exit();
 	}
+	// Check for CSRF attempts
+	if(count($_POST) > 0){
+		// If there is something being POSTed to the page
+		if(!isset($_POST["csrfToken"]) or ($_POST["csrfToken"] != $_SESSION["csrfToken"]))
+		{
+			header("Location: ../error.php?id=404");
+			exit();
+		}
+	}
 
 ?>
 	<div class="container-fluid">
@@ -94,21 +103,12 @@ body {
                     <h1 class="page-header">Pending Registrations</h1>
 
                     <fieldset>
-			<br></br>	<!--
-                        <form class="form-horizontal" role="form">
-                            <div class="form-group">
-                                <label class="control-label col-sm-1" for="">Customer</label>
-                                <div class="col-sm-10">
-                                    <input type="text" name="Sender" />
-				    <input type="submit" value="Filter" id="submit" class="btn btn-default" style="margin-left:5%;" />
-                                </div>
-                            </div>
-                    
-                        </form>-->
+			<br/><br/>
                     </fieldset>
-		    <br></br>	
+		    <br/><br/>	
 
 		<div class="table-responsive">
+		<form method="post" action="ePendingRegistrations.php">
 		<table class="table table-striped table-hover ">
 		<thead>
 			<tr><th>Name</th><th>Date of Birth</th><th>Address</th><th>Account Balance (€)</th><th>Action</th></tr>
@@ -389,8 +389,6 @@ else if($customerMethod == 2)
 	echo '<td style="width:23%" >' . $row[0]. '</td>';
 	echo '<td style="width:18%" >' . $row[1]. '</td>';
 	echo '<td style="width:23%" >' . $row[2]. '</td>';
-	//echo '<td style="width:18%" >' . $row[3]. '</td>';
-        echo '<form method="post" action="ePendingRegistrations.php">';	
 	echo '<td  style="width:23%"><input type="text" value="0" name="balance"/></td>';
 	echo '<td>';
 	echo '<button  type="submit" name="remove"  class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' .$row[0]. '>
@@ -401,12 +399,12 @@ else if($customerMethod == 2)
 				  <span class="glyphicon glyphicon-ok"></span>
 				   </button>';
         echo '<input id="csrfToken" type="hidden" name="csrfToken" value="'.$_SESSION["csrfToken"].'">';
-	echo '</form>';
 	echo '</td>';
 	}
 ?>	
 		</tbody>
 		</table>
+		</form>
 		</div>
  </div>
             </div>

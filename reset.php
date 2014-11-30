@@ -263,7 +263,7 @@ function sendEmail($eAddress, $eSubject, $eMessage){
 							echo "<td><input class=\"form-control\" style=\"width:200px\" id=\"username\" name=\"username\" type=\"text\" onkeyup=\"validateElement(this, 'username')\" onfocus=\"validateElement(this, 'username')\" autofocus=\"true\" placeholder=\"john.doe\" value=\"".htmlspecialchars($_POST["username"])."\"></td>";
 							echo "<td><span id=\"usernamespan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>";
                                                         // Retrieve security questions and populate drop down list
-                                                        $securityQuestionsQuery = $dbConnection->prepare("SELECT securityQuestionDesc FROM SecurityQuestion INNER JOIN User WHERE User.userSecurityQuestion = SecurityQuestion.securityQuestionID AND User.userUsername LIKE (?)");
+                                                        $securityQuestionsQuery = $dbConnection->prepare("SELECT securityQuestionDesc FROM SecurityQuestion INNER JOIN User WHERE User.userSecurityQuestion = SecurityQuestion.securityQuestionID AND User.userUsername LIKE (?) AND User.userApproved=1");
                                                         $securityQuestionsQuery->bind_param("s", mysqli_real_escape_string($dbConnection, $_POST["username"]));
                                                         $securityQuestionsQuery->execute();
                                                         $securityQuestionsQuery->bind_result($secQDesc);

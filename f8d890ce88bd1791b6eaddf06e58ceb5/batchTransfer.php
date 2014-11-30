@@ -159,6 +159,7 @@ try{
 	if(move_uploaded_file($_FILES["transFile"]["tmp_name"], $targetDir)){
 		$parsedTransactions = exec("./parseTransaction ".$targetDir);
 		if(!empty($parsedTransactions)){
+			        $transactionStatuses = "{\"transactions\": [";
 					// Carry out the transfers
 					$allTransactions = json_decode($parsedTransactions);
 					// Iterate over transactions and carry them out
@@ -166,9 +167,9 @@ try{
 						$transactionReceiver = $transaction->{"receiver"};
 						$transactionToken = $transaction->{"token"};
 						$transactionAmount = $transaction->{"amount"};
-                                                $transcationSender = "";
-					        $transferFlag = true;
-
+						$transcationSender = "";
+						$transferFlag = true;
+						
 						// Retrieve sender account number and balance for further computations
 						$senderAccountQuery = $dbConnection->prepare("SELECT customerID, accountNumber, accountBalance FROM Account INNER JOIN Customer INNER JOIN User WHERE User.userUsername = Customer.customerUsername AND Customer.customerID = Account.accountOwner AND User.userUsername LIKE (?)");
 						$senderAccountQuery->bind_param("s", $_SESSION["username"]);
@@ -181,16 +182,17 @@ try{
 							$senderBalance = $sBalance;
 						}
 						// Check for sufficient funds
-						if($senderBalance - floatval(trim($amount)) < 0){
-							$_SESSION["invNotEnoughMoney"] = true;
+						if($senderBalance - floatval(trim($transactionAmount)) < 0){
+							//$_SESSION["invNotEnoughMoney"] = true;
+							$transactionStatuses = $transactionStatuses."{\"".$transactionReceiver."\":\"Insufficient Funds.\"}, ";
 							$transferFlag = false;
 						}
 						// Check for self-transfer
 						if($transactionReceiver == $transactionSender){
-							$_SESSION["invNotYourself"] = true;
+							//$_SESSION["invNotYourself"] = true;
+							$transactionStatuses = $transactionStatuses."{\"".$transactionReceiver."\":\"Transfer to own account.\"}, ";
 							$transferFlag = false;
 						}
-
 						if($transactionReceiver and $transactionToken and $transactionAmount){
 							$tokenStatus = 0;
 							$tokenValidQuery = $dbConnection->prepare("SELECT tokenID, tokenUsed FROM Token INNER JOIN Customer WHERE Token.tokenCustomer = Customer.customerID AND Customer.customerID LIKE (?) AND Token.tokenID=?");
@@ -204,7 +206,8 @@ try{
 							}
 							// Check if that particular token is valid
 							if($tokenStatus == 1){
-								$_SESSION["invUsedToken"] = true;
+								//$_SESSION["invUsedToken"] = true;
+								$transactionStatuses = $transactionStatuses."{\"".$transactionReceiver."\":\"Invalid Token.\"}, ";
 								$transferFlag = false;
 							}
 							$tokenValidQuery->free_result();
@@ -221,19 +224,24 @@ try{
 							}
 							// If the receiver account does not exist
 							if(!isset($accountOwnerBalance)){
-								$_SESSION["invNotFoundAccount"] = true;
+							//	$_SESSION["invNotFoundAccount"] = true;
 								$transferFlag = false;
 							}
 							$accountExistQuery->free_result();
 							$accountExistQuery->close();
 
 							// All checks done? Carry out the transaction
-							if($transferFlag)
+							if($transferFlag){
 								if (doTransfer($transactionSender, $transactionReceiver, $transactionAmount, $transactionToken))
 									echo "Transaction Successful.<br/>";
-								else
+								else{
+									$transactionStatuses = $transactionStatuses."{\"".$transactionReceiver."\":\"Error Encountered.\"}, ";
 									echo "Transaction Failed.<br/>";
+								}
+							}
 				}
+				$transactionStatuses = $transactionStatuses." ]}";
+				$_SESSION["transactionStatus"] = $transactionStatuses;
 			} // End of for each
 			// Return parameters to transfer
 			header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php");

@@ -46,7 +46,6 @@ std::string Transaction::getToken(){ return this->transactionToken; }
 
 // Creates a JSON string from an array of Transactions to be POSTed to a PHP page
 std::string createJSON(std::vector<Transaction> aTransactions){
-    std::stringstream convert;
     std::string amountString = "";
     std::string transactions = "{\"transactions\": [";
     for ( std::vector<Transaction>::iterator itr = aTransactions.begin(); itr < aTransactions.end(); ++itr ){
@@ -56,6 +55,7 @@ std::string createJSON(std::vector<Transaction> aTransactions){
         transactions += "\", \"token\": \"";
         transactions += t.getToken();
         transactions += "\", \"amount\": \"";
+        std::stringstream convert;
         convert << t.getAmount();
         convert >> amountString;
         transactions += amountString;

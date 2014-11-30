@@ -39,12 +39,15 @@ if($authenticated == -2){
 }
 
 session_start();
-// Check for the CSRF token
-
-//if(!isset($_POST["csrfToken"]) or ($_POST["csrfToken"] != $_SESSION["csrfToken"])){
-//    header("Location: ../error.php?id=403");
-//    exit();
-//}
+	// Check for CSRF attempts
+	if(count($_POST) > 0){
+		// If there is something being POSTed to the page
+		if(!isset($_POST["csrfToken"]) or ($_POST["csrfToken"] != $_SESSION["csrfToken"]))
+		{
+			header("Location: ../error.php?id=404");
+			exit();
+		}
+	}
 
 if($_SESSION["userrole"] != "employee"){
 	header("Location: ../error.php?id=404");
@@ -101,25 +104,12 @@ if($_SESSION["userrole"] != "employee"){
                     <h1 class="page-header">Pending Transfers</h1>
 
                      <fieldset>
-			<br></br>	
-       <!--                 <form class="form-horizontal" role="form">
-                            <div class="form-group">
-                                <label class="control-label col-sm-1" for="">Transfer</label>
-                                <div class="col-sm-10">
-                                    <input type="text" name="Sender" />
-				    <input type="submit" value="Filter" id="submit" class="btn btn-default" style="margin-left:5%;" />
-                                </div>
-                            </div>
-                    
-                        </form> -->
+			<br/><br/>	
                     </fieldset>
-		    <br></br>	
+		    <br/><br/>	
 
 
 <?php
-    // Check the referer first to deny nosey requests
- //   if (strpos(getenv("HTTP_REFERER"), "/PiggyBank/") === false)
- //       header("Location: ../error.php?id=404");
        require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/dbconnect.php");
        
         if(mysqli_connect_errno()){

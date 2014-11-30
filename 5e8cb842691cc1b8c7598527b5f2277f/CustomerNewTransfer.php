@@ -153,7 +153,7 @@ body {
                 validated["TransferToken"] = false;
             }
             else
-                if(!e.value.match("^[a-zA-Z0-9]+$")){
+                if(!e.value.match("^[a-f0-9]+$")){
                 	$('#'+e.id+'Span').addClass("alert-danger");
                     $('#'+e.id+'Span').removeClass("alert-success");
                     <?php
