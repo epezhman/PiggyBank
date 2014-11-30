@@ -244,7 +244,7 @@ public class SCSMain {
 				@Override
 				public void actionPerformed(ActionEvent event) {
 					StringSelection stringSelection = new StringSelection(
-							OTPText.getText());
+							OTPText.getText().trim());
 					Clipboard clpbrd = Toolkit.getDefaultToolkit()
 							.getSystemClipboard();
 					clpbrd.setContents(stringSelection, null);
@@ -256,9 +256,9 @@ public class SCSMain {
 				@Override
 				public void actionPerformed(ActionEvent event) {
 										
-					if (validate(PINField.getText(), amountField.getText(),
-							accountField.getText())) {
-						OTPText.setText(OTPGenerator.Generate(PINField.getText(), amountField.getText(), accountField.getText()));
+					if (validate(PINField.getText().trim(), amountField.getText().trim(),
+							accountField.getText().trim())) {
+						OTPText.setText(OTPGenerator.Generate(PINField.getText().trim(), amountField.getText().trim(), accountField.getText().trim()));
 					} else {
 						OTPText.setText("");
 					}
