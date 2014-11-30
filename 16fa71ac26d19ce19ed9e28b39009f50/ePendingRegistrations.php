@@ -270,7 +270,8 @@ if($customerMethod == 1)
 }
 else if($customerMethod == 2)
 {
-	$eMessage = "Dear Customer,\r\n\r\nThank you for choosing PiggyBank GmbH.\r\n\r\nYour online banking account is now activated.\r\n\r\nFollowing is your PIN for generating one time password (OTP) to transfer money via our online banking system, Please keep it safe:\r\n\r\n $customerPIN \r\n\r\n here you can also download your personalized smart card simulator: \r\n\r\n http://LINK.com";
+	$realPin = openssl_decrypt($customerPIN, "AES-128-CBC", "SomeVeryCrappyPassword?!!!WithNum2014");
+	$eMessage = "Dear Customer,\r\n\r\nThank you for choosing PiggyBank GmbH.\r\n\r\nYour online banking account is now activated.\r\n\r\nFollowing is your PIN for generating one time password (OTP) to transfer money via our online banking system, Please keep it safe:\r\n\r\n $realPin \r\n\r\n To Download your SCS please sign in to your account and go to \"My Transfers and Accounts\", you can find download link there. \r\n\r\n ";
 	
 	// Send notification email
 	sendEmail($customerEmail, "Welcome to PiggyBank GmbH", $eMessage);

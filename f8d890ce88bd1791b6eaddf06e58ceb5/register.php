@@ -73,7 +73,7 @@ function registerCustomer(){
             
             if($secMethod == 2)
             {
-            	$PIN = getRandomNumber(6);
+            	$PIN =  openssl_encrypt(getRandomNumber(6), "AES-128-CBC", "SomeVeryCrappyPassword?!!!WithNum2014");
             }
             
             $userUsername = mysqli_real_escape_string($dbConnection, $_POST['username']);

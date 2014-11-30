@@ -16,11 +16,12 @@ try{
 
 	$fullName = NULL;
 	$userID = NULL;
+	$customerMethod = NULL;
 	$userUsername = mysqli_real_escape_string($dbConnection,$_SESSION['username']);
-	$customerFullName = $dbConnection->prepare("SELECT customerName, customerID FROM Customer WHERE customerUsername LIKE (?)");
+	$customerFullName = $dbConnection->prepare("SELECT customerName, customerID, customerTransferSecurityMethod FROM Customer WHERE customerUsername LIKE (?)");
 	$customerFullName->bind_param("s", $userUsername);
 	$customerFullName->execute();
-	$customerFullName->bind_result($name, $ID);
+	$customerFullName->bind_result($name, $ID, $cMethod);
 	$customerFullName->store_result();
 
 	if($customerFullName->num_rows() == 1)
@@ -29,6 +30,7 @@ try{
 		{
 			$fullName = $name;
 			$userID = $ID;
+			$customerMethod = $cMethod;
 		}
 	}
 	$customerFullName->free_result();
@@ -127,7 +129,17 @@ body {
 							target="blank">Export</a>
 					</fieldset>
 					<br> <br>
+					<?php 
 
+					if($customerMethod == "2")
+					{
+						echo "<fieldset>";
+						echo "<legend>Dowload SCS</legend>";
+						echo "<a class=\"btn btn-default\" href=\"../f8d890ce88bd1791b6eaddf06e58ceb5/DownloadSCS.php\" target=\"blank\">Download</a>";
+						echo "</fieldset>";
+						echo "<br><br>";
+					}
+					?>
 					<fieldset>
 						<legend>
 							<?php echo $fullName;?>
@@ -161,9 +173,9 @@ body {
 						</div>
 					</fieldset>
 					<br>
+
 					<fieldset>
 						<legend>My Transfers</legend>
-
 					</fieldset>
 					<div class="table-responsive">
 						<table class="table table-striped table-hover ">

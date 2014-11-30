@@ -115,10 +115,10 @@ body {
                     $('#'+e.id+'Span').text("Invalid fullname");
                     validated["ReceiverId"] = false;
                 }*/
-            if(!e.value.match("^[a-zA-Z0-9_]+$")){
+            if(!e.value.match("^[a-zA-Z0-9]+$")){
             	$('#'+e.id+'Span').addClass("alert-danger");
                 $('#'+e.id+'Span').removeClass("alert-success");
-                $('#'+e.id+'Span').text("Invalid fullname");
+                $('#'+e.id+'Span').text("Invalid Receiver ID");
                 validated["ReceiverId"] = false;
             }
                 else if(e.value.length != 10){
@@ -523,7 +523,7 @@ body {
 												input</label>
 											<div class="col-sm-8">
 												<input type="file" id="transFile"
-													onchange="$('#submitFile').removeAttr('disabled');"
+													onchange="$('#submitFile').removeAttr('disabled')"
 													name="transFile">
 												<p class="help-block">Kindly upload a file containing the
 													account number you wish to transfer funds to, one of your

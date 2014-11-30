@@ -204,6 +204,7 @@
 						{
 							$toBeHashed = trim($amount) . trim($receiverAccount);
 								
+							$customerPIN = openssl_decrypt($customerPIN, "AES-128-CBC", "SomeVeryCrappyPassword?!!!WithNum2014");
 							$salt = $customerPIN . strrev($customerPIN);
 								
 							$firstHash =  hash('sha256', $toBeHashed.$salt);
