@@ -108,6 +108,8 @@ body {
                     
                         </form> -->
                     </fieldset>
+                    <p>Hint: for description please hover over the respective row count
+						(#) by your mouse</p>
 		    <br></br>	
 
 <?php

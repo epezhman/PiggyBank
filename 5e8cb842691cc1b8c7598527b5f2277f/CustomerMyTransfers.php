@@ -64,7 +64,7 @@ body {
 <link href="../css/bootstrap.min.css" rel="stylesheet">
 
 <!-- our CSS -->
-<link href="../css/framework.css" rel="stylesheet">	
+<link href="../css/framework.css" rel="stylesheet">
 <link href="../css/tooltips.css" rel="stylesheet">
 
 </head>
@@ -181,6 +181,8 @@ body {
 					<fieldset>
 						<legend>My Transfers</legend>
 					</fieldset>
+					<p>Hint: for description please hover over the respective row count
+						(#) by your mouse</p>
 					<div class="table-responsive">
 						<table class="table table-striped table-hover ">
 							<thead>
@@ -239,7 +241,7 @@ body {
 											echo "<td><a href=\"#\">$i<span class=\"red\">".$transactionDesc."</span></a></td>";
 										else
 											echo "<td><a href=\"#\">$i<span>".$transactionDesc."</span></a></td>";
-										
+
 										$customerFullName = $dbConnection->prepare("SELECT customerName FROM Customer INNER JOIN Account WHERE Account.accountOwner = Customer.customerID AND Account.accountNumber LIKE (?)");
 										$customerFullName->bind_param("s", mysqli_real_escape_string($dbConnection, $transactionSender));
 										$customerFullName->execute();

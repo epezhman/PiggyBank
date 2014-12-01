@@ -107,6 +107,8 @@ if($_SESSION["userrole"] != "employee"){
                      <fieldset>
 			<br/><br/>	
                     </fieldset>
+                    <p>Hint: for description please hover over the respective row count
+						(#) by your mouse</p>
 		    <br/><br/>	
 
 
