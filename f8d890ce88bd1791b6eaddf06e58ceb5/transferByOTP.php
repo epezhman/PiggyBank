@@ -28,13 +28,15 @@
            exit();
         }
 
-	function doTransfer($transactionSender, $transactionReceiver, $transactionAmount){
+	function doTransfer($transactionSender, $transactionReceiver, $transactionAmount, $transactionDesc){
 		try{
 			global $dbConnection;
-			
+				
 			$transactionSender = mysqli_real_escape_string($dbConnection, $transactionSender);
 			$transactionReceiver = mysqli_real_escape_string($dbConnection, $transactionReceiver);
 			$transcationAmount = mysqli_real_escape_string($dbConnection, $transactionAmount);
+			$transactionDesc = mysqli_real_escape_string($dbConnection, $transactionDesc);
+				
 			$approved = false;
 			if($transactionAmount <= 10000 )
 				$approved = true;
@@ -55,8 +57,8 @@
 				$checkAny->close();
 			}
 			// Store the transaction details
-			$transferDB = $dbConnection->prepare("INSERT INTO Transaction (transactionID, transactionSender, transactionReceiver, transactionAmount, transactionTime, transactionApproved) VALUES (?,?,?,?,?,?)");
-			$transferDB->bind_param("ssssss", mysqli_real_escape_string($dbConnection,$transactionID), $transactionSender, $transactionReceiver, $transcationAmount, mysqli_real_escape_string($dbConnection,date('Y-m-d H:i:s')), $approved);
+			$transferDB = $dbConnection->prepare("INSERT INTO Transaction (transactionID, transactionSender, transactionReceiver, transactionAmount, transactionTime, transactionApproved, transactionDesc) VALUES (?,?,?,?,?,?,?)");
+			$transferDB->bind_param("sssssss", mysqli_real_escape_string($dbConnection,$transactionID), $transactionSender, $transactionReceiver, $transcationAmount, mysqli_real_escape_string($dbConnection,date('Y-m-d H:i:s')), $approved, $transactionDesc);
 			$transferDB->execute();
 				
 			if($transferDB->affected_rows >= 1){				
@@ -142,6 +144,10 @@
 			$transferToken =  $_POST['TransferToken'];
 		if(validateInput(trim($_POST['Amount']), "Amount"))
 			$amount = $_POST['Amount'];
+		if(validateInput(trim($_POST['Desc']), "Desc"))
+			$desc = $_POST['Desc'];
+		else
+			$desc = "No description.";
 		$userUsername = $_SESSION['username'];
 		$transferFlag = true;
 
@@ -219,6 +225,7 @@
 			{
 				$tokenStatus = 1;
 			}
+			
 
 			// Check if that particular otp is valid
 			if($tokenStatus == 1){
@@ -247,7 +254,7 @@
 			// All checks done? Carry out the transaction
 			if($transferFlag)
 			{
-				if (doTransfer($senderAccount, $receiverAccount, $amount)){
+				if (doTransfer($senderAccount, $receiverAccount, $amount, $desc)){
 					$_SESSION["invSuccessPaid"] = true;
 				}
 				else{

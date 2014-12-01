@@ -139,7 +139,7 @@ body {
 						echo "<legend>Dowload SCS</legend>";
 						//echo "<a class=\"btn btn-default\" href=\"../f8d890ce88bd1791b6eaddf06e58ceb5/DownloadSCS.php\" target=\"blank\">Download</a>";
 						echo "<a class=\"btn btn-default\" href=\"../Java/SCS.jar\" target=\"blank\">Download</a>";
-						echo "<p>If you are running this on Linux after downloading please right click on the file and on \"Permissions\" tab please check the \"Is executable. on Windows it works as it is\" </p>";
+						echo "<p>If you are running this Jar file on Linux after downloading please right click on the file and on \"Permissions\" tab please check the \"Is executable\". on Windows it works as it is </p>";
 						echo "</fieldset>";
 						echo "<br><br>";
 					}

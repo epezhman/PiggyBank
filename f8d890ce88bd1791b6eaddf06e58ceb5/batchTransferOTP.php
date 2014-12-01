@@ -53,12 +53,13 @@
 		}
 	}
 
-	function doTransfer($transactionSender, $transactionReceiver, $transactionAmount){
+	function doTransfer($transactionSender, $transactionReceiver, $transactionAmount, $transactionDesc){
 		try{
 			global $dbConnection;
 			$transactionSender = mysqli_real_escape_string($dbConnection, $transactionSender);
 			$transactionReceiver = mysqli_real_escape_string($dbConnection, $transactionReceiver);
 			$transcationAmount = mysqli_real_escape_string($dbConnection, $transactionAmount);
+			$transactionDesc = mysqli_real_escape_string($dbConnection, $transactionDesc);
 			$approved = false;
 			if($transactionAmount <= 10000 )
 				$approved = true;
@@ -79,8 +80,8 @@
 				$checkAny->close();
 			}
 			// Store the transaction details
-			$transferDB = $dbConnection->prepare("INSERT INTO Transaction  (transactionID, transactionSender, transactionReceiver, transactionAmount, transactionTime, transactionApproved) VALUES (?,?,?,?,?,?)");
-			$transferDB->bind_param("ssssss", mysqli_real_escape_string($dbConnection,$transactionID), $transactionSender, $transactionReceiver, $transcationAmount, mysqli_real_escape_string($dbConnection,date('Y-m-d H:i:s')), $approved);
+			$transferDB = $dbConnection->prepare("INSERT INTO Transaction  (transactionID, transactionSender, transactionReceiver, transactionAmount, transactionTime, transactionApproved, transactionDesc) VALUES (?,?,?,?,?,?,?)");
+			$transferDB->bind_param("sssssss", mysqli_real_escape_string($dbConnection,$transactionID), $transactionSender, $transactionReceiver, $transcationAmount, mysqli_real_escape_string($dbConnection,date('Y-m-d H:i:s')), $approved, $transactionDesc);
 			$transferDB->execute();
 			if($transferDB->affected_rows >= 1){
 					
@@ -142,18 +143,20 @@
 			header("Location: ../error.php?id=404");
 			exit();
 		}
-		require_once("dbconnect.php");
 		session_start();
-                // Check for the CSRF token
-                 if(!isset($_POST["csrfToken"]) or ($_POST["csrfToken"] != $_SESSION["csrfToken"])){
-                    header("Location: ../error.php?id=403");
-                    exit();
-                 }
+		// Check for the CSRF token
+		if(!isset($_POST["csrfToken"]) or ($_POST["csrfToken"] != $_SESSION["csrfToken"])){
+			header("Location: ../error.php?id=403");
+			exit();
+		}
+
+		require_once("dbconnect.php");
 		$targetDir = "tmp/";
 		$targetDir = $targetDir.sha1($_FILES["transFile"]["name"]).".txt";
 		if(move_uploaded_file($_FILES["transFile"]["tmp_name"], $targetDir)){
 			$parsedTransactions = exec("./parseTransaction ".$targetDir);
 			if(!empty($parsedTransactions)){
+				$transactionStatuses = "{\"transactions\": [";
 				// Carry out the transfers
 				$allTransactions = json_decode($parsedTransactions);
 				// Iterate over transactions and carry them out
@@ -161,6 +164,7 @@
 					$transactionReceiver = $transaction->{"receiver"};
 					$transactionToken = $transaction->{"token"};
 					$transactionAmount = $transaction->{"amount"};
+					$transactionDesc = $transaction->{"desc"};
 					$transcationSender = "";
 					$transferFlag = true;
 
@@ -176,22 +180,24 @@
 						$senderBalance = $sBalance;
 					}
 					// Check for sufficient funds
-					if($senderBalance - floatval(trim($amount)) < 0){
-						$_SESSION["invNotEnoughMoney"] = true;
+					if($senderBalance - floatval(trim($transactionAmount)) < 0){
+						//$_SESSION["invNotEnoughMoney"] = true;
+						$transactionStatuses = $transactionStatuses."{\"".$transactionReceiver."\":\"Insufficient Funds.\"}, ";
 						$transferFlag = false;
 					}
 					// Check for self-transfer
 					if($transactionReceiver == $transactionSender){
-						$_SESSION["invNotYourself"] = true;
+						//$_SESSION["invNotYourself"] = true;
+						$transactionStatuses = $transactionStatuses."{\"".$transactionReceiver."\":\"Transfer to own account.\"}, ";
 						$transferFlag = false;
 					}
-
+					
 					$customerInfo = $dbConnection->prepare("SELECT customerPIN, customerTransferSecurityMethod FROM Customer WHERE customerUsername LIKE (?)");
 					$customerInfo->bind_param("s", mysqli_real_escape_string($dbConnection,$_SESSION['username']));
 					$customerInfo->execute();
 					$customerInfo->bind_result($pin, $cMethod);
 					$customerInfo->store_result();
-
+					
 					if($customerInfo->num_rows() == 1)
 					{
 						while($customerInfo->fetch())
@@ -202,12 +208,14 @@
 					}
 					$customerInfo->free_result();
 					$customerInfo->close();
-
+					
 					if($transactionReceiver and $transactionToken and $transactionAmount){
 						$tokenStatus = 0;
+							
+
 						if($customerMethod == "2")
 						{
-							$toBeHashed = trim($amount) . trim($receiverAccount);
+							$toBeHashed = trim($transactionAmount) . trim($transactionReceiver);
 
 							$customerPIN = openssl_decrypt($customerPIN, "AES-128-CBC", "SomeVeryCrappyPassword?!!!WithNum2014");
 
@@ -219,7 +227,7 @@
 							for($i = 0 ; $i < 15 && $checkFlag ; $i++)
 							{
 								$firstHash =  hash('sha256', $firstHash);
-								if($firstHash == trim($transferToken) )
+								if($firstHash == trim($transactionToken) )
 									$checkFlag= false;
 							}
 								
@@ -227,18 +235,22 @@
 							{
 								$tokenStatus = 1;
 							}
+							//$tokenStatus = 0;
 						}
 						else
 						{
 							$tokenStatus = 1;
 						}
-
-						// Check if that particular otp is valid
+						// Check if that particular token is valid
 						if($tokenStatus == 1){
-							$_SESSION["invInvalidOTPass"] = true;
+							//$_SESSION["invUsedToken"] = true;
+							$transactionStatuses = $transactionStatuses."{\"".$transactionReceiver."\":\"Invalid Token.\"}, ";
 							$transferFlag = false;
 						}
 
+							
+							
+							
 						// Retrieve the accountNumber of the receiver, if they exist.
 						$accountExistQuery = $dbConnection->prepare("SELECT accountBalance FROM Account WHERE accountNumber LIKE (?) ");
 						$accountExistQuery->bind_param("s", mysqli_real_escape_string($dbConnection,$transactionReceiver));
@@ -250,19 +262,24 @@
 						}
 						// If the receiver account does not exist
 						if(!isset($accountOwnerBalance)){
-							$_SESSION["invNotFoundAccount"] = true;
+							//	$_SESSION["invNotFoundAccount"] = true;
 							$transferFlag = false;
 						}
 						$accountExistQuery->free_result();
 						$accountExistQuery->close();
 
 						// All checks done? Carry out the transaction
-						if($transferFlag)
-							if (doTransfer($transactionSender, $transactionReceiver, $transactionAmount))
-							echo "Transaction Successful.<br/>";
-						else
-							echo "Transaction Failed.<br/>";
+						if($transferFlag){
+							if (doTransfer($transactionSender, $transactionReceiver, $transactionAmount, $transactionDesc))
+								echo "Transaction Successful.<br/>";
+							else{
+								$transactionStatuses = $transactionStatuses."{\"".$transactionReceiver."\":\"Error Encountered.\"}, ";
+								echo "Transaction Failed.<br/>";
+							}
+						}
 					}
+					$transactionStatuses = $transactionStatuses." ]}";
+					$_SESSION["transactionStatus"] = $transactionStatuses;
 				} // End of for each
 				// Return parameters to transfer
 				header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php");
