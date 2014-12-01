@@ -20,8 +20,7 @@ public class OTPGenerator {
 			boolean flag = true;
 			do {
 				interval = new Random().nextInt(interval);
-				if(interval != lastRand)
-				{
+				if (interval != lastRand) {
 					lastRand = interval;
 					flag = false;
 				}
@@ -35,7 +34,8 @@ public class OTPGenerator {
 			for (int i = 0; i < interval; i++) {
 				sb = new StringBuffer();
 				for (int j = 0; j < byteData.length; j++) {
-					sb.append(Integer.toString((byteData[j] & 0xff) + 0x100, 16)
+					sb.append(Integer
+							.toString((byteData[j] & 0xff) + 0x100, 16)
 							.substring(1));
 				}
 				md.reset();
@@ -51,7 +51,8 @@ public class OTPGenerator {
 			return sb.toString();
 
 		} catch (Exception e) {
-			return "";
+			// return "";
+			return Generate(PIN, amount, account);
 		}
 	}
 }
