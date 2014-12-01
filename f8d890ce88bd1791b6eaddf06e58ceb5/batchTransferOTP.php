@@ -145,7 +145,7 @@
 		}
 		session_start();
 		// Check for the CSRF token
-		if(!isset($_POST["csrfToken"]) or ($_POST["csrfToken"] != $_SESSION["csrfToken"])){
+		if(!isset($_COOKIE["csrfToken"]) or ($_COOKIE["csrfToken"] != $_SESSION["csrfToken"])){
 			header("Location: ../error.php?id=403");
 			exit();
 		}

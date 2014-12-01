@@ -1,6 +1,7 @@
 ﻿<?php
 session_start();
 ob_start();
+setcookie("csrfToken", $_SESSION["csrfToken"], 0, "/");
 require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php");
 $authenticated = ob_get_clean();
 if($authenticated == -1){
@@ -458,11 +459,6 @@ body {
 												disabled />
 										</div>
 									</div>
-                                                                        <?php
-                                                                            // Finally, add the CSRF token hidden field
-                                                                            echo "<input id=\"csrfToken\" type=\"hidden\" name=\"csrfToken\" value=\"".$_SESSION["csrfToken"]."\">";
-
-                                                                        ?>
 									</form>
 								</div>
 							</div>
@@ -584,11 +580,6 @@ body {
 													class="btn btn-primary" disabled="disabled">Submit</button>
 											</div>
 										</div>
-                                                                        <?php
-                                                                            // Finally, add the CSRF token hidden field
-                                                                            echo "<input id=\"csrfToken\" type=\"hidden\" name=\"csrfToken\" value=\"".$_SESSION["csrfToken"]."\">";
-
-                                                                        ?>
 									</form>
 								</div>
 							</div>
