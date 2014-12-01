@@ -67,7 +67,7 @@ public class SCSMain {
 	private void initialize() {
 		frame = new JFrame();
 		frame.setTitle("Piggy Bank GmbH");
-		frame.setSize(650, 400);
+		frame.setSize(700, 400);
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
 
@@ -144,10 +144,10 @@ public class SCSMain {
 //			amountField.setText("100");
 //			accountField.setText("PB37083707");
 
-			PINField.setMaximumSize(new Dimension(470, 30));
-			amountField.setMaximumSize(new Dimension(470, 30));
-			accountField.setMaximumSize(new Dimension(470, 30));
-			OTPText.setMaximumSize(new Dimension(470, 30));
+			PINField.setMaximumSize(new Dimension(520, 30));
+			amountField.setMaximumSize(new Dimension(520, 30));
+			accountField.setMaximumSize(new Dimension(520, 30));
+			OTPText.setMaximumSize(new Dimension(520, 30));
 			OTPText.setEditable(false);
 
 			JButton generateButton = new JButton("Generate");
