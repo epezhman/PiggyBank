@@ -209,12 +209,16 @@
 				$firstHash =  hash('sha256', $toBeHashed.$salt);
 					
 				$checkFlag = true;
-				for($i = 0 ; $i < 15 && $checkFlag ; $i++)
-				{
-					$firstHash =  hash('sha256', $firstHash);
-					if($firstHash == trim($transferToken) )
-						$checkFlag= false;
-				}
+				
+				if($firstHash == trim($transferToken) )
+					$checkFlag= false;
+				
+// 				for($i = 0 ; $i < 15 && $checkFlag ; $i++)
+// 				{
+// 					$firstHash =  hash('sha256', $firstHash);
+// 					if($firstHash == trim($transferToken) )
+// 						$checkFlag= false;
+// 				}
 					
 				if($checkFlag)
 				{

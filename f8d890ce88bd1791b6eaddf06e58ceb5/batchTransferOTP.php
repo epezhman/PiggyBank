@@ -224,12 +224,16 @@
 							$firstHash =  hash('sha256', $toBeHashed.$salt);
 								
 							$checkFlag = true;
-							for($i = 0 ; $i < 15 && $checkFlag ; $i++)
-							{
-								$firstHash =  hash('sha256', $firstHash);
-								if($firstHash == trim($transactionToken) )
-									$checkFlag= false;
-							}
+							
+							if($firstHash == trim($transactionToken) )
+								$checkFlag= false;
+							
+// 							for($i = 0 ; $i < 16 && $checkFlag ; $i++)
+// 							{
+// 								$firstHash =  hash('sha256', $firstHash);
+// 								if($firstHash == trim($transactionToken) )
+// 									$checkFlag= false;
+// 							}
 								
 							if($checkFlag)
 							{
