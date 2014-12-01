@@ -20,29 +20,35 @@ class Transaction{
     std::string transactionReceiver;
     double transactionAmount;
     std::string transactionToken;
+    std::string transactionDesc;
     
     public:
-        Transaction (std::string, double, std::string);
+        Transaction (std::string, double, std::string, std::string);
         void setReceiver(std::string tReceiver);
         void setAmount(double tAmount);
         void setToken(std::string tToken);
+        void setDesc(std::string tDesc);
         std::string getReceiver();
         double getAmount();
         std::string getToken();
+        std::string getDesc();
 };
 
-Transaction::Transaction(std::string tReceiver, double tAmount, std::string tToken){
+Transaction::Transaction(std::string tReceiver, double tAmount, std::string tToken, std::string tDesc){
     this->transactionReceiver = tReceiver;
     this->transactionAmount = tAmount;
     this->transactionToken = tToken;
+    this->transactionDesc = tDesc;
 }
 void Transaction::setReceiver(std::string tReceiver){ this->transactionReceiver = tReceiver; }
 void Transaction::setAmount(double tAmount){ this->transactionAmount = tAmount; }
 void Transaction::setToken(std::string tToken){ this->transactionToken = tToken; }
+void Transaction::setDesc(std::string tDesc){ this->transactionDesc = tDesc; }
 
 std::string Transaction::getReceiver(){ return this->transactionReceiver; }
 double Transaction::getAmount(){ return this->transactionAmount; }
 std::string Transaction::getToken(){ return this->transactionToken; }
+std::string Transaction::getDesc(){ return this->transactionDesc; }
 
 // Creates a JSON string from an array of Transactions to be POSTed to a PHP page
 std::string createJSON(std::vector<Transaction> aTransactions){
@@ -59,6 +65,8 @@ std::string createJSON(std::vector<Transaction> aTransactions){
         convert << t.getAmount();
         convert >> amountString;
         transactions += amountString;
+        transactions += "\", \"desc\": \"";
+        transactions += t.getDesc();
         transactions += "\"}, ";
     }
     transactions = transactions.substr(0, transactions.length() - 2); // Clip the last comma
@@ -71,7 +79,7 @@ void parseTransactionFile(std::vector<Transaction>& aTransactions, std::string f
     try{
         std::string dummyField = "";
         int fieldCount = 1;
-        Transaction dummyT = Transaction("", 0, "");
+        Transaction dummyT = Transaction("", 0, "", "");
         std::ifstream tFile(fileName.c_str());
         std::string fileContent((std::istreambuf_iterator<char>(tFile)) ,(std::istreambuf_iterator<char>()));
         if(fileContent.length() < 1 )
@@ -83,8 +91,9 @@ void parseTransactionFile(std::vector<Transaction>& aTransactions, std::string f
            else{
                if(fieldCount == 1){ dummyT.setReceiver(dummyField); fieldCount += 1; dummyField = "";}
                else if(fieldCount == 2){ dummyT.setToken(dummyField); fieldCount += 1; dummyField = "";}
-               else if(fieldCount == 3){ 
-                   dummyT.setAmount(atoi(dummyField.c_str())); 
+               else if(fieldCount == 3){ dummyT.setAmount(atoi(dummyField.c_str())); fieldCount +=1; dummyField="";}
+               else if(fieldCount == 4){ 
+                   dummyT.setDesc(dummyField); 
                    fieldCount = 0; 
                    dummyField = "";
                    aTransactions.push_back(dummyT);
@@ -120,15 +129,4 @@ int main(int argc, char* argv[]){
        return -1;
    }
 }
-
-
-
-
-
-
-
-
-
-
-
 

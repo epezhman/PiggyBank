@@ -64,7 +64,9 @@ body {
 <link href="../css/bootstrap.min.css" rel="stylesheet">
 
 <!-- our CSS -->
-<link href="../css/framework.css" rel="stylesheet">
+<link href="../css/framework.css" rel="stylesheet">	
+<link href="../css/tooltips.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -219,18 +221,25 @@ body {
 									}
 									$begin = ($page - 1) *10;
 
-									$transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionSender, transactionAmount, transactionTime, transactionApproved FROM Transaction WHERE transactionSender LIKE (?) OR transactionReceiver LIKE (?) ORDER BY transactionTime DESC LIMIT 10 OFFSET $begin ");
+									$transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionSender, transactionAmount, transactionTime, transactionApproved, transactionDesc FROM Transaction WHERE transactionSender LIKE (?) OR transactionReceiver LIKE (?) ORDER BY transactionTime DESC LIMIT 10 OFFSET $begin ");
 									$transfers->bind_param("ss", mysqli_real_escape_string($dbConnection,$customerAccountNumber), mysqli_real_escape_string($dbConnection,$customerAccountNumber));
 									$transfers->execute();
-									$transfers->bind_result( $transactionReceiver, $transactionSender, $transactionAmont, $transactionTime, $transactionApproved);
+									$transfers->bind_result( $transactionReceiver, $transactionSender, $transactionAmont, $transactionTime, $transactionApproved, $transactionDesc);
 									$transfers->store_result();
 									$i = $begin;
 									while($transfers->fetch())
 									{
 										$i++;
 										echo "<tr>";
-
-										echo "<td>$i</td>";
+										if($transactionApproved == "0")
+											echo "<td><a href=\"#\">$i<span class=\"orange\">".$transactionDesc."</span></a></td>";
+										else if($transactionApproved == "1")
+											echo "<td><a href=\"#\">$i<span class=\"green\">".$transactionDesc."</span></a></td>";
+										else if($transactionApproved == "2")
+											echo "<td><a href=\"#\">$i<span class=\"red\">".$transactionDesc."</span></a></td>";
+										else
+											echo "<td><a href=\"#\">$i<span>".$transactionDesc."</span></a></td>";
+										
 										$customerFullName = $dbConnection->prepare("SELECT customerName FROM Customer INNER JOIN Account WHERE Account.accountOwner = Customer.customerID AND Account.accountNumber LIKE (?)");
 										$customerFullName->bind_param("s", mysqli_real_escape_string($dbConnection, $transactionSender));
 										$customerFullName->execute();
@@ -344,7 +353,6 @@ body {
 							</tfoot>
 						</table>
 					</div>
-
 					<!-- End of body, bottom is Layout -->
 
 				</div>

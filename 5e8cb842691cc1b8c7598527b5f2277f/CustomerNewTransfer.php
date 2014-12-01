@@ -72,10 +72,8 @@ body {
 
 <!-- our CSS -->
 <link href="../css/framework.css" rel="stylesheet">
-
 <script src="../js/jquery-1.11.1.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
-
 <script type="text/javascript">
     var validated = new Array();
     var flag = true;
@@ -85,9 +83,11 @@ body {
         $("#ReceiverIdSpan").hide();
         $("#TransferTokenSpan").hide();
         $("#AmountSpan").hide();
+        $("#DescSpan").hide();
         validated["ReceiverId"] = false;
         validated["TransferToken"] = false;
         validated["Amount"] = false;
+        validated["Desc"] = true;
         <?php
         if (isset($_GET['token'])) {
         	echo "validateElement(document.getElementById('TransferToken'), 'TransferToken');\n";
@@ -95,6 +95,8 @@ body {
 			echo "validateElement(document.getElementById('ReceiverId'), 'ReceiverId');\n";
 		if (isset($_GET['amount']))
 			echo "validateElement(document.getElementById('Amount'), 'Amount');\n";
+	    if (issef($_GET['desc']))
+			echo "validateElement(document.getElementById('Desc'), 'Desc');\n";
         } 
         ?>
     }
@@ -188,6 +190,25 @@ body {
                     validated["TransferToken"] = true;
                 }
             $('#'+e.id+'Span').fadeIn('slow');
+        }// This function is used to validate individual
+    	if(type == "Desc"){
+            if(e.value != ""){
+				if(!e.value.match("^[a-zA-Z0-9 ,.]+$")){
+					$('#'+e.id+'Span').addClass("alert-danger");
+					$('#'+e.id+'Span').removeClass("alert-success");
+					$('#'+e.id+'Span').text("Invalid Description");
+					validated["Desc"] = false;
+				}
+                else{
+                	$('#'+e.id+'Span').addClass("alert-success");
+                    $('#'+e.id+'Span').removeClass("alert-danger");
+                    $('#'+e.id+'Span').text("Check");
+                    validated["Desc"] = true;
+                }
+            $('#'+e.id+'Span').fadeIn('slow');    
+            }
+            else
+				validated["Desc"] = true;
         }
     	else if(type == "Amount"){
             if(e.value == ""){
@@ -217,7 +238,7 @@ body {
 	
     function validateForm(){
         // As the name implies, this function is used to validate form
-        if (validated["ReceiverId"] && validated["TransferToken"] && validated["Amount"]){ 
+        if (validated["ReceiverId"] && validated["TransferToken"] && validated["Amount"] && validated["Desc"]){ 
             $('#submit').prop("disabled", false);
             if(flag){            
                 flag = false;
@@ -413,7 +434,23 @@ body {
 											<span class="alert" id="AmountSpan"> </span>
 										</div>
 									</div>
+									<div class="form-group">
+										<label for="Desc" class="col-sm-2 control-label">Customer Reference</label>
+										<div class="col-sm-6">
+											<?php
+											if(isset($_GET['desc']))
+												echo "<input type=\"text\" class=\"form-control\" id=\"Desc\" placeholder=\"Customer Reference\" name=\"Desc\" onload=\"validateElement(this, 'Desc')\"
+												onblur=\"validateElement(this, 'Desc')\" onkeyup=\"validateElement(this, 'Desc')\" value=\"".htmlspecialchars($_GET['desc'], ENT_QUOTES)."\">";
+											else
+												echo "<input type=\"text\" class=\"form-control\" id=\"Desc\" placeholder=\"Customer Reference\" name=\"Desc\" onload=\"validateElement(this, 'Desc')\"
+												onblur=\"validateElement(this, 'Desc')\" onkeyup=\"validateElement(this, 'Desc')\">";
+											?>
+										</div>
+										<div class="col-sm-4">
+											<span class="alert" id="DescSpan"> </span>
+										</div>
 
+									</div>
 									<div class="form-group">
 										<div class="col-sm-offset-2 col-sm-10">
 											<input type="submit" value="Submit" id="submit"

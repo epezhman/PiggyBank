@@ -52,13 +52,14 @@ function validateInput($input, $type){
     } 
 }
 
-function doTransfer($transactionSender, $transactionReceiver, $transactionAmount, $transactionToken){
+function doTransfer($transactionSender, $transactionReceiver, $transactionAmount, $transactionToken, $transactionDesc){
 	try{
 		global $dbConnection;
 		$transactionSender = mysqli_real_escape_string($dbConnection, $transactionSender);
 		$transactionReceiver = mysqli_real_escape_string($dbConnection, $transactionReceiver);
 		$transcationAmount = mysqli_real_escape_string($dbConnection, $transactionAmount);
 		$transactionToken = mysqli_real_escape_string($dbConnection, $transactionToken);
+		$transactionDesc = mysqli_real_escape_string($dbConnection, $transactionDesc);
 		$approved = false;
 		if($transactionAmount <= 10000 )
 			$approved = true;
@@ -79,8 +80,8 @@ function doTransfer($transactionSender, $transactionReceiver, $transactionAmount
 			$checkAny->close();
 		}
 		// Store the transaction details
-		$transferDB = $dbConnection->prepare("INSERT INTO Transaction VALUES (?,?,?,?,?,?,?)");
-		$transferDB->bind_param("sssssss", mysqli_real_escape_string($dbConnection,$transactionID), $transactionSender, $transactionReceiver, $transcationAmount, mysqli_real_escape_string($dbConnection,date('Y-m-d H:i:s')), $approved, $transactionToken);
+		$transferDB = $dbConnection->prepare("INSERT INTO Transaction VALUES (?,?,?,?,?,?,?,?)");
+		$transferDB->bind_param("ssssssss", mysqli_real_escape_string($dbConnection,$transactionID), $transactionSender, $transactionReceiver, $transcationAmount, mysqli_real_escape_string($dbConnection,date('Y-m-d H:i:s')), $approved, $transactionToken, $transactionDesc);
 		$transferDB->execute();
 		if($transferDB->affected_rows >= 1){
 			// Invalidate the used token
@@ -167,6 +168,7 @@ try{
 						$transactionReceiver = $transaction->{"receiver"};
 						$transactionToken = $transaction->{"token"};
 						$transactionAmount = $transaction->{"amount"};
+						$transactionDesc = $transaction->{"desc"};
 						$transcationSender = "";
 						$transferFlag = true;
 						
@@ -232,7 +234,7 @@ try{
 
 							// All checks done? Carry out the transaction
 							if($transferFlag){
-								if (doTransfer($transactionSender, $transactionReceiver, $transactionAmount, $transactionToken))
+								if (doTransfer($transactionSender, $transactionReceiver, $transactionAmount, $transactionToken, $transactionDesc))
 									echo "Transaction Successful.<br/>";
 								else{
 									$transactionStatuses = $transactionStatuses."{\"".$transactionReceiver."\":\"Error Encountered.\"}, ";

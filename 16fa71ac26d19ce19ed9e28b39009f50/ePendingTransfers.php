@@ -23,6 +23,7 @@ body {
 
 <!-- our CSS -->
 <link href="../css/framework.css" rel="stylesheet">
+<link href="../css/tooltips.css" rel="stylesheet">
 
 </head>
 <?php
@@ -122,6 +123,7 @@ if($_SESSION["userrole"] != "employee"){
                         <table class="table table-striped table-hover ">
                             <thead>
                                 <tr>
+									<th>#</th>
                                     <th>Sender</th>
                                     <th>Sender Account</th>
                                     <th>Receiver</th>
@@ -202,16 +204,27 @@ if($_SESSION["userrole"] != "employee"){
 		}*/
 
                 try{
-                                                                
-                       $transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionSender, transactionAmount, transactionTime, transactionApproved,A1.accountNumber,A2.accountNumber,A1.accountOwner,A2.accountOwner,transactionID  FROM Transaction, Account A1, Account A2 WHERE transactionSender=A1.accountNumber AND transactionReceiver=A2.accountNumber AND (transactionApproved=0) AND transactionAmount>10000 ");
+                       $t = 0;                                        
+                       $transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionSender, transactionAmount, transactionTime, transactionApproved, transactionDesc, A1.accountNumber,A2.accountNumber,A1.accountOwner,A2.accountOwner,transactionID  FROM Transaction, Account A1, Account A2 WHERE transactionSender=A1.accountNumber AND transactionReceiver=A2.accountNumber AND (transactionApproved=0) AND transactionAmount>10000 ");
                        $transfers->execute();
-                       $transfers->bind_result( $transactionReceiver, $transactionSender, $transactionAmont, $transactionTime, $transactionApproved, $accountNrSender, $accountNrReceiver,$accountOwnerSender,$accountOwnerReceiver,$transID);
+                       $transfers->bind_result( $transactionReceiver, $transactionSender, $transactionAmont, $transactionTime, $transactionApproved, $transactionDesc, $accountNrSender, $accountNrReceiver,$accountOwnerSender,$accountOwnerReceiver,$transID);
                        $transfers->store_result();
                                 
                         while($transfers->fetch())
                         {
                                                                                 
                         echo "<tr>";
+                 
+						if($transactionApproved == "0")
+							echo "<td><a href=\"#\">$t<span class=\"orange\">".$transactionDesc."</span></a></td>";
+						else if($transactionApproved == "1")
+							echo "<td><a href=\"#\">$t<span class=\"green\">".$transactionDesc."</span></a></td>";
+						else if($transactionApproved == "2")
+							echo "<td><a href=\"#\">$t<span class=\"red\">".$transactionDesc."</span></a></td>";
+						else
+							echo "<td><a href=\"#\">$t<span>".$transactionDesc."</span></a></td>";
+						$t++;
+                        
                         $customerFullName = $dbConnection->prepare("SELECT customerName FROM Customer WHERE customerID=?");
                         $customerFullName->bind_param("s", mysqli_real_escape_string($dbConnection, $accountOwnerSender));
                         $customerFullName->execute();

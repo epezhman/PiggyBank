@@ -25,7 +25,7 @@ body {
 
     <!-- our CSS -->
     <link href="../css/framework.css" rel="stylesheet">
-
+    <link href="../css/tooltips.css" rel="stylesheet">
 </head>
 <?php
     ob_start();
@@ -124,14 +124,14 @@ body {
                         <table class="table table-striped table-hover ">
                             <thead>
                                 <tr>
+									 <th>#</th>
                                      <th>Sender</th>
                                     <th>Sender Account</th>
                                     <th>Receiver</th>
                                     <th>Receiver Account</th>
                                     <th>Amount (€)</th>
-                 
                                     <th>Submit Date</th>
-                                    <th>Description</th>
+                                    <th>Status</th>
                                 </tr>
                             </thead>
 
@@ -139,18 +139,28 @@ body {
 		
 	<tbody>
 	 <?php							
-                  try{
-                                                                
-                       $transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionSender, transactionAmount, transactionTime, transactionApproved,A1.accountNumber,A2.accountNumber,A1.accountOwner,A2.accountOwner  FROM Transaction, Account A1, Account A2 WHERE transactionSender=A1.accountNumber AND transactionReceiver=A2.accountNumber AND (transactionApproved=1 OR transactionApproved=2) ORDER BY Transaction.transactionTime DESC");
-                       $transfers->execute();
-                       $transfers->bind_result( $transactionReceiver, $transactionSender, $transactionAmont, $transactionTime, $transactionApproved, $accountNrSender, $accountNrReceiver,$accountOwnerSender,$accountOwnerReceiver);
-                       $transfers->store_result();
-                      		
+	  try{
+													
+		   $transfers = $dbConnection->prepare("SELECT transactionReceiver, transactionSender, transactionAmount, transactionTime, transactionApproved, transactionDesc, A1.accountNumber,A2.accountNumber,A1.accountOwner,A2.accountOwner  FROM Transaction, Account A1, Account A2 WHERE transactionSender=A1.accountNumber AND transactionReceiver=A2.accountNumber AND (transactionApproved=1 OR transactionApproved=2) ORDER BY Transaction.transactionTime DESC");
+		   $transfers->execute();
+		   $transfers->bind_result( $transactionReceiver, $transactionSender, $transactionAmont, $transactionTime, $transactionApproved, $transactionDesc, $accountNrSender, $accountNrReceiver,$accountOwnerSender,$accountOwnerReceiver);
+		   $transfers->store_result();
+            $t = 1;
 			while($transfers->fetch())
 			{
 										
 			echo "<tr>";
-                        $customerFullName = $dbConnection->prepare("SELECT customerName FROM Customer WHERE customerID=?");
+			if($transactionApproved == "0")
+				echo "<td><a href=\"#\">$t<span class=\"orange\">".$transactionDesc."</span></a></td>";
+			else if($transactionApproved == "1")
+				echo "<td><a href=\"#\">$t<span class=\"green\">".$transactionDesc."</span></a></td>";
+			else if($transactionApproved == "2")
+				echo "<td><a href=\"#\">$t<span class=\"red\">".$transactionDesc."</span></a></td>";
+			else
+				echo "<td><a href=\"#\">$t<span>".$transactionDesc."</span></a></td>";
+			$t++;
+
+			$customerFullName = $dbConnection->prepare("SELECT customerName FROM Customer WHERE customerID=?");
 			$customerFullName->bind_param("s", mysqli_real_escape_string($dbConnection, $accountOwnerSender));
 			$customerFullName->execute();
 			$customerFullName->bind_result($nameSender);
@@ -203,7 +213,6 @@ body {
 				echo "<td><span class=\"label label-danger\"><span
 				class=\"glyphicon glyphicon-remove\"></span> Rejected</span></td>";
 			}
-
 				echo "</tr>";
 			}
 
