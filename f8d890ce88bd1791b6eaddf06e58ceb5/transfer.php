@@ -20,7 +20,7 @@
 	require_once("utils.php");
 	require_once("dbconnect.php");
         // Check for the CSRF token
-        if(!isset($_POST["csrfToken"]) or ($_POST["csrfToken"] != $_SESSION["csrfToken"])){
+        if(!isset($_COOKIE["csrfToken"]) or ($_COOKIE["csrfToken"] != $_SESSION["csrfToken"])){
            header("Location: ../error.php?id=403");
            exit();
         }
@@ -132,7 +132,6 @@ try{
 	if (strpos(getenv("HTTP_REFERER"), "/PiggyBank/5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php") === false)
 		header("Location: ../error.php?id=404");
 			
-			// TODO: Add a re-authentication here or a CSRF Token
 	$_SERVER["HTTP_REFERER"] = "/PiggyBank/5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php";
 
 	// Retrieve and validate posted parameters
