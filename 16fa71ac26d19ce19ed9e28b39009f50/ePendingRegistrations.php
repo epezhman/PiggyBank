@@ -288,9 +288,11 @@ function generateTokens($custID){
 
 	if(isset($_POST['approve'])){
 		$var = $_POST['approve']; 
-                $balance_value = $_POST['balance']; 
+                $balance_value = $_POST['balance'.$var]; 
 			// This is insecure (SQL Injection hazard). Someone might set this "approve" variable to a SQL query string
-			$dbConnection->query("UPDATE User SET userApproved=1 WHERE User.userUsername='$var'")or die(mysql_error());
+                        $approveStmt = $dbConnection->prepare("UPDATE User SET userApproved=1 WHERE User.userUsername LIKE (?)");
+                        $approveStmt->bind_param("s", mysqli_real_escape_string($dbConnection, $var));
+                        $approveStmt->execute();
 
 			// Generate tokens and email customer
 			// 1- Retrieve customer details based on username
@@ -309,8 +311,8 @@ function generateTokens($custID){
 				}
 			 }
 			$updateBalanceStmt = $dbConnection->prepare("UPDATE Account SET accountBalance=? WHERE accountOwner LIKE (?)");
-            $updateBalanceStmt->bind_param("ss", mysqli_real_escape_string($dbConnection, $balance_value), mysqli_real_escape_string($dbConnection, $customerID));
-            $updateBalanceStmt->execute();
+                        $updateBalanceStmt->bind_param("ss", mysqli_real_escape_string($dbConnection, $balance_value), mysqli_real_escape_string($dbConnection, $customerID));
+                        $updateBalanceStmt->execute();
 			
 if($customerMethod == 1)
 {
@@ -356,7 +358,7 @@ else if($customerMethod == 2)
 	echo '<td style="width:23%" >' . $row[0]. '</td>';
 	echo '<td style="width:18%" >' . $row[1]. '</td>';
 	echo '<td style="width:23%" >' . $row[2]. '</td>';
-	echo '<td  style="width:23%"><input type="text"  name="balance"/></td>';
+	echo '<td  style="width:23%"><input type="text" id="balance" name="balance'.$row[0].'"></td>';
 	echo '<td>';
 	echo '<button  type="submit" name="remove"  class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' .$row[0]. '>
 				  <span class="glyphicon glyphicon-remove"></span>
@@ -365,9 +367,9 @@ else if($customerMethod == 2)
 				  <button type="submit"  name="approve"  class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve" value=' .$row[0]. '>
 				  <span class="glyphicon glyphicon-ok"></span>
 				   </button>';
-        echo '<input id="csrfToken" type="hidden" name="csrfToken" value="'.$_SESSION["csrfToken"].'">';
 	echo '</td>';
 	}
+        echo '<input id="csrfToken" type="hidden" name="csrfToken" value="'.$_SESSION["csrfToken"].'">';
 ?>	
 		</tbody>
 		</table>
