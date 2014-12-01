@@ -316,7 +316,7 @@ if($customerMethod == 1)
 {
 			// Generate TAN's
 			$customerTokens = generateTokens($customerID);
-			$eMessage = "Dear Customer,\n\nThank you for choosing PiggyBank GmbH.\n\nYour online banking account is now activated.\n\nAttached are your generated TAN's that you can use to transfer money via our online banking system.\n\n Please use your account number and date of birth [YYYY-MM-DD] to unlock the attached file.\n\nSincerely,\nYour PiggyBank GmbH";
+			$eMessage = "Dear Customer,\n\nThank you for choosing PiggyBank GmbH.\n\nYour online banking account is now activated.\n\nAttached are your generated TAN's that you can use to transfer money via our online banking system.\n\n Please use your account number and date of birth [YYYY-MM-DD] to unlock the attached file, for example: PG000000001970-01-01.\n\nSincerely,\nYour PiggyBank GmbH";
 			// Retrieve user secret answer
 			$passphraseStmt = $dbConnection->prepare("SELECT customerDOB, accountNumber FROM Customer,Account WHERE Customer.customerID = Account.accountOwner AND Customer.customerID LIKE (?)");
 			$passphraseStmt->bind_param("s", $customerID);
