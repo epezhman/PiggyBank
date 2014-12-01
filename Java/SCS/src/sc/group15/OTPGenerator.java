@@ -6,6 +6,7 @@ import java.util.Random;
 public class OTPGenerator {
 
 	private static int lastRand = -1;
+	private static int cntr = 0;
 
 	public static String Generate(String PIN, String amount, String account) {
 		try {
@@ -52,7 +53,10 @@ public class OTPGenerator {
 
 		} catch (Exception e) {
 			// return "";
-			return Generate(PIN, amount, account);
+			cntr++;
+			if (cntr < 10)
+				return Generate(PIN, amount, account);
+			else return "";
 		}
 	}
 }
