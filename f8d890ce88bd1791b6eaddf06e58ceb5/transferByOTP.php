@@ -115,7 +115,7 @@
 	}
 
 	function validateInput($input, $type){
-		$regExpressions =  array("ReceiverId"=>"^[a-zA-Z0-9]+$", "TransferToken"=>"^[a-zA-Z0-9]+$", "Amount"=>"^[0-9.]+$");
+		$regExpressions =  array("ReceiverId"=>"^[a-zA-Z0-9]+$", "TransferToken"=>"^[a-zA-Z0-9]+$", "Amount"=>"^[0-9.]+$", "Desc"=>"^[a-zA-Z0-9 ,.]*$");
 		try{
 			if (ereg($regExpressions[$type], $input))
 				return true;
