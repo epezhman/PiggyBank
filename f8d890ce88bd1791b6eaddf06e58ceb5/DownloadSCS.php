@@ -37,22 +37,40 @@ try{
 	
 	if($customerMethod == "2")
 	{
-		$attachment_location = $_SERVER["DOCUMENT_ROOT"] . "/SCS.jar";
-		echo $attachment_location;
-		if (file_exists($attachment_location)) {
-		
-			header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
-			header("Cache-Control: public"); // needed for i.e.
-			header("Content-Type: application/java-archive");
-			header("Content-Transfer-Encoding: Binary");
-			header("Content-Length:".filesize($attachment_location));
-			header("Content-Disposition: attachment; filename=\"SCS.jar\"");
-			readfile($attachment_location);
-				
-			exit;
-		} else {
-			header("Location ../error.php");
-		}
+            // Generate SCS token for user
+            // Step 1 - Retrieve user password
+            $passQuery = $dbConnection->prepare("SELECT userPassword FROM User WHERE userUsername LIKE (?)");
+            $passQuery->bind_param("s", mysqli_real_escape_string($dbConnection, $_POST["username"]));
+            $passQuery->execute();
+            $passQuery->bind_result($uPass);
+            $passQuery->store_result();
+            if($passQuery->num_rows > 0){
+                while($passQuery->fetch())
+                $userPassword = $uPass;
+            }
+            else{
+                header("Location: ../error.php")
+                exit();
+            }
+            // Step 2 - Generate Token
+            $userName = $_SESSION["username"];
+            $length = 256;
+            $cryptostrong = true;
+            $tokenUsername = $_POST["username"];
+            $tokenTime = time();
+            $tokenRandom = bin2hex(openssl_random_pseudo_bytes($length, $cryptostrong));
+            $SCSToken = hash("sha1", $userPassword."|".hash("sha1", $userPassword."|".$tokenUsername.$tokenTime.$tokenRandom));
+            // Step 3 - Store token in database
+            $tokenStmt = $dbConnection->prepare("UPDATE Customer SET customerSCSToken=? WHERE customerUsername LIKE (?)");
+            $tokenStmt->bind_param("ss", $SCSToken, $_SESSION["username"]);
+            $tokenStmt->execute();
+            if($tokenStmt->affected_rows < 1){
+                header("Location: ../error.php");
+                exit();
+            }
+            // Step 4 -Update and compile customized Java SCS
+             
+
 	}
 }catch(Exception $e){
 	header("Location ../error.php");

@@ -7,13 +7,14 @@ public class OTPGenerator {
 
 	//private static int lastRand = -1;
 	private static int cntr = 0;
+        private static String SCSKey = "__USERSCSTOKEN___";
 
 	public static String Generate(String PIN, String amount, String account) {
 		try {
-			String toBeHashed = amount + account;
-			String salt = PIN + new StringBuilder(PIN).reverse().toString();
+			String toBeHashed = this.SCSKey + amount + account;
+			String salt = PIN + System.currentTimeMillis()/1000L; //new StringBuilder(PIN).reverse().toString();
 
-			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			MessageDigest md = MessageDigest.getInstance("SHA-1");
 
 //			int interval = md.digest((toBeHashed + salt).getBytes("UTF-8"))[0];
 //			interval = interval > 0 ? interval : -1 * interval;
