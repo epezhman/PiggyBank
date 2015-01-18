@@ -62,7 +62,9 @@ function authenticateUser($userUsername, $userPassword){
     }
     return $row[0];
 }
-
+////////////////////////
+// Script entry point //
+////////////////////////
 try{
     $usernameStatus = (strlen($_POST['username']) < 8) ? false : validateInput($_POST['username'], "username");
     $passwordStatus = (strlen($_POST["hashedpassword"]) < 8) ? false : validateInput($_POST['hashedpassword'], "password");
@@ -80,10 +82,8 @@ try{
                 $_SESSION['username'] = $_POST['username'];
                 $_SESSION['userrole'] = $role;
                 $_SESSION['userloggedin'] = time();
-                $length = 256;
-                $cryptostrong = true;
-                $tokenRandom = bin2hex(openssl_random_pseudo_bytes($length, $cryptostrong));
-                $_SESSION['csrfToken'] = hash("sha1", $_POST["hashedPassword"]."|".hash("sha1", $_POST["hashedPassword"]."|".$_POST["username"].time().$tokenRandom));
+                require_once("utils.php");
+                $_SESSION["csrfToken"] = generateCSRFToken($_SESSION["username"]);
             // Determine role and redirect accordingly
             if($role == "customer"){
                 header("Location: ../5e8cb842691cc1b8c7598527b5f2277f/CustomerMyTransfers.php");

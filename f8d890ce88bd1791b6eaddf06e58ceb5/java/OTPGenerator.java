@@ -13,36 +13,12 @@ public class OTPGenerator {
 		try {
 			String toBeHashed = OTPGenerator.SCSKey + amount + account;
 			String salt = PIN + System.currentTimeMillis()/1000L; //new StringBuilder(PIN).reverse().toString();
-
 			MessageDigest md = MessageDigest.getInstance("SHA-1");
-
-//			int interval = md.digest((toBeHashed + salt).getBytes("UTF-8"))[0];
-//			interval = interval > 0 ? interval : -1 * interval;
-//			interval = interval % 15;
-//			boolean flag = true;
-//			do {
-//				interval = new Random().nextInt(interval);
-//				if (interval != lastRand) {
-//					lastRand = interval;
-//					flag = false;
-//				}
-//
-//			} while (flag);
 
 			md.reset();
 			byte byteData[] = md.digest((toBeHashed + salt).getBytes("UTF-8"));
 
 			StringBuffer sb = new StringBuffer();
-//			for (int i = 0; i < interval; i++) {
-//				sb = new StringBuffer();
-//				for (int j = 0; j < byteData.length; j++) {
-//					sb.append(Integer
-//							.toString((byteData[j] & 0xff) + 0x100, 16)
-//							.substring(1));
-//				}
-//				md.reset();
-//				byteData = md.digest(sb.toString().getBytes("UTF-8"));
-//			}
 
 			sb = new StringBuffer();
 			for (int i = 0; i < byteData.length; i++) {

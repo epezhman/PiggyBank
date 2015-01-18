@@ -89,15 +89,17 @@ function registerCustomer(){
             $customerAddress = mysqli_real_escape_string($dbConnection, $_POST['address']);
             $accountID = "PB".getRandomNumber();
             $accountBalance = 0;//rand(0,15000); // Initialize the customer account with a zero balance
+            $PIN = mysqli_real_escape_string($dbConnection, $PIN);
+            $dummy = "bla";
             // Prepare the SQL statements
             $availableStmt = $dbConnection->prepare("SELECT userUsername FROM User WHERE userUsername LIKE (?)");
             $userStmt = $dbConnection->prepare("INSERT INTO User VALUES (?,?,?,0,?,?)");
-            $customerStmt = $dbConnection->prepare("INSERT INTO Customer VALUES (?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?)");
+            $customerStmt = $dbConnection->prepare("INSERT INTO Customer VALUES (?,?,STR_TO_DATE(?,'%d/%m/%Y'),?,?,?,?,?,?)");
             $accountStmt = $dbConnection->prepare("INSERT INTO Account VALUES (?,?,0,?)");
             // Bind parameters
             $availableStmt->bind_param("s", $userUsername);
             $userStmt->bind_param("sssss", $userUsername, $userPassword, $userRole, $userSecurityQuestion, $userSecurityAnswer);
-            $customerStmt->bind_param("sssssssi",$customerID, $customerName, $customerDOB, $customerEmail, $customerAddress, $userUsername, $PIN, $secMethod);
+            $customerStmt->bind_param("sssssssis",$customerID, $customerName, $customerDOB, $customerEmail, $customerAddress, $userUsername, $PIN, $secMethod, $dummy); 
             $accountStmt->bind_param("ssi", $accountID, $customerID, $accountBalance);
             // Execute the statements
             // 1- Check if username is already taken

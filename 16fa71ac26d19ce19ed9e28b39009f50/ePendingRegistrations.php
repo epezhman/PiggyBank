@@ -352,6 +352,8 @@ else if($customerMethod == 2)
 }
 		}
 	// Populate the table of pending requests	           
+        require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/utils.php");
+        $_SESSION["csrfToken"] = generateCSRFToken($_SESSION["username"]);
 	$result = $dbConnection->query("select User.userUsername,Customer.customerDOB,Customer.customerAddress,Account.accountType,Account.accountBalance,Customer.customerEmail,Customer.customerID  from User,Customer,Account where User.userUsername=Customer.customerUsername and User.userApproved=0 and Account.accountOwner= Customer.customerID") or die(mysql_error());
 	while($row = mysqli_fetch_row($result)){
 	echo '<tr>';
@@ -368,8 +370,9 @@ else if($customerMethod == 2)
 				  <span class="glyphicon glyphicon-ok"></span>
 				   </button>';
 	echo '</td>';
+        // Generate a new CSRF Token
+        echo '<tr><td colspan="5"><input id="csrfToken" type="hidden" name="csrfToken" value="'.$_SESSION["csrfToken"].'"></td></tr>';
 	}
-        echo '<input id="csrfToken" type="hidden" name="csrfToken" value="'.$_SESSION["csrfToken"].'">';
 ?>	
 		</tbody>
 		</table>
