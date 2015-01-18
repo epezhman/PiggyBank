@@ -158,9 +158,13 @@
 			if(!empty($parsedTransactions)){
 				$transactionStatuses = "{\"transactions\": [";
 				// Carry out the transfers
+				
 				$allTransactions = json_decode($parsedTransactions);
+				
+				
 				// Iterate over transactions and carry them out
 				foreach($allTransactions->{"transactions"} as $transaction){
+					
 					$transactionReceiver = $transaction->{"receiver"};
 					$transactionToken = $transaction->{"token"};
 					$transactionAmount = $transaction->{"amount"};

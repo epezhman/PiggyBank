@@ -67,7 +67,16 @@ body {
 		header("Location: ../error.php?id=404");
 		exit();
 	}
-
+	
+	// Check for CSRF attempts
+	if(count($_POST) > 0){
+		// If there is something being POSTed to the page
+		if(!isset($_POST["csrfToken"]) or ($_POST["csrfToken"] != $_SESSION["csrfToken"]))
+		{
+			header("Location: ../error.php?id=404");
+			exit();
+		}
+	}
 ?>
 	<div class="container-fluid">
             <div class="row">
@@ -225,9 +234,12 @@ function sendEmail($eAddress, $eSubject, $eMessage){
 				  <button type="submit"  name="approve"  class="btn btn-primary btn-xs" data-toggle="tooltip" title="Approve" value=' .$row[0]. '>
 				  <span class="glyphicon glyphicon-ok"></span>
 				   </button>';
+	echo '<input id="csrfToken" type="hidden" name="csrfToken" value="'.$_SESSION["csrfToken"].'">';
+	
 	echo '</form>';
 	echo '</td>';
 	}
+		
 ?>	
 		</tbody>
 		</table>
