@@ -211,7 +211,8 @@ if($_SESSION["userrole"] != "employee"){
                        $transfers->execute();
                        $transfers->bind_result( $transactionReceiver, $transactionSender, $transactionAmont, $transactionTime, $transactionApproved, $transactionDesc, $accountNrSender, $accountNrReceiver,$accountOwnerSender,$accountOwnerReceiver,$transID);
                        $transfers->store_result();
-                                
+                        require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/utils.php");        
+                        $_SESSION["csrfToken"] = generateCSRFToken($_SESSION["username"]);
                         while($transfers->fetch())
                         {
                                                                                 
@@ -232,43 +233,27 @@ if($_SESSION["userrole"] != "employee"){
                         $customerFullName->execute();
                         $customerFullName->bind_result($nameSender);
                         $customerFullName->store_result();
-                                                                                        
-                                                                                        
                         while($customerFullName->fetch())
                         {
                                 echo "<td>$nameSender</td>";
                         }
-
                         $customerFullName->free_result();
                         $customerFullName->close();
-                                                                                
-                                                                                
                         echo "<td>$transactionSender</td>";
-
-                        
-
                         $customerFullName = $dbConnection->prepare("SELECT customerName FROM Customer WHERE customerID=?");
                         $customerFullName->bind_param("s", mysqli_real_escape_string($dbConnection, $accountOwnerReceiver));
                         $customerFullName->execute();
                         $customerFullName->bind_result($nameReceiver);
                         $customerFullName->store_result();
-                                                                                        
-                                                                                        
                         while($customerFullName->fetch())
                         {
                                 echo "<td>$nameReceiver</td>";
                         }
-                                                                                        
                         $customerFullName->free_result();
                         $customerFullName->close();
-                                                                                
-                                                                                
                         echo "<td>$transactionReceiver</td>";
-
                         echo "<td>$transactionAmont</td>";
-
                         echo "<td>$transactionTime</td>";
-
                         echo '<td>';
                         echo '<form method="post" action="ePendingTransfers.php">';
                         echo '<button  type="submit" name="remove" id="remove" class="btn btn-default btn-xs" data-toggle="tooltip" title="Remove" value=' . $transID. '>

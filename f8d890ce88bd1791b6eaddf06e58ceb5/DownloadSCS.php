@@ -101,6 +101,8 @@ try{
                 ob_clean();
                 flush();
                 readfile($JARFile);
+                // Remove it
+                unlink($JARFile);
                 exit;
             }
             else{

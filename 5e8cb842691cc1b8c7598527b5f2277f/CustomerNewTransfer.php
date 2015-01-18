@@ -509,7 +509,7 @@ body {
 											}
 											if(isset($_SESSION["invInvalidOTPass"]))
 											{
-												echo "Provided OTP is not valid.  ";
+												echo "Provided OTP has expired or invalid.";
 											}
 											echo "</span>";
 

@@ -134,7 +134,6 @@
 		if (strpos(getenv("HTTP_REFERER"), "/PiggyBank/5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php") === false)
 			header("Location: ../error.php?id=404");
 			
-		// TODO: Add a re-authentication here or a CSRF Token
 		$_SERVER["HTTP_REFERER"] = "/PiggyBank/5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php";
 
 		// Retrieve and validate posted parameters
@@ -178,10 +177,10 @@
 			$transferFlag = false;
 		}
 
-		$customerInfo = $dbConnection->prepare("SELECT customerPIN, customerTransferSecurityMethod FROM Customer WHERE customerUsername LIKE (?)");
+		$customerInfo = $dbConnection->prepare("SELECT customerPIN, customerTransferSecurityMethod, customerSCSToken FROM Customer WHERE customerUsername LIKE (?)");
 		$customerInfo->bind_param("s", mysqli_real_escape_string($dbConnection,$_SESSION['username']));
 		$customerInfo->execute();
-		$customerInfo->bind_result($pin, $cMethod);
+		$customerInfo->bind_result($pin, $cMethod, $scsToken);
 		$customerInfo->store_result();
 
 		if($customerInfo->num_rows() == 1)
@@ -190,6 +189,7 @@
 			{
 				$customerPIN = $pin;
 				$customerMethod = $cMethod;
+                                $customerSCSToken = $scsToken;
 			}
 		}
 		$customerInfo->free_result();
@@ -197,46 +197,32 @@
 
 		if($receiverAccount and $transferToken and $amount){
 			$tokenStatus = 0;
-
-			if($customerMethod == "2")
-			{
-				$toBeHashed = trim($amount) . trim($receiverAccount);
-				
+			if($customerMethod == "2"){
+				$toBeHashed = $customerSCSToken.trim($amount).trim($receiverAccount);
 				$customerPIN = openssl_decrypt($customerPIN, "AES-128-CBC", "SomeVeryCrappyPassword?!!!WithNum2014");
-				
-				$salt = $customerPIN . strrev($customerPIN);
-					
-				$firstHash =  hash('sha256', $toBeHashed.$salt);
-					
-				$checkFlag = true;
-				
-				if($firstHash == trim($transferToken) )
-					$checkFlag= false;
-				
-// 				for($i = 0 ; $i < 15 && $checkFlag ; $i++)
-// 				{
-// 					$firstHash =  hash('sha256', $firstHash);
-// 					if($firstHash == trim($transferToken) )
-// 						$checkFlag= false;
-// 				}
-					
-				if($checkFlag)
-				{
-					$tokenStatus = 1;
+                                $timeMinRange = time() - 15;
+                                $timeMaxRange = time() + 15;
+                                $t = $timeMinRange;
+				$salt = $customerPIN.$t;
+			        $checkFlag= false;
+                                while($t<=$timeMaxRange){
+                                    if(hash("sha1", $toBeHashed.$salt) == $transferToken)
+                                        $checkFlag = true;
+                                    $t = $t + 1; // increment the timestamp
+                                    $salt = $customerPIN.$t; // update the salt
+                                }
+				if($checkFlag){
+			            $tokenStatus = 1;
 				}
 			}
-			else
-			{
-				$tokenStatus = 1;
+			else{
+			    $tokenStatus = 0;
 			}
-			
-
 			// Check if that particular otp is valid
-			if($tokenStatus == 1){
+			if($tokenStatus == 0){
 				$_SESSION["invInvalidOTPass"] = true;
 				$transferFlag = false;
 			}
-
 
 			// Retrieve the accountNumber of the receiver, if they exist.
 			$accountExistQuery = $dbConnection->prepare("SELECT accountBalance FROM Account WHERE accountNumber LIKE (?) ");

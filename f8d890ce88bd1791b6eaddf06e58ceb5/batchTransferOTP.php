@@ -192,10 +192,10 @@
 						$transferFlag = false;
 					}
 					
-					$customerInfo = $dbConnection->prepare("SELECT customerPIN, customerTransferSecurityMethod FROM Customer WHERE customerUsername LIKE (?)");
+					$customerInfo = $dbConnection->prepare("SELECT customerPIN, customerTransferSecurityMethod, customerSCSToken FROM Customer WHERE customerUsername LIKE (?)");
 					$customerInfo->bind_param("s", mysqli_real_escape_string($dbConnection,$_SESSION['username']));
 					$customerInfo->execute();
-					$customerInfo->bind_result($pin, $cMethod);
+					$customerInfo->bind_result($pin, $cMethod, $scsToken);
 					$customerInfo->store_result();
 					
 					if($customerInfo->num_rows() == 1)
@@ -204,6 +204,7 @@
 						{
 							$customerPIN = $pin;
 							$customerMethod = $cMethod;
+                                                        $customerSCSToken = $scsToken;
 						}
 					}
 					$customerInfo->free_result();
@@ -211,49 +212,33 @@
 					
 					if($transactionReceiver and $transactionToken and $transactionAmount){
 						$tokenStatus = 0;
-							
-
-						if($customerMethod == "2")
-						{
-							$toBeHashed = trim($transactionAmount) . trim($transactionReceiver);
-
+						if($customerMethod == "2"){
+							$toBeHashed = $customerSCSToken.trim($transactionAmount).trim($transactionReceiver);
 							$customerPIN = openssl_decrypt($customerPIN, "AES-128-CBC", "SomeVeryCrappyPassword?!!!WithNum2014");
-
-							$salt = $customerPIN . strrev($customerPIN);
-								
-							$firstHash =  hash('sha256', $toBeHashed.$salt);
-								
-							$checkFlag = true;
-							
-							if($firstHash == trim($transactionToken) )
-								$checkFlag= false;
-							
-// 							for($i = 0 ; $i < 16 && $checkFlag ; $i++)
-// 							{
-// 								$firstHash =  hash('sha256', $firstHash);
-// 								if($firstHash == trim($transactionToken) )
-// 									$checkFlag= false;
-// 							}
-								
-							if($checkFlag)
-							{
-								$tokenStatus = 1;
+                                                        $timeMinRange = time() - 15;
+                                                        $timeMaxRange = time() + 15;
+                                                        $t = $timeMinRange;
+							$salt = $customerPIN.$t;
+                                                        $checkFlag = false;
+                                                        while($t<=$timeMaxRange){
+                                                            if(hash('sha1', $toBeHashed.$salt) == $transactionToken)
+							        $checkFlag = true;
+							    $t = $t + 1;
+                                                            $salt = $customerPIN.$t;
+                                                        }
+							if($checkFlag){
+							    $tokenStatus = 1;
 							}
-							//$tokenStatus = 0;
 						}
-						else
-						{
-							$tokenStatus = 1;
+						else{
+							$tokenStatus = 0;
 						}
 						// Check if that particular token is valid
-						if($tokenStatus == 1){
+						if($tokenStatus == 0){
 							//$_SESSION["invUsedToken"] = true;
 							$transactionStatuses = $transactionStatuses."{\"".$transactionReceiver."\":\"Invalid Token.\"}, ";
 							$transferFlag = false;
-						}
-
-							
-							
+						}	
 							
 						// Retrieve the accountNumber of the receiver, if they exist.
 						$accountExistQuery = $dbConnection->prepare("SELECT accountBalance FROM Account WHERE accountNumber LIKE (?) ");
