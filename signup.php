@@ -154,18 +154,24 @@ body {
                 $('#'+e.id+'span').html("A username is required");
                 validated["username"] = false;
             }
-            else
-                if(!e.value.match("^[a-zA-Z0-9_.]+$")){
-                    $('#'+e.id+'span').css("background","#CC0000");
-                    $('#'+e.id+'span').html("Invalid username");
-                    validated["username"] = false;
-                }
-                else{
-                    $('#'+e.id+'span').css("background","#00CC00");
-                    $('#'+e.id+'span').html("Check");
-                    validated["username"] = true;
-                }
-            $('#'+e.id+'span').fadeIn('slow');
+            else{ // Non-empty username field
+                   if(e.value.length<8){
+                        $('#'+e.id+'span').css("background","#CC0000");
+                        $('#'+e.id+'span').html("Can't be less than 8 characters");
+                        validated["username"] = false;
+                    } 
+                    else if(e.value.length >= 8 && e.value.match("^[a-zA-Z0-9_.]+$")){
+                        $('#'+e.id+'span').css("background","#00CC00");
+                        $('#'+e.id+'span').html("Strong Password");
+                        validated["username"] = true;
+                    }
+                    else{
+                       $('#'+e.id+'span').css("background","#CC0000");
+                       $('#'+e.id+'span').html("Invalid Username. Only Numbers, letters, '.', '_' are allowed.");
+                       validated["Username"] = false;
+                   }
+            } 
+                  $('#'+e.id+'span').fadeIn('slow'); 
       }
     else if(type=="password"){
             if(e.value == ""){
@@ -175,7 +181,7 @@ body {
             }
             else{ // Non-empty password field
                    if(e.value.length<10){
-                                        $('#'+e.id+'span').css("background","#CC0000");
+                        $('#'+e.id+'span').css("background","#CC0000");
                         $('#'+e.id+'span').html("Can't be less than 10 characters");
                         validated["password"] = false;
                     } 

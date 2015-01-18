@@ -64,7 +64,7 @@ function authenticateUser($userUsername, $userPassword){
 }
 
 try{
-    $usernameStatus = validateInput($_POST['username'], "username");
+    $usernameStatus = (strlen($_POST['username']) < 8) ? false : validateInput($_POST['username'], "username");
     $passwordStatus = (strlen($_POST["hashedpassword"]) < 8) ? false : validateInput($_POST['hashedpassword'], "password");
     // If validation succeeds, add user to database
     if($usernameStatus and $passwordStatus){
