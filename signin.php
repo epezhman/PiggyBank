@@ -169,19 +169,22 @@ body {
 								echo "<td><span id=\"usernamespan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>
 									</tr><tr>
 										<td style=\"padding: 10px 0px;\"><label for=\"password\">Password</label></td>
-										<td><input class=\"form-control\" id=\"password\" name=\"password\" type=\"password\" style=\"width: 200px\" onblur=\"validateElement(this, 'password')\" onkeyup=\"validateElement(this, 'password')\"></td>
+										<td><input class=\"form-control\" id=\"password\" name=\"password\" type=\"password\" style=\"width: 200px\" onblur=\"validateElement(this, 'password')\" onkeyup=\"validateElement(this, 'password')\" required></td>
 										<td><span id=\"passwordspan\" class=\"btn btn-primary\" style=\"background: #CC0000; border: #FFFFFF;\">default</span></td>
 									</tr><tr>
 										<td style=\"padding: 10px 0px;\"></td>
-										<td><input class=\"form-control\" id=\"hashedpassword\" name=\"hashedpassword\" type=\"hidden\" value=\"\"></td>
+										<td><input class=\"form-control\" id=\"hashedpassword\" name=\"hashedpassword\" type=\"hidden\" value=\"\" required></td>
 										<td></td>
-									</tr>
-									<tr>";
-								if(isset($_GET["failure"]))
-									echo "<tr><td colspan=\"3\" align=\"center\"><span id=\"errormsgspan\" name=\"errormsgspan\" style=\"border: 2px solid; border-radius: 25px; padding: 10px 10px; background-color: #FFCCCC; color: #800000; border-color:#800000;\">Invalid username and/or password.</span></td></tr>
-								<tr><td colspan=\"3\" align=\"right\"><input type=\"submit\" value=\"Sign in\" id=\"submit\" class=\"btn btn-primary\" disabled/></td></tr>";
-								else
-									echo "<td align=\"right\" colspan=\"3\"><input type=\"submit\" value=\"Sign in\" id=\"submit\" class=\"btn btn-primary\" disabled/></td>";
+									</tr>";
+                                                                 echo "<tr><td style=\"padding: 10px 0px;\"><label for=\"captcha\">CAPTCHA</label></td>";
+                                                                 echo "<td><img id=\"captcha\" src=\"./f8d890ce88bd1791b6eaddf06e58ceb5/securimage/securimage_show.php\" alt=\"CAPTCHA Image\"/></td></tr>";
+                                                                 echo "<tr><td></td><td><input type=\"text\" name=\"captcha_code\" size=\"10\" maxlength=\"6\" /><a href=\"#\" onclick=\"document.getElementById('captcha').src = './f8d890ce88bd1791b6eaddf06e58ceb5/securimage/securimage_show.php?' + Math.random(); return false\">&nbsp;<img src=\"./f8d890ce88bd1791b6eaddf06e58ceb5/securimage/images/refresh.png\" width=\"32\" height=\"32\"/></a></td></tr>";
+								if(isset($_GET["failure"])){
+								    echo "<tr><td colspan=\"3\">&nbsp;</td></tr><tr><td colspan=\"3\" align=\"center\"><span id=\"errormsgspan\" name=\"errormsgspan\" style=\"border: 2px solid; border-radius: 25px; padding: 10px 10px; background-color: #FFCCCC; color: #800000; border-color:#800000;\">Invalid username and/or password.</span></td></tr><tr><td colspan=\"3\" align=\"right\"><input type=\"submit\" value=\"Sign in\" id=\"submit\" class=\"btn btn-primary\" disabled/></td></tr>";
+                                                                }
+								else{
+								    echo "<td align=\"right\" colspan=\"3\"><input type=\"submit\" value=\"Sign in\" id=\"submit\" class=\"btn btn-primary\" disabled/></td>";
+                                                                }
 								echo "</tr><tr><td colspan=\"3\"><h5 >New User? <a href=\"signup.php\">Sign up here!</a></h5></td></tr>";
                                                                 echo "<tr><td colspan=\"3\"><h5>Forgot your password? <a href=\"reset.php\">Reset</a> it here!</h5></td></tr>";
                             ?>

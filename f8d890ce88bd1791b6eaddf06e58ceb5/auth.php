@@ -66,6 +66,13 @@ function authenticateUser($userUsername, $userPassword){
 // Script entry point //
 ////////////////////////
 try{
+    // Check whether CAPTCHA is right
+    include_once("securimage/securimage.php");
+    $securimage = new Securimage();
+    if($securimage->check($_POST["captcha_code"]) == false){
+        header("Location: ../error.php?id=captcha");
+        exit();
+    } 
     $usernameStatus = validateInput($_POST['username'], "username");
     $passwordStatus = (strlen($_POST["hashedpassword"]) < 8) ? false : validateInput($_POST['hashedpassword'], "password");
     // If validation succeeds, add user to database

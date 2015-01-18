@@ -419,8 +419,12 @@ body {
                             echo "<td style=\"padding: 10px 0px;\"><label for=\"confirm\">Transfer Security</label></td>
                             <td><input type=\"radio\" name=\"secMethod\" value=\"1\" checked=\"checked\"> 100 TAN<br><input type=\"radio\" name=\"secMethod\" value=\"2\"> SCS</td>
                             <td></td>";
-                            echo "</tr><tr>";
-                            echo "<td colspan=\"3\" align=\"right\" style=\"padding: 30px 0px;\">
+                            echo "</tr>";
+                            echo "<tr><td style=\"padding: 10px 0px;\"><label for=\"captcha\">CAPTCHA</label></td>";
+                            echo "<td><img id=\"captcha\" src=\"./f8d890ce88bd1791b6eaddf06e58ceb5/securimage/securimage_show.php\" alt=\"CAPTCHA Image\"/></td></tr>";
+                            echo "<tr><td></td><td><input type=\"text\" name=\"captcha_code\" size=\"10\" maxlength=\"6\" /><a href=\"#\" onclick=\"document.getElementById('captcha').src = './f8d890ce88bd1791b6eaddf06e58ceb5/securimage/securimage_show.php?' + Math.random(); return false\">&nbsp;<img src=\"./f8d890ce88bd1791b6eaddf06e58ceb5/securimage/images/refresh.png\" width=\"32\" height=\"32\"/></a></td></tr>";
+
+                            echo "<tr><td colspan=\"3\" align=\"right\" style=\"padding: 30px 0px;\">
                                     <input type=\"submit\" value=\"Sign up\" id=\"submit\" style=\"width:80px; height:30px;\" class=\"btn btn-primary\" disabled/>
                                 </td>
                         </tr>";

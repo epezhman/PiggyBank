@@ -105,8 +105,18 @@ function registerEmployee(){
     }
     return true;
 }
-
+///////////////////////////////
+// Entry point of the script //
+///////////////////////////////
 try{
+    // Check whether CAPTCHA is right
+    include_once("securimage/securimage.php");
+    $securimage = new Securimage();
+    if($securimage->check($_POST["captcha_code"]) == false){
+        header("Location: ../error.php?id=captcha");
+        exit();
+    }
+
     $_SERVER["HTTP_REFERER"] = "PiggyBank/f8d890ce88bd1791b6eaddf06e58ceb5/registeremployee.php";
     // Retrieve and validate posted parameters
     $fullnameStatus = validateInput($_POST['fullname'], "name");

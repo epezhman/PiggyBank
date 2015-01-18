@@ -104,6 +104,10 @@ body {
 						echo "<tr><td align=\"center\">";
 						echo "<h4><b>The chosen username is already taken. <a href=\"signup.php\">Try</a> again?</b><h4>";
 					}
+                                        else if($errorID == "captcha"){
+                                                echo "<tr><td align=\"center\">";
+                                                echo "<h4><b>The CAPTCHA code you entered was invalid. <a href=\"signin.php\">Try</a> again?</b></h4>";
+                                        }
 					echo "</table>";
 					echo "</div>";
 					echo "<br/>";
