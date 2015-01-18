@@ -1,4 +1,4 @@
-package sc.group15;
+package SCS;
 
 import java.security.MessageDigest;
 //import java.util.Random;
@@ -7,11 +7,11 @@ public class OTPGenerator {
 
 	//private static int lastRand = -1;
 	private static int cntr = 0;
-        private static String SCSKey = "__USERSCSTOKEN___";
+        private static String SCSKey = "__USERSCSTOKEN__";
 
 	public static String Generate(String PIN, String amount, String account) {
 		try {
-			String toBeHashed = this.SCSKey + amount + account;
+			String toBeHashed = OTPGenerator.SCSKey + amount + account;
 			String salt = PIN + System.currentTimeMillis()/1000L; //new StringBuilder(PIN).reverse().toString();
 
 			MessageDigest md = MessageDigest.getInstance("SHA-1");

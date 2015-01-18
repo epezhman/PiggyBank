@@ -1,4 +1,4 @@
-package sc.group15;
+package SCS;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;

@@ -40,7 +40,7 @@ try{
             // Generate SCS token for user
             // Step 1 - Retrieve user password
             $passQuery = $dbConnection->prepare("SELECT userPassword FROM User WHERE userUsername LIKE (?)");
-            $passQuery->bind_param("s", mysqli_real_escape_string($dbConnection, $_POST["username"]));
+            $passQuery->bind_param("s", mysqli_real_escape_string($dbConnection, $_SESSION["username"]));
             $passQuery->execute();
             $passQuery->bind_result($uPass);
             $passQuery->store_result();
@@ -49,7 +49,7 @@ try{
                 $userPassword = $uPass;
             }
             else{
-                header("Location: ../error.php")
+                header("Location: ../error.php");
                 exit();
             }
             // Step 2 - Generate Token
@@ -68,11 +68,47 @@ try{
                 header("Location: ../error.php");
                 exit();
             }
-            // Step 4 -Update and compile customized Java SCS
-             
-
+            // Step 4 -Update, compile, and download customized Java SCS
+            // Step 4.a. Add the user token
+            exec("cp java/SCSMain.java java/SCS/SCSMain.java");
+            exec("cp java/OTPGenerator.java java/SCS/OTPGenerator.java");
+            $fileContent = file_get_contents("java/SCS/OTPGenerator.java");
+            $fileNewContent = str_replace("__USERSCSTOKEN__", $SCSToken, $fileContent);
+            file_put_contents("java/SCS/OTPGenerator.java", $fileNewContent);
+            // Step 4.b. Compile the code
+            chdir("java");
+            exec("javac -nowarn SCS/SCSMain.java");
+            $javaFiles = glob("SCS/*.java");
+            foreach($javaFiles as $jf){
+                if(is_file($jf)){
+                    unlink($jf);
+                }
+            }
+            // Step 4.c. Create the JAR file
+            system("jar cvfm SCS.jar SCS/META-INF/MANIFEST.MF SCS/* images/");
+            chdir("..");
+            // Step 4.d. Download the JAR
+            $JARFile = 'java/SCS.jar';
+            if (file_exists($JARFile)) {
+                header('Content-Description: Your PiggyBank SCS');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename='.basename($JARFile));
+                header('Content-Transfer-Encoding: binary');
+                header('Connection: Keep-Alive');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+                header('Content-Length: ' . filesize($JARFile));
+                ob_clean();
+                flush();
+                readfile($JARFile);
+                exit;
+            }
+            else{
+                header("Location: ../error.php");
+                exit();
+            }
 	}
-}catch(Exception $e){
+	}catch(Exception $e){
 	header("Location ../error.php");
 }
 ?>
