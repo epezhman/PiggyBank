@@ -73,8 +73,8 @@ try{
         header("Location: ../error.php?id=captcha");
         exit();
     } 
-    $usernameStatus = (strlen($_POST['username']) < 8) ? false : validateInput($_POST['username'], "username");
-    $passwordStatus = (strlen($_POST["hashedpassword"]) < 8) ? false : validateInput($_POST['hashedpassword'], "password");
+    $usernameStatus = validateInput($_POST['username'], "username");
+    $passwordStatus = validateInput($_POST['hashedpassword'], "password");
     // If validation succeeds, add user to database
     if($usernameStatus and $passwordStatus){
         // Authenticate user

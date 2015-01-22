@@ -154,8 +154,13 @@ body {
                 $('#'+e.id+'span').html("A username is required");
                 validated["username"] = false;
             }
-            else
-                if(!e.value.match("^[a-zA-Z0-9_.]+$")){
+            else{
+                 if(e.value.length<8){
+                     $('#'+e.id+'span').css("background","#CC0000");
+                     $('#'+e.id+'span').html("Can't be less than 8 characters");
+                     validated["username"] = false;
+                 } 
+                else if(e.value.length>= 8 && !e.value.match("^[a-zA-Z0-9_.]+$")){
                     $('#'+e.id+'span').css("background","#CC0000");
                     $('#'+e.id+'span').html("Invalid username");
                     validated["username"] = false;
@@ -165,6 +170,7 @@ body {
                     $('#'+e.id+'span').html("Check");
                     validated["username"] = true;
                 }
+            } 
             $('#'+e.id+'span').fadeIn('slow');
       }
     else if(type=="password"){
