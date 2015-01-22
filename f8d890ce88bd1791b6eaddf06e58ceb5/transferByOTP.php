@@ -143,10 +143,13 @@
 			$transferToken =  $_POST['TransferToken'];
 		if(validateInput(trim($_POST['Amount']), "Amount"))
 			$amount = $_POST['Amount'];
-		if(validateInput(trim($_POST['Desc']), "Desc"))
+                if(strlen($_POST['Desc'] > 0)
+		    if(validateInput(trim($_POST['Desc']), "Desc"))
 			$desc = $_POST['Desc'];
-		else
+		    else
 			$desc = "No description.";
+                else
+                    $desc = "No description.";
 		$userUsername = $_SESSION['username'];
 		$transferFlag = true;
 

@@ -23,7 +23,6 @@ try{
 	require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/dbconnect.php");
 
 	$fullName = NULL;
-
 	$userName = NULL;
 	$userUsername = mysqli_real_escape_string($dbConnection,$_SESSION['username']);
 	$customerFullName = $dbConnection->prepare("SELECT customerName, customerTransferSecurityMethod FROM Customer WHERE customerUsername LIKE (?)");

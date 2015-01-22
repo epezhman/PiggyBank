@@ -219,26 +219,36 @@ function sendEmail($eAddress, $eSubject,$eMessage,$eAttachments){
 }
 
 function generateTokens($custID){
+    require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/dbconnect.php");
+    global $dbConnection;
     // Generates 100 unique tokens and returns them to the caller
     $customerTokens = array();
     $counter = 0;
     // There is a problem with using "require_once" here. For some reason, the function does not see the "$dbConnection"
     // .. variable unless it is redefined as below.
-	$dbHost= "localhost";
-	$dbUser= "piggy";
-	$dbPassword= "8aa259f4c7";
-	$dbName= "piggybank";
-    $dbConnection = new mysqli($dbHost, $dbUser, $dbPassword, $dbName);
+    //	$dbHost= "localhost";
+    //	$dbUser= "piggy";
+    //	$dbPassword= "8aa259f4c7";
+    //	$dbName= "piggybank";
+    //  $dbConnection = new mysqli($dbHost, $dbUser, $dbPassword, $dbName);
     try{
         while($counter < 100){
-            $tempToken =  substr(sha1($custID.$counter+1 .microtime(true).getRandomString()), 0, 15);
+            $length = 256;
+            $cryptostrong = true;
+            $tokenRandom = bin2hex(openssl_random_pseudo_bytes($length, $cryptostrong));
+            $tempToken = substr(hash("sha1", $custID."|".hash("sha1", $custID."|".time().$tokenRandom)), 0, 15);
+//            $tempToken =  substr(sha1($custID.$counter+1 .microtime(true).getRandomString()), 0, 15);
             // Now check whether token is already in the Token's table
             $tokenAvailableStmt = $dbConnection->prepare("SELECT * FROM Token WHERE tokenID=? AND tokenUsed=0");
             $tokenAvailableStmt->bind_param("s", $tempToken);
             $tokenAvailableStmt->execute();
             $tokenAvailableStmt->store_result();
             while($tokenAvailableStmt->num_rows > 0){
-                $tempToken =  substr(sha1($custID.$counter+1 .microtime(true).getRandomString()), 0, 15);
+                $length = 256;
+                $cryptostrong = true;
+                $tokenRandom = bin2hex(openssl_random_pseudo_bytes($length, $cryptostrong));
+                $tempToken = substr(hash("sha1", $custID."|".hash("sha1", $custID."|".time().$tokenRandom)), 0, 15);
+//                $tempToken =  substr(sha1($custID.$counter+1 .microtime(true).getRandomString()), 0, 15);
                 $tokenAvailableStmt = $dbConnection->prepare("SELECT * FROM Token WHERE tokenID=? AND tokenUsed=0");
                 $tokenAvailableStmt->bind_param("s", $tempToken);
                 $tokenAvailableStmt->execute();
