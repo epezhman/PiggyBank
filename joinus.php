@@ -185,12 +185,12 @@ body {
                         $('#'+e.id+'span').html("Can't be less than 10 characters");
                         validated["password"] = false;
                     } 
-                    else if(e.value.length >= 10 && e.value.match("^[a-zA-Z0-9]+$")){
+/*                    else if(e.value.length >= 10 && e.value.match("^[a-zA-Z0-9]+$")){
                         $('#'+e.id+'span').css("background","#CC0000");
                         $('#'+e.id+'span').html("Weak Password");
                         validated["password"] = false;
-                    }
-                    else if(e.value.length >= 10 && e.value.match("^[a-zA-Z0-9_.@!?]+$")){
+                    }*/
+                    else if(e.value.length >= 10 && e.value.match("(?=^.{10,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$")){
                         $('#'+e.id+'span').css("background","#00CC00");
                         $('#'+e.id+'span').html("Strong Password");
                         validated["password"] = true;

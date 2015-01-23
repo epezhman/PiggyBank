@@ -78,7 +78,7 @@ body {
                 $('#'+e.id+'span').fadeIn('slow');
                 validated["password"] = false;
 	   }
-           else if(e.value.length < 8){
+           else if(e.value.length < 10){
                 $('#'+e.id+'span').css("background","#CC0000");
                 $('#'+e.id+'span').html("Password too short");
                 $('#'+e.id+'span').fadeIn('slow');
