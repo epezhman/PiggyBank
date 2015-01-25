@@ -41,7 +41,7 @@ function getRandomNumber($length = 8){
 function validateInput($input, $type){
 // Peforms the same input validations carried out on the client-side to double check for errors/malice
                                                                                                                                     
-    $regExpressions =  array("name"=>"^[A-Za-z ]+$", "address"=>"^[a-zA-Z0-9,'-. ]+$", "username"=>"^[0-9A-Za-z_.]{8,}$", "password"=>"^[a-zA-Z0-9_.@!?]+$", "dob"=>"^[0-9/]+$", "hashedpassword"=>"^[a-f0-9]{64}$");
+    $regExpressions =  array("name"=>"^[A-Za-z ]+$", "address"=>"^[a-zA-Z0-9,'-. ]+$", "username"=>"^[0-9A-Za-z_]{8,}$", "password"=>"^[a-zA-Z0-9_.@!?]+$", "dob"=>"^[0-9/]+$", "hashedpassword"=>"^[a-f0-9]{64}$");
 
     try{
         if (ereg($regExpressions[$type], $input)){          

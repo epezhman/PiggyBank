@@ -160,14 +160,14 @@ body {
                         $('#'+e.id+'span').html("Can't be less than 8 characters");
                         validated["username"] = false;
                     } 
-                    else if(e.value.length >= 8 && e.value.match("^[a-zA-Z0-9_.]+$")){
+                    else if(e.value.length >= 8 && e.value.match("^[a-zA-Z0-9_]{8,}$")){
                         $('#'+e.id+'span').css("background","#00CC00");
-                        $('#'+e.id+'span').html("Strong Password");
+                        $('#'+e.id+'span').html("Check");
                         validated["username"] = true;
                     }
                     else{
                        $('#'+e.id+'span').css("background","#CC0000");
-                       $('#'+e.id+'span').html("Invalid Username. Only Numbers, letters, '.', '_' are allowed.");
+                       $('#'+e.id+'span').html("Invalid Username. Only Numbers, letters, and '_' are allowed.");
                        validated["Username"] = false;
                    }
             } 

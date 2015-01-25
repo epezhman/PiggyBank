@@ -85,23 +85,36 @@ void parseTransactionFile(std::vector<Transaction>& aTransactions, std::string f
         if(fileContent.length() < 1 )
             return;
        tFile.close(); // Close file and start working on the local string
-       for(int i=0; i < fileContent.length(); i++){
-           if(fileContent.at(i) != '\n' && fileContent.at(i) != '\r')
-               dummyField += fileContent.at(i);
-           else{
-               if(fieldCount == 1){ dummyT.setReceiver(dummyField); fieldCount += 1; dummyField = "";}
-               else if(fieldCount == 2){ dummyT.setToken(dummyField); fieldCount += 1; dummyField = "";}
-               else if(fieldCount == 3){ dummyT.setAmount(atoi(dummyField.c_str())); fieldCount +=1; dummyField="";}
-               else if(fieldCount == 4){ 
-                   dummyT.setDesc(dummyField); 
-                   fieldCount = 0; 
-                   dummyField = "";
-                   aTransactions.push_back(dummyT);
-               }
-               else fieldCount += 1;
-           }
+       
+       // Parse file to retrieve transactions
+       std::istringstream ss(fileContent);
+       std::string transactionString; // Holds the body of the transaction
+       std::vector<std::string> allTransactions;
+       while(std::getline(ss, transactionString,'#')){
+           allTransactions.push_back(transactionString);
        }
-   }catch(std::exception& e){
+       
+       // Now iterate on the tokens
+       for(std::vector<std::string>::iterator it = allTransactions.begin(); it != allTransactions.end(); it++){
+           transactionString = *it; // Get transaction body
+           std::istringstream ss(transactionString);
+           int fieldCount = 1;
+           std::string token;
+           // Loop on transaction fields
+           dummyT.setDesc("No description.");
+           while(std::getline(ss, token, '\n')){
+               if(token.length() > 0){
+                   if(fieldCount % 4 == 1) { dummyT.setReceiver(token); fieldCount +=1;}
+                   else if(fieldCount % 4 == 2) { dummyT.setToken(token); fieldCount +=1;}
+                   else if(fieldCount % 4 == 3) { dummyT.setAmount(atoi(token.c_str())); fieldCount +=1;}
+                   else if(fieldCount % 4 == 0){
+                       dummyT.setDesc(token);
+                   }
+               }
+           }
+           aTransactions.push_back(dummyT);
+       }
+    }catch(std::exception& e){
        std::cout << "Error encountered: " << e.what() << std::endl;
    }    
 }
