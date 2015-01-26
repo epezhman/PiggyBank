@@ -1,6 +1,8 @@
 ﻿<?php
 session_start();
 ob_start();
+require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/utils.php");
+$_SESSION["csrfToken"] = generateCSRFToken($_SESSION["username"]);
 setcookie("csrfToken", $_SESSION["csrfToken"], 0, "/");
 require_once("../f8d890ce88bd1791b6eaddf06e58ceb5/accesscontrol.php");
 $authenticated = ob_get_clean();

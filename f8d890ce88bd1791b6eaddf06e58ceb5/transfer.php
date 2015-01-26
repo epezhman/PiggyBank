@@ -113,7 +113,7 @@ function doTransfer($transactionSender, $transactionReceiver, $transactionAmount
 }
 
 function validateInput($input, $type){
-        $regExpressions =  array("ReceiverId"=>"^[a-zA-Z0-9]+$", "TransferToken"=>"^[a-zA-Z0-9]+$", "Amount"=>"^[0-9.]+$", "Desc"=>"^[a-zA-Z0-9 ,.]*$");
+        $regExpressions =  array("ReceiverId"=>"^[a-zA-Z0-9]+$", "TransferToken"=>"^[a-zA-Z0-9]+$", "Amount"=>"^[0-9.]+$", "Desc"=>"^[a-zA-Z0-9 ,.]+$");
         try{
                 if (ereg($regExpressions[$type], $input))
                         return true;
@@ -133,7 +133,6 @@ try{
 		header("Location: ../error.php?id=404");
 			
 	$_SERVER["HTTP_REFERER"] = "/PiggyBank/5e8cb842691cc1b8c7598527b5f2277f/CustomerNewTransfer.php";
-
 	// Retrieve and validate posted parameters
 	if(validateInput(trim($_POST['ReceiverId']), "ReceiverId")) 
 		$receiverAccount = $_POST['ReceiverId'];
@@ -141,11 +140,11 @@ try{
 		$transferToken =  $_POST['TransferToken'];
 	if(validateInput(trim($_POST['Amount']), "Amount"))
 		$amount = $_POST['Amount'];
-        if(strlen($_POST['Desc'] > 0))
+        if(strlen($_POST['Desc']) > 0)
     	    if(validateInput(trim($_POST['Desc']), "Desc"))
 	        $desc = $_POST['Desc'];
             else
-                $desc = "No description.";
+                $desc = "Invalid description submitted.";
 	else
 		$desc = "No description.";
 	$userUsername = $_SESSION['username'];
