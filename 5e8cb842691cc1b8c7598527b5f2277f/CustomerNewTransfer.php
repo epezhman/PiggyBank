@@ -566,8 +566,8 @@ body {
 													name="transFile">
 												<p class="help-block">Kindly upload a file containing the
 													account number you wish to transfer funds to, one of your
-													TANs and the amount (in Euros) you wish to transfer, each
-													on a separate line.</p>
+													TANs and the amount (in Euros) you wish to transfer, and an optional description each
+													on a separate line. Various transactions should be separated with a '#' sign. Template file can be found <a href="transaction_template">here</a>.</p>
 												<p class="help-block">
 													<b>New</b>: Now you can include multiple transactions in
 													the same file. Please use the same format as before leaving
